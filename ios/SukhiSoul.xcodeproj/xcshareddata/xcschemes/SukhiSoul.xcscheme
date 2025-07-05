@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "SukhiSoul.app"
-               BlueprintName = "SukhiSoul"
-               ReferencedContainer = "container:SukhiSoul.xcodeproj">
+               BuildableName = "Sukhisoul.app"
+               BlueprintName = "Sukhisoul"
+               ReferencedContainer = "container:Sukhisoul.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "SukhiSoulTests.xctest"
-               BlueprintName = "SukhiSoulTests"
-               ReferencedContainer = "container:SukhiSoul.xcodeproj">
+               BuildableName = "SukhisoulTests.xctest"
+               BlueprintName = "SukhisoulTests"
+               ReferencedContainer = "container:Sukhisoul.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "SukhiSoul.app"
-            BlueprintName = "SukhiSoul"
-            ReferencedContainer = "container:SukhiSoul.xcodeproj">
+            BuildableName = "Sukhisoul.app"
+            BlueprintName = "Sukhisoul"
+            ReferencedContainer = "container:Sukhisoul.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "SukhiSoul.app"
-            BlueprintName = "SukhiSoul"
-            ReferencedContainer = "container:SukhiSoul.xcodeproj">
+            BuildableName = "Sukhisoul.app"
+            BlueprintName = "Sukhisoul"
+            ReferencedContainer = "container:Sukhisoul.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

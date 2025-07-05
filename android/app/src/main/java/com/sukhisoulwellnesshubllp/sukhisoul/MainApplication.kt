@@ -1,4 +1,4 @@
-package com.sukhisoul
+package com.sukhisoulwellnesshubllp.sukhisoul
 
 import android.app.Application
 import com.facebook.react.PackageList

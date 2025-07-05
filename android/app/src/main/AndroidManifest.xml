@@ -10,6 +10,12 @@
       android:allowBackup="false"
       android:theme="@style/AppTheme"
       android:supportsRtl="true">
+
+      <!-- ✅ ADD THIS HERE -->
+      <meta-data
+        android:name="com.google.android.gms.client_id"
+        android:value="618676745098-tupjtgn3d7lg07t1flkfnd9fpoh176lp.apps.googleusercontent.com" />
+
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
@@ -22,5 +28,6 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+      
     </application>
 </manifest>
