@@ -124,6 +124,8 @@ import DividerWithText from '../components/DividerWithText';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStackParamList } from 'src/types/navigation';
 import SocialLoginButton from '../components/SocialLoginButton';
+import GradientWrapper from '../components/GradientWrapper';
+import AppText from '../components/AppText';
 
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Signup'>;
@@ -134,21 +136,22 @@ const SignupScreen = ({ navigation }: Props) => {
   const [sex, setSex] = useState('');
   const [email, setEmail] = useState('');
 
-  const handleGetOtp = () => {
-    console.log({ name, age, sex, email });
-    // Navigate or trigger API once backend is ready
-  };
+  // const handleGetOtp = () => {
+  //   console.log({ name, age, sex, email });
+  //   // Navigate or trigger API once backend is ready
+  // };
 
   return (
     <KeyboardAvoidingView
-      style={styles.wrapper}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    style={styles.wrapper}
+    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+      <GradientWrapper>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={styles.heading}>Sukhi</Text>
-        <Text style={styles.heading1}>Soul</Text>
+        <AppText variant='h1'>Sukhi</AppText>
+        <AppText variant='h1'>Soul</AppText>
 
-        <Text style={styles.subHeading}>Create your account</Text>
+        <AppText variant='h2'>Create your account</AppText>
 
         <CustomTextInput placeholder="Name" value={name} onChangeText={setName} />
         <CustomTextInput placeholder="Age" value={age} onChangeText={setAge} />
@@ -159,6 +162,7 @@ const SignupScreen = ({ navigation }: Props) => {
         title="Get OTP" 
         // onPress={handleGetOtp} 
         onPress={() => navigation.navigate('OtpVerification')}
+        // eslint-disable-next-line react-native/no-inline-styles
         style={{ width: '40%', alignSelf: 'center' }}
         />
 
@@ -174,6 +178,7 @@ const SignupScreen = ({ navigation }: Props) => {
           <Text style={styles.link}>Privacy Policy</Text>
         </Text>
       </ScrollView>
+      </GradientWrapper>
     </KeyboardAvoidingView>
   );
 };
@@ -189,21 +194,7 @@ const styles = StyleSheet.create({
     padding: 24,
     paddingBottom: 50,
   },
-  heading: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    lineHeight: 38,
-    color: '#000',
-    marginBottom: 15,
-    marginTop:50, 
-  },
-  heading1: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    lineHeight: 38,
-    color: '#000',
-    marginBottom: 40,
-  },
+
   subHeading: {
     fontSize: 21,
     color: '#333',

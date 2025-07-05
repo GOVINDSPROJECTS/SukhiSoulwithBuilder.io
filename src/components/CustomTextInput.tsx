@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   input: {
-    backgroundColor: '#333',
-    color: '#fff',
+    backgroundColor: '#fff',
+    color: '#000',
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 10,

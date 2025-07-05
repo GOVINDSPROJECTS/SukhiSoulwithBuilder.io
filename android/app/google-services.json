@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "398763446152",
+    "project_id": "sukhisoul-db887",
+    "storage_bucket": "sukhisoul-db887.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398763446152:android:f39759d16d43b8d78a743d",
+        "android_client_info": {
+          "package_name": "com.sukhisoul"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEXYVDy_xVX2ol1J9G0ErzrjZxgcL6Ryw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

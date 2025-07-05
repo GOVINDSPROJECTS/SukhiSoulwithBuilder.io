@@ -1,14 +1,15 @@
-export const lightTheme = {
-  background: '#FFFFFF',
-  text: '#000000',
-  primary: '#007AFF',
-  card: '#F5F5F5',
+// src/theme/colors.ts
+const colors = {
+  primary: '#104256',          // Button and accent
+  background: '#F8FBFD',       // Light background gradient
+  textPrimary: '#104256',      // Headings
+  textSecondary: '#555555',    // Paragraphs
+  muted: '#2D2D2D',            // Subtle text
+  border: '#D1D5DB',           // Light border color
+  white: '#FFFFFF',
+  dark: '#000000',
+  gradientStart: '#DCEEF2',    // Top gradient color
+  gradientEnd: '#FFFFFF',      // Bottom gradient
 };
 
-export const darkTheme = {
-  background: '#121212',
-  text: '#FFFFFF',
-  primary: '#1E90FF',
-  card: '#1F1F1F',
-};
-    
+export default colors;
