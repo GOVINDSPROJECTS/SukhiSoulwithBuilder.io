@@ -1,57 +1,45 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import api, { setAuthToken } from '../services/api';
 
-type AuthState = {
-  isLoggedIn: boolean;
+interface AuthState {
   token: string | null;
-  name: string | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  user: { name: string; email: string } | null;
+  setToken: (token: string) => void;
+  setUser: (user: { name: string; email: string }) => void;
+  login: (token: string, user: { name: string; email: string }) => void;
   logout: () => void;
   restoreSession: () => Promise<void>;
-};
+}
 
-export const useAuthStore = create<AuthState>((set: (arg0: { isLoggedIn: boolean; token: any; name: any; }) => void) => ({
-  isLoggedIn: false,
+export const useAuthStore = create<AuthState>((set) => ({
   token: null,
-  name: null,
+  user: null,
 
-  login: async (email: any, password: any) => {
-    try {
-      const response = await api.post('/login', { email, password });
-
-      if (response.data.success) {
-        const { token, name } = response.data.data;
-
-        await AsyncStorage.setItem('token', token);
-        await AsyncStorage.setItem('name', name);
-
-        setAuthToken(token);
-
-        set({ isLoggedIn: true, token, name });
-        return true;
-      } else {
-        return false;
-      }
-    } catch (err) {
-      console.error('Login error:', err);
-      return false;
-    }
+  setToken: (token) => {
+    AsyncStorage.setItem('token', token);
+    set({ token });
   },
 
-  logout: () => {
-    AsyncStorage.removeItem('token');
-    AsyncStorage.removeItem('name');
-    set({ isLoggedIn: false, token: null, name: null });
+  setUser: (user) => {
+    AsyncStorage.setItem('user', JSON.stringify(user));
+    set({ user });
+  },
+
+  // ✅ Login combines both token + user setting
+  login: (token, user) => {
+    AsyncStorage.setItem('token', token);
+    AsyncStorage.setItem('user', JSON.stringify(user));
+    set({ token, user });
+  },
+
+  logout: async () => {
+    await AsyncStorage.multiRemove(['token', 'user']);
+    set({ token: null, user: null });
   },
 
   restoreSession: async () => {
-    const token = await AsyncStorage.getItem('token');
-    const name = await AsyncStorage.getItem('name');
-
-    if (token) {
-      setAuthToken(token);
-      set({ isLoggedIn: true, token, name });
-    }
+    const [token, user] = await AsyncStorage.multiGet(['token', 'user']);
+    if (token[1]) set({ token: token[1] });
+    if (user[1]) set({ user: JSON.parse(user[1]) });
   },
 }));

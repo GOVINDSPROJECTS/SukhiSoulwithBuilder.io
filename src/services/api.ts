@@ -13,4 +13,11 @@ export const setAuthToken = (token: string) => {
   api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 };
 
+// src/types/api.ts
+export interface OtpVerifyResponse {
+  user(token: string, user: any): unknown;
+  token: string;
+  message?: string;
+}
+
 export default api;

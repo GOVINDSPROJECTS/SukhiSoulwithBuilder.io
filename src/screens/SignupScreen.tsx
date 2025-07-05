@@ -1,29 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import CustomTextInput from '../components/CustomTextInput';
 import PrimaryButton from '../components/PrimaryButton';
 import DividerWithText from '../components/DividerWithText';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from 'src/types/navigation';
+import { AuthStackParamList, RootStackParamList } from 'src/types/navigation';
 import SocialLoginButton from '../components/SocialLoginButton';
+import GradientWrapper from '../components/GradientWrapper';
+import AppText from '../components/AppText';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { handleGoogleSignin } from '../auth/googleAuth';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { getOtp } from '../auth/otpAuth';
+
+type AuthNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
+const SignupScreen = () => {
+
+const otpnavigation = useNavigation<AuthNavigationProp>();
+
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>;
-
-
-// ✅ Define your custom type
-interface MyGoogleUser {
-  idToken?: string;
-  user: {
-    email?: string;
-    name?: string;
-    photo?: string;
-    id?: string;
-  };
-  accessToken?: string;
-}
-
-const SignupScreen = ({ navigation }: Props) => {
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
   const [sex, setSex] = useState('');
@@ -36,54 +33,6 @@ const SignupScreen = ({ navigation }: Props) => {
       scopes: ['openid', 'email', 'profile',],
     });
   }, []);
-
-  const handleGoogleLogin = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-
-      // ✅ Cast the result so TS knows about idToken
-      const userInfo = await GoogleSignin.signIn() as MyGoogleUser;
-
-      console.log('Google user info:', JSON.stringify(userInfo, null, 2));
-
-     
-
-      const idToken = userInfo.data?.idToken;
-      console.log('Google id_token:', idToken);
-
-      const payload = new FormData();
-payload.append('id_token', idToken);
-
-const response = await axios.post(
-  "http://3.6.142.117/api/auth/login-google",
-  payload,
-  {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  }
-);
-
-
-      console.log('Laravel API response:', response.data);
-
-      if (response.data.token) {
-        // Save the token if needed (e.g. AsyncStorage, SecureStore, etc.)
-        //Alert.alert('Login Successful');
-        navigation.navigate('AppTabs', { screen: 'Home' });
-      } else {
-        Alert.alert('Error', 'Google login failed on server.');
-      }
-    } catch (error: any) {
-      console.log('GOOGLE LOGIN ERROR:', JSON.stringify(error, null, 2));
-      Alert.alert('Error', error.message || 'Google login error.');
-    }
-  };
-
-  const handleGetOtp = () => {
-    console.log({ name, age, sex, email });
-    // Navigate or trigger API once backend is ready
-  };
 
   return (
     <KeyboardAvoidingView
@@ -103,10 +52,11 @@ const response = await axios.post(
         <CustomTextInput placeholder="Mail" value={email} onChangeText={setEmail} />
 
         <PrimaryButton
-        title="Get OTP" 
-        // onPress={handleGetOtp} 
-        onPress={() => navigation.navigate('OtpVerification')}
-        style={{ width: '40%', alignSelf: 'center' }}
+          title="Get OTP"
+          onPress={() => getOtp(email, name, age, sex, otpnavigation)}
+          // onPress={()=> navigation.navigate('AuthStack', { screen: 'OtpVerification' })}
+          // eslint-disable-next-line react-native/no-inline-styles
+          style={{ width: '40%', alignSelf: 'center' }}
         />
 
         <DividerWithText />
@@ -114,7 +64,7 @@ const response = await axios.post(
         <View style={styles.socialContainer}>
           <SocialLoginButton
             icon={require('../assets/icons/google.png')}
-            onPress={handleGoogleLogin}
+            onPress={() => handleGoogleSignin(navigation)}
           />
           <SocialLoginButton
             icon={require('../assets/icons/apple.png')}
@@ -143,21 +93,7 @@ const styles = StyleSheet.create({
     padding: 24,
     paddingBottom: 50,
   },
-  heading: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    lineHeight: 38,
-    color: '#000',
-    marginBottom: 15,
-    marginTop:50, 
-  },
-  heading1: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    lineHeight: 38,
-    color: '#000',
-    marginBottom: 40,
-  },
+
   subHeading: {
     fontSize: 21,
     color: '#333',

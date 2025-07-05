@@ -1,41 +1,19 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import IconButton from '../components/IconButton';
-import axios from 'axios';
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
-
-
+import { handleGoogleSignin } from '../auth/googleAuth';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from 'src/types/navigation';
 const LoginScreen = () => {
+
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  
+
   const handleEmailOtp = () => {
     console.log('Navigate to email OTP screen');
   };
-
-  const handleGoogleLogin = async () => {
-  try {
-    await GoogleSignin.hasPlayServices();
-    // const userInfo = await GoogleSignin.signIn();
-    
-    // ✅ Get the ID token correctly
-    const { idToken } = await GoogleSignin.getTokens();
-
-    // 🔥 Send it to Laravel backend
-    const res = await axios.post('https://sukhisoul.com/api/login/google', {
-      idToken,
-    });
-
-    // ✅ Save token (Zustand or AsyncStorage etc.)
-    console.log('Login Success:', res.data.token);
-
-  } catch (error: any) {
-    if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-      console.warn('User cancelled');
-    } else if (error.code === statusCodes.IN_PROGRESS) {
-      console.warn('In progress');
-    } else {
-      console.error('Google Sign-in error:', error);
-    }
-  }
-};
+  
   const handleAppleLogin = () => {
     console.log('Apple login triggered');
   };
@@ -53,7 +31,7 @@ const LoginScreen = () => {
         <IconButton
           icon={require('../assets/icons/google.png')}
           label="Continue with Google"
-          onPress={handleGoogleLogin}
+          onPress={() => handleGoogleSignin(navigation)}
         />
         <IconButton
           icon={require('../assets/icons/apple.png')}

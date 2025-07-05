@@ -6,12 +6,18 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 export type AuthStackParamList = {
   Login: { referralCode?: string }| undefined;
   Signup: { referralCode?: string }| undefined;
-  OtpVerification: undefined;
+  OtpVerification: {
+    email: string;
+    name: string;
+    age: string;
+    sex: string;
+  };
+
 };
 
 // Main App Tabs
 export type AppTabsParamList = {
-  Home: undefined;
+  Home:  { referralCode?: string }| undefined;
   Profile: undefined;
   Settings: undefined;
 };
