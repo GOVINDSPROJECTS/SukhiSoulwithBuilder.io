@@ -20,31 +20,41 @@ export const handleGoogleSignin = async (
     const idToken = userInfo.data?.idToken;
 
     if (!idToken) {
-      throw new Error('No id_token received from Google');
-    }
+  throw new Error('No id_token received from Google');
+}
 
-    const payload = new FormData();
-    payload.append('id_token', idToken);
+const payload = new FormData();
+payload.append('id_token', idToken);
 
-    const response = await axios.post(
-      'http://3.6.142.117/api/auth/login-google',
-      payload,
-      {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      }
-    );
+const response = await axios.post(
+  'http://3.6.142.117/api/auth/login-google',
+  payload,
+  {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }
+);
 
-    const { token } = response.data;
-    if (token) {
-      await useAuthStore.getState().setToken(token);
-      navigation.navigate('AppTabs', { screen: 'Home' });
-// Or AppTabs if needed
-    } else {
-      Alert.alert('Error', 'Google login failed on server.');
-    }
+const { token, user } = response.data;
+
+if (token && user) {
+  // ✅ Save token
+  await useAuthStore.getState().setToken(token);
+
+  // ✅ Save user (name and email)
+  await useAuthStore.getState().setUser({
+    name: user.name,
+    email: user.email,
+  });
+
+  // ✅ Navigate to home screen
+  navigation.navigate('AppTabs', { screen: 'Home' });
+
+} else {
+  Alert.alert('Error', 'Google login failed on server.');
+}
 
   } catch (error: any) {
     console.log('GOOGLE LOGIN ERROR:', JSON.stringify(error, null, 2));
-    Alert.alert('Error', error.message || 'Google login error.');
+    // Alert.alert('Error', error.message || 'Google login error.');
   }
 };

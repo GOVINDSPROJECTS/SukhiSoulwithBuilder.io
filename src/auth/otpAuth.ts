@@ -52,19 +52,30 @@ export const getOtp = async (
   }
 };
 //////////////////////////////////////////////////////////////////////////////////////////
-
 export const verifyOtp = async (
-  otp: string,
   email: string,
-  name: string,
-  age: string,
-  sex: string
-): Promise<{ data: OtpVerifyResponse }> => {
-  return await axios.post('http://3.6.142.117/api/auth/verify-otp', {
-    otp,
-    email,
-    name,
-    age,
-    sex,
-  });
+  otp: string,
+  name?: string,
+  age?: string,
+  sex?: string
+) => {
+  const formData = new FormData();
+  formData.append('email', email);
+  formData.append('otp', otp);
+
+  if (name) formData.append('name', name);
+  if (age) formData.append('age', age);
+  if (sex) formData.append('sex', sex);
+
+  const response = await axios.post(
+    'http://3.6.142.117/api/auth/verify-otp',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+
+  return response.data;
 };

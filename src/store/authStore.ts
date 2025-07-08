@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+
 
 interface AuthState {
   token: string | null;
@@ -32,10 +34,18 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ token, user });
   },
 
-  logout: async () => {
+ 
+logout: async () => {
+  try {
     await AsyncStorage.multiRemove(['token', 'user']);
-    set({ token: null, user: null });
-  },
+    await GoogleSignin.revokeAccess(); // <-- revokes token on Google's end
+    await GoogleSignin.signOut();      // <-- signs out locally
+  } catch (error) {
+    console.warn('Google logout error:', error);
+  }
+
+  set({ token: null, user: null });
+},
 
   restoreSession: async () => {
     const [token, user] = await AsyncStorage.multiGet(['token', 'user']);

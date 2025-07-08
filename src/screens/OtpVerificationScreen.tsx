@@ -172,6 +172,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList, RootStackParamList } from '../types/navigation';
 import { RouteProp } from '@react-navigation/native';
+import { useAuthStore } from '../store/authStore';
 
 const OtpVerificationScreen = () => {
   const [otp, setOtp] = useState('');
@@ -185,6 +186,10 @@ const OtpVerificationScreen = () => {
 
   // const login = useAuthStore(state => state.login);
 
+  
+  const setToken = useAuthStore((state) => state.setToken);
+  const setUser = useAuthStore((state) => state.setUser);
+  
   useEffect(() => {
     if (counter > 0) {
       const timer = setTimeout(() => setCounter(counter - 1), 1000);
@@ -192,25 +197,35 @@ const OtpVerificationScreen = () => {
     }
   }, [counter]);
 
-  const handleVerify = async () => {
+ const handleVerify = async () => {
     if (otp.length !== 6) {
-      Alert.alert('Invalid OTP', 'Please enter a valid 6-digit OTP.');
+      Alert.alert('Invalid OTP', 'Please enter a 6-digit OTP.');
       return;
     }
 
     try {
-      const res = await verifyOtp(otp, email, name, age, sex);
+      const res = await verifyOtp(email, otp, name, age, sex);
 
-      if (res?.data?.token) {
-        navigation.replace('AppTabs', { screen: 'Home' });
+      if (res?.token && res?.user) {
+        await setToken(res.token);
+        await setUser({
+          name: res.user.name,
+          email: res.user.email,
+        });
+
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'AppTabs' }],
+        });
       } else {
-        Alert.alert('Verification Failed', 'Server did not return a token.');
+        Alert.alert('Failed', 'Invalid response from server');
       }
     } catch (error: any) {
       console.error('OTP verification failed:', error);
-      Alert.alert('Error', error.response?.data?.message || 'Verification failed.');
+      Alert.alert('Error', error?.response?.data?.message || 'OTP verification failed');
     }
   };
+
 
   const handleResendOtp = () => {
     // Optionally implement resend logic here
