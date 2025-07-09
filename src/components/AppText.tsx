@@ -14,14 +14,14 @@ const AppText = ({ variant = 'body', style, ...props }: Props) => {
 
 const styles = StyleSheet.create({
   h1: {
-    fontSize: 48,
+    fontSize: 42,
     fontWeight: '700',
     color: colors.textPrimary,
   },
   h2: {
     fontSize: 18,
     fontWeight: '600',
-    color: colors.textPrimary,
+    color: colors.textSecondary,
   },
   body: {
     fontSize: 14,

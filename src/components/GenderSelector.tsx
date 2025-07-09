@@ -1,0 +1,166 @@
+
+// import React, { useState } from 'react';
+// import {
+//     View,
+//     Text,
+//     TouchableOpacity,
+//     Modal,
+//     StyleSheet,
+//     Pressable
+// } from 'react-native';
+
+// const GenderSelector = ({ value, onSelect }: { value: string; onSelect: (v: string) => void }) => {
+//     const [visible, setVisible] = useState(false);
+
+//     return (
+//         <>
+//             <TouchableOpacity onPress={() => setVisible(true)} style={styles.inputWrapper}>
+//                 <Text style={[styles.inputText, !value && { color: '#aaa' }]}>
+//                     {value || 'Select Gender'}
+//                 </Text>
+//             </TouchableOpacity>
+
+//             <Modal transparent visible={visible} animationType="fade">
+//                 <Pressable style={styles.modalBackdrop} onPress={() => setVisible(false)} />
+
+//                 <View style={styles.modalContent}>
+//                     <TouchableOpacity
+//                         style={styles.option}
+//                         onPress={() => {
+//                             onSelect('Male');
+//                             setVisible(false);
+//                         }}
+//                     >
+//                         <Text style={styles.optionText}>Male</Text>
+//                     </TouchableOpacity>
+
+//                     <View style={styles.divider} />
+
+//                     <TouchableOpacity
+//                         style={styles.option}
+//                         onPress={() => {
+//                             onSelect('Female');
+//                             setVisible(false);
+//                         }}
+//                     >
+//                         <Text style={styles.optionText}>Female</Text>
+//                     </TouchableOpacity>
+//                 </View>
+
+//             </Modal>
+//         </>
+//     );
+// };
+
+// export default GenderSelector;
+
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+  Pressable
+} from 'react-native';
+
+const GenderSelector = ({
+  value,
+  onSelect,
+  error,
+}: {
+  value: string;
+  onSelect: (v: string) => void;
+  error?: string;
+}) => {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <>
+      <TouchableOpacity onPress={() => setVisible(true)} style={styles.inputWrapper}>
+        <Text style={[styles.inputText, !value && { color: '#aaa' }]}>
+          {value ? value.charAt(0).toUpperCase() + value.slice(1) : 'Select Gender'}
+        </Text>
+      </TouchableOpacity>
+      {error && <Text style={styles.errorText}>{error}</Text>}
+
+      <Modal transparent visible={visible} animationType="fade">
+        <Pressable style={styles.modalBackdrop} onPress={() => setVisible(false)} />
+
+        <View style={styles.modalContent}>
+          <TouchableOpacity
+            style={styles.option}
+            onPress={() => {
+              onSelect('male'); // ✅ Always lowercase
+              setVisible(false);
+            }}
+          >
+            <Text style={styles.optionText}>Male</Text>
+          </TouchableOpacity>
+
+          <View style={styles.divider} />
+
+          <TouchableOpacity
+            style={styles.option}
+            onPress={() => {
+              onSelect('female'); // ✅ Always lowercase
+              setVisible(false);
+            }}
+          >
+            <Text style={styles.optionText}>Female</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+    </>
+  );
+};
+
+export default GenderSelector;
+
+
+const styles = StyleSheet.create({
+    inputWrapper: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 12,
+        // marginBottom: 16,
+        justifyContent: 'center',
+    },
+    inputText: {
+        color: '#000',
+        fontSize: 16,
+    },
+    modalBackdrop: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+    },
+    modalContent: {
+        backgroundColor: '#fff',
+        padding: 10,
+        borderRadius: 10,
+        margin: 40,
+        marginTop: '80%',
+        marginLeft:'40%',
+        width: '40%',
+    },
+    option: {
+        paddingVertical: 5,
+    },
+    optionText: {
+        fontSize: 16,
+        color: '#000',
+        textAlign: 'center',
+    },
+    divider: {
+        height: 1,
+        backgroundColor: '#ccc',
+        marginVertical: 4,
+    },
+    errorText: {
+  color: 'red',
+  marginTop: 4,
+  marginLeft: 6,
+},
+
+
+});

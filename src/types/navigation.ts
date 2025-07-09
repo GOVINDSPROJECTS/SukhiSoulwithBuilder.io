@@ -8,9 +8,9 @@ export type AuthStackParamList = {
   Signup: { referralCode?: string }| undefined;
   OtpVerification: {
     email: string;
-    name: string;
-    age: string;
-    sex: string;
+    name?: string;
+    age?: string;
+    sex?: string;
   };
 
 };

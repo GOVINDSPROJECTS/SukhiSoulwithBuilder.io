@@ -1,195 +1,35 @@
-// import React, { useRef, useState, useEffect } from 'react';
-// import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-// import OTPTextInput from 'react-native-otp-textinput';
-// import PrimaryButton from '../components/PrimaryButton';
-// import { verifyOtp } from '../auth/otpAuth';
-// import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-// import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-// import { AuthStackParamList, RootStackParamList } from '../types/navigation';
-
-// type OtpNavProp = NativeStackNavigationProp<RootStackParamList>;
-// type OtpRouteProp = RouteProp<AuthStackParamList, 'OtpVerification'>;
-
-// const OtpVerificationScreen = () => {
-//   const [otp, setOtp] = useState('');
-//   const [counter, setCounter] = useState(30);
-//   const otpInput = useRef<OTPTextInput>(null);
-
-//   const navigation = useNavigation<OtpNavProp>();
-//   const route = useRoute<OtpRouteProp>();
-
-//   const { email, name, age, sex } = route.params;
-
-//   useEffect(() => {
-//     if (counter > 0) {
-//       const timer = setTimeout(() => setCounter(counter - 1), 1000);
-//       return () => clearTimeout(timer);
-//     }
-//   }, [counter]);
-
-//   const handleVerify = async () => {
-//     if (otp.length < 6) {
-//       Alert.alert('Error', 'Please enter a valid 6-digit OTP.');
-//       return;
-//     }
-
-//     try {
-//       const payload = {
-//         otp,
-//         email,
-//         name,
-//         age,
-//         sex,
-//         navigation,
-//       };
-
-//       const res = await verifyOtp(payload);
-
-//       if (res?.data?.token) {
-//         // Save token and go to Home
-//         await AsyncStorage.setItem('token', res.data.token);
-//         navigation.reset({
-//           index: 0,
-//           routes: [{ name: 'AppTabs' }],
-//         });
-//       } else {
-//         Alert.alert('Failed', res?.data?.message || 'OTP Verification failed');
-//       }
-//     } catch (err: any) {
-//       console.error('OTP VERIFY ERROR:', err);
-//       Alert.alert('Error', 'OTP verification failed.');
-//     }
-//   };
-
-//   const handleResendOtp = () => {
-//     // Optional: Call resend API and reset counter
-//     setCounter(30);
-//     Alert.alert('Info', 'OTP resent to your email.');
-//   };
-
-//   return (
-//     <View style={styles.container}>
-//       <View style={styles.card}>
-//         <Text style={styles.heading}>Sukhi Soul</Text>
-//         <Text style={styles.subHeading}>We’ve sent a code to your email.</Text>
-
-//         <TouchableOpacity>
-//           <Text style={styles.changeEmail}>Change Email Address?</Text>
-//         </TouchableOpacity>
-
-//         <Text style={styles.subHeading}>Enter OTP</Text>
-//         <OTPTextInput
-//           ref={otpInput}
-//           inputCount={6}
-//           tintColor="#fff"
-//           offTintColor="#555"
-//           handleTextChange={setOtp}
-//           textInputStyle={styles.otpBox}
-//           containerStyle={styles.otpContainer}
-//         />
-
-//         <PrimaryButton
-//           title="Verify"
-//           onPress={handleVerify}
-//           style={{ width: '40%', alignSelf: 'center' }}
-//         />
-
-//         <TouchableOpacity onPress={handleResendOtp} disabled={counter !== 0}>
-//           <Text style={styles.resendText}>
-//             {counter > 0
-//               ? `Resend OTP in 00:${counter < 10 ? '0' + counter : counter}`
-//               : 'Resend OTP'}
-//           </Text>
-//         </TouchableOpacity>
-//       </View>
-//     </View>
-//   );
-// };
-
-// export default OtpVerificationScreen;
-
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   card: {
-//     backgroundColor: '#1a1a1a',
-//     borderRadius: 16,
-//     padding: 24,
-//     width: '90%',
-//     elevation: 6,
-//   },
-//   heading: {
-//     color: '#fff',
-//     fontSize: 28,
-//     fontWeight: '700',
-//     marginBottom: 40,
-//   },
-//   subHeading: {
-//     color: '#ccc',
-//     fontSize: 21,
-//     marginBottom: 6,
-//   },
-//   changeEmail: {
-//     color: '#aaa',
-//     textDecorationLine: 'underline',
-//     fontSize: 13,
-//     marginBottom: 70,
-//   },
-//   otpContainer: {
-//     justifyContent: 'space-between',
-//     marginBottom:20
-//   },
-//   otpBox: {
-//     width:40,
-//     height:40,
-//     borderRadius: 8,
-//     borderWidth: 1,
-//     backgroundColor: '#333',
-//     borderColor: '#666',
-//     color: '#fff',
-//     fontSize: 18,
-//   },
-//   resendText: {
-//     color: '#888',
-//     fontSize: 12,
-//     textAlign: 'center',
-//     marginTop: 14,
-//   },
-// });
-
-
 import React, { useRef, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import OTPTextInput from 'react-native-otp-textinput';
 import PrimaryButton from '../components/PrimaryButton';
-import { verifyOtp } from '../auth/otpAuth';
+import { getLoginOtp, verifyOtp } from '../auth/otpAuth';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList, RootStackParamList } from '../types/navigation';
 import { RouteProp } from '@react-navigation/native';
 import { useAuthStore } from '../store/authStore';
+import AppText from '../components/AppText';
+import GradientWrapper from '../components/GradientWrapper';
+
+
+type AuthNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
 
 const OtpVerificationScreen = () => {
+
   const [otp, setOtp] = useState('');
   const [counter, setCounter] = useState(30);
   const otpInput = useRef<OTPTextInput>(null);
+  const [otpError, setOtpError] = useState('');
+
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const otpnavigation = useNavigation<AuthNavigationProp>();
   const route = useRoute<RouteProp<AuthStackParamList, 'OtpVerification'>>();
 
   const { email, name, age, sex } = route.params;
-
-  // const login = useAuthStore(state => state.login);
-
-  
   const setToken = useAuthStore((state) => state.setToken);
   const setUser = useAuthStore((state) => state.setUser);
-  
+
   useEffect(() => {
     if (counter > 0) {
       const timer = setTimeout(() => setCounter(counter - 1), 1000);
@@ -197,11 +37,13 @@ const OtpVerificationScreen = () => {
     }
   }, [counter]);
 
- const handleVerify = async () => {
-    if (otp.length !== 6) {
-      Alert.alert('Invalid OTP', 'Please enter a 6-digit OTP.');
+  const handleVerify = async () => {
+    if (!otp || otp.length !== 6) {
+      setOtpError('Please enter a valid 6-digit OTP');
       return;
     }
+
+    setOtpError(''); // clear previous error
 
     try {
       const res = await verifyOtp(email, otp, name, age, sex);
@@ -218,30 +60,30 @@ const OtpVerificationScreen = () => {
           routes: [{ name: 'AppTabs' }],
         });
       } else {
-        Alert.alert('Failed', 'Invalid response from server');
+        setOtpError('OTP verification failed. Please try again.');
+        // Alert.alert('Failed', 'Invalid response from server');
       }
     } catch (error: any) {
-      console.error('OTP verification failed:', error);
-      Alert.alert('Error', error?.response?.data?.message || 'OTP verification failed');
+      // console.error('OTP verification failed:', error);
+      setOtpError('OTP verification failed. Please try again.');
+      // Alert.alert('Error', error?.response?.data?.message || 'OTP verification failed');
     }
   };
 
-
   const handleResendOtp = () => {
-    // Optionally implement resend logic here
-    setCounter(30);
-    Alert.alert('OTP Sent', 'A new OTP has been sent to your email.');
+    getLoginOtp(email, otpnavigation); // THEN call OTP logic
   };
 
   return (
-    <View style={styles.container}>
+    <GradientWrapper >
+      {/* <View style={styles.container}> */}
       <View style={styles.card}>
-        <Text style={styles.heading}>Sukhi Soul</Text>
+        <AppText variant="h1" style={styles.brand}>Sukhi Soul</AppText>
         <Text style={styles.subHeading}>We have sent the verification code to your email address.</Text>
 
-        <TouchableOpacity>
-          <Text style={styles.changeEmail}>Change Email Address?</Text>
-        </TouchableOpacity>
+        <View>
+          <Text style={styles.changeEmail}>{email}</Text>
+        </View>
 
         <Text style={styles.subHeading}>OTP</Text>
         <OTPTextInput
@@ -253,6 +95,12 @@ const OtpVerificationScreen = () => {
           textInputStyle={styles.otpBox}
           containerStyle={styles.otpContainer}
         />
+
+        {otpError ? (
+          <Text style={{ color: 'red', marginBottom: 10, marginLeft: 4 }}>
+            {otpError}
+          </Text>
+        ) : null}
 
         <PrimaryButton
           title="Verify"
@@ -266,7 +114,8 @@ const OtpVerificationScreen = () => {
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+      {/* </View> */}
+    </GradientWrapper>
   );
 };
 
@@ -280,7 +129,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   card: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#fff',
     borderRadius: 16,
     padding: 24,
     width: '90%',
@@ -293,34 +142,36 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   subHeading: {
-    color: '#ccc',
-    fontSize: 21,
+    color: '#000',
+    fontSize: 18,
     marginBottom: 6,
   },
   changeEmail: {
-    color: '#aaa',
-    textDecorationLine: 'underline',
+    color: '#999',
     fontSize: 13,
-    marginBottom: 70,
+    marginBottom: '30%',
   },
   otpContainer: {
     justifyContent: 'space-between',
     marginBottom: 20,
   },
   otpBox: {
-    width: 40,
-    height: 40,
+    width: 45,
+    height: 45,
     borderRadius: 8,
     borderWidth: 1,
-    backgroundColor: '#333',
+    backgroundColor: '#104256',
     borderColor: '#666',
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
   },
   resendText: {
     color: '#888',
     fontSize: 12,
     textAlign: 'center',
     marginTop: 14,
+  },
+  brand: {
+    marginTop: 4,
   },
 });

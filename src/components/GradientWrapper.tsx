@@ -6,7 +6,7 @@ import colors from '../theme/colors';
 const GradientWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <LinearGradient
-      colors={[colors.gradientStart, colors.gradientEnd]}
+      colors={[colors.gradientStart, colors.gradientMiddle, colors.gradientEnd]}
       style={styles.container}
     >
       {children}
@@ -17,8 +17,10 @@ const GradientWrapper = ({ children }: { children: React.ReactNode }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 40,
+    justifyContent: 'center',
   },
 });
 

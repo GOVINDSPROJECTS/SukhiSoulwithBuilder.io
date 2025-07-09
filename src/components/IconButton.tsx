@@ -28,6 +28,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 10,
     marginVertical: 8,
+    borderWidth:2,
+    borderColor:'#9999',
   },
   icon: {
     width: 22,
@@ -36,8 +38,8 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   label: {
-    color: '#fff',
+    color: '#000',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '600',    
   },
 });
