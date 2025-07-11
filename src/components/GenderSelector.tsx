@@ -55,6 +55,8 @@
 // export default GenderSelector;
 
 import React, { useState } from 'react';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 import {
   View,
   Text,
@@ -121,8 +123,8 @@ export default GenderSelector;
 const styles = StyleSheet.create({
     inputWrapper: {
         backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 12,
+        padding: wp('3.5%'),
+  borderRadius: wp('2.5%'),
         // marginBottom: 16,
         justifyContent: 'center',
     },
@@ -147,7 +149,7 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
     },
     optionText: {
-        fontSize: 16,
+        fontSize: wp('4.5%'),
         color: '#000',
         textAlign: 'center',
     },

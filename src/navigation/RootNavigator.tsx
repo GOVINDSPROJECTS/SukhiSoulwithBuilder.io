@@ -30,8 +30,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import AuthStack from './AuthStack';
-import AppTabs from './AppTabs';
+// import AppTabs from './AppTabs';
 import { useAuthStore } from '../store/authStore';
+import AppTabs from './AppTabs';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -46,7 +47,9 @@ const RootNavigator = () => {
           <Stack.Screen name="AuthStack" component={AuthStack} />
         </>
       ) : (
+        <>
         <Stack.Screen name="AppTabs" component={AppTabs} />
+        </>
       )}
     </Stack.Navigator>
   );

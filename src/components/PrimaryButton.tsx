@@ -40,6 +40,8 @@
 import React from 'react';
 import { TouchableOpacity, Text, ActivityIndicator, StyleSheet, ViewStyle } from 'react-native';
 import colors from '../theme/colors';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 interface Props {
   title: string;
@@ -71,15 +73,16 @@ export default PrimaryButton;
 const styles = StyleSheet.create({
    button: {
     backgroundColor: colors.primary,
-    paddingVertical: 12,
+    paddingVertical: hp('1.8%'),
+    borderRadius: wp('2.5%'),
     paddingHorizontal: 30,
-    borderRadius: 10,
     alignItems: 'center',
     elevation: 2,
   },
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
+    // fontSize: wp('4.5%'),
   },
   disabledButton: {
     backgroundColor: '#ccc',

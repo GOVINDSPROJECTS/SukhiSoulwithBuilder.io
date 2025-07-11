@@ -4,12 +4,16 @@ import RootNavigator from './src/navigation/RootNavigator';
 import { useAuthStore } from './src/store/authStore';
 import Toast from 'react-native-toast-message';
 import { NavigationContainer } from '@react-navigation/native';
+import { loadUserPrefs } from './src/store/userPrefsStore';
+import SwipeTabs from '@/navigation/SwipeTabs';
 
 const App = () => {
   const restoreSession = useAuthStore((state) => state.restoreSession);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+      loadUserPrefs(); // 👈 load flag on app start
+
     const init = async () => {
       await restoreSession();
       setLoading(false);
@@ -27,6 +31,7 @@ const App = () => {
   return (
     <>
     <NavigationContainer>
+      {/* <SwipeTabs/> */}
       <RootNavigator />
       <Toast />
       </NavigationContainer>

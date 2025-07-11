@@ -1,15 +1,17 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import OTPTextInput from 'react-native-otp-textinput';
-import PrimaryButton from '../components/PrimaryButton';
-import { getLoginOtp, verifyOtp } from '../auth/otpAuth';
+import PrimaryButton from '../../components/PrimaryButton';
+import { getLoginOtp, verifyOtp } from '../../auth/otpAuth';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AuthStackParamList, RootStackParamList } from '../types/navigation';
+import { AuthStackParamList, RootStackParamList } from '../../types/navigation';
 import { RouteProp } from '@react-navigation/native';
-import { useAuthStore } from '../store/authStore';
-import AppText from '../components/AppText';
-import GradientWrapper from '../components/GradientWrapper';
+import { useAuthStore } from '../../store/authStore';
+import AppText from '../../components/AppText';
+import GradientWrapper from '../../components/GradientWrapper';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 
 type AuthNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
@@ -61,12 +63,9 @@ const OtpVerificationScreen = () => {
         });
       } else {
         setOtpError('OTP verification failed. Please try again.');
-        // Alert.alert('Failed', 'Invalid response from server');
       }
     } catch (error: any) {
-      // console.error('OTP verification failed:', error);
       setOtpError('OTP verification failed. Please try again.');
-      // Alert.alert('Error', error?.response?.data?.message || 'OTP verification failed');
     }
   };
 
@@ -76,7 +75,6 @@ const OtpVerificationScreen = () => {
 
   return (
     <GradientWrapper >
-      {/* <View style={styles.container}> */}
       <View style={styles.card}>
         <AppText variant="h1" style={styles.brand}>Sukhi Soul</AppText>
         <Text style={styles.subHeading}>We have sent the verification code to your email address.</Text>
@@ -97,7 +95,7 @@ const OtpVerificationScreen = () => {
         />
 
         {otpError ? (
-          <Text style={{ color: 'red', marginBottom: 10, marginLeft: 4 }}>
+          <Text style={{ color: 'red', marginBottom: hp('1%'), marginLeft: wp('1%') }}>
             {otpError}
           </Text>
         ) : null}
@@ -105,7 +103,8 @@ const OtpVerificationScreen = () => {
         <PrimaryButton
           title="Verify"
           onPress={handleVerify}
-          style={{ width: '40%', alignSelf: 'center' }}
+          style={{ width: wp('40%'), alignSelf: 'center' }}
+
         />
 
         <TouchableOpacity onPress={handleResendOtp} disabled={counter !== 0}>
@@ -114,7 +113,6 @@ const OtpVerificationScreen = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      {/* </View> */}
     </GradientWrapper>
   );
 };
@@ -131,47 +129,47 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
     borderRadius: 16,
-    padding: 24,
-    width: '90%',
+    padding: wp('6%'),
+    width: wp('90%'),
     elevation: 6,
   },
   heading: {
     color: '#fff',
-    fontSize: 28,
+    fontSize: wp('7%'),
     fontWeight: '700',
-    marginBottom: 40,
+    marginBottom: hp('5%'),
   },
   subHeading: {
     color: '#000',
-    fontSize: 18,
-    marginBottom: 6,
+    fontSize: wp('4.5%'),
+    marginBottom: hp('1.5%'),
   },
   changeEmail: {
     color: '#999',
-    fontSize: 13,
-    marginBottom: '30%',
+    fontSize: wp('3.5%'),
+    marginBottom: hp('6%'),
   },
   otpContainer: {
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: hp('2.5%'),
   },
   otpBox: {
-    width: 45,
-    height: 45,
-    borderRadius: 8,
+    width: wp('11.5%'),
+    height: wp('11.5%'),
+    borderRadius: wp('2%'),
     borderWidth: 1,
     backgroundColor: '#104256',
     borderColor: '#666',
     color: '#fff',
-    fontSize: 16,
+    fontSize: wp('4%'),
   },
   resendText: {
     color: '#888',
-    fontSize: 12,
+    fontSize: wp('3.5%'),
     textAlign: 'center',
-    marginTop: 14,
+    marginTop: hp('2%'),
   },
   brand: {
-    marginTop: 4,
+    marginTop: hp('1%'),
   },
 });

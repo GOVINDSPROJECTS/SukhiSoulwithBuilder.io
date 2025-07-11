@@ -36,9 +36,9 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../types/navigation';
-import LoginScreen from '../screens/LoginScreen';
-import SignupScreen from '../screens/SignupScreen';
-import OtpVerificationScreen from '../screens/OtpVerificationScreen';
+import LoginScreen from '../screens/Auth/LoginScreen';
+import SignupScreen from '../screens/Auth/SignupScreen';
+import OtpVerificationScreen from '../screens/Auth/OtpVerificationScreen';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 // import HomeScreen from '../screens/HomeScreen';

@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
-import CustomTextInput from '../components/CustomTextInput';
-import PrimaryButton from '../components/PrimaryButton';
-import DividerWithText from '../components/DividerWithText';
+import CustomTextInput from '../../components/CustomTextInput';
+import PrimaryButton from '../../components/PrimaryButton';
+import DividerWithText from '../../components/DividerWithText';
 import { AuthStackParamList, RootStackParamList } from 'src/types/navigation';
-import SocialLoginButton from '../components/SocialLoginButton';
-import GradientWrapper from '../components/GradientWrapper';
-import AppText from '../components/AppText';
+import SocialLoginButton from '../../components/SocialLoginButton';
+import GradientWrapper from '../../components/GradientWrapper';
+import AppText from '../../components/AppText';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { handleGoogleSignin } from '../auth/googleAuth';
+import { handleGoogleSignin } from '../../auth/googleAuth';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { getOtp } from '../auth/otpAuth';
-import GenderSelector from '../components/GenderSelector';
+import { getOtp } from '../../auth/otpAuth';
+import GenderSelector from '../../components/GenderSelector';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 type AuthNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
 const SignupScreen = () => {
@@ -33,17 +35,17 @@ const SignupScreen = () => {
 
     const newErrors: { [key: string]: string } = {};
 
-  if (!name) newErrors.name = 'Name is required';
-  if (!email || !/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Enter valid email';
-  if (!age || isNaN(Number(age))) newErrors.age = 'Enter valid age';
-  if (!sex) newErrors.sex = 'Please select gender';
+    if (!name) newErrors.name = 'Name is required';
+    if (!email || !/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Enter valid email';
+    if (!age || isNaN(Number(age))) newErrors.age = 'Enter valid age';
+    if (!sex) newErrors.sex = 'Please select gender';
 
-  if (Object.keys(newErrors).length > 0) {
-    setErrors(newErrors);
-    console.log('Validation errors:', newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      console.log('Validation errors:', newErrors);
 
-    return;
-  }
+      return;
+    }
     // ✅ All fields valid
     getOtp(email, name, age, sex, otpnavigation);
   };
@@ -69,7 +71,7 @@ const SignupScreen = () => {
 
           <AppText
             variant='h2'
-            style={{ marginTop: '10%', marginBottom: '4%' }}
+            style={{ marginTop: hp('5%'), marginBottom: hp('2%') }}
           >Create your account</AppText>
 
           {/* <CustomTextInput placeholder="Name" value={name} onChangeText={setName} type="text" />
@@ -120,14 +122,14 @@ const SignupScreen = () => {
             onPress={handleSignupOtp}
             // onPress={()=> navigation.navigate('AuthStack', { screen: 'OtpVerification' })}
             // eslint-disable-next-line react-native/no-inline-styles
-            style={{ width: '40%', alignSelf: 'center', marginTop: '5%' }}
+            style={{ width: wp('40%'), alignSelf: 'center', marginTop: hp('3%') }}
           />
 
           <DividerWithText />
 
           <View style={styles.socialContainer}>
             <SocialLoginButton
-              icon={require('../assets/icons/google.png')}
+              icon={require('../../assets/icons/google.png')}
               onPress={() => handleGoogleSignin(navigation)}
             />
             {/* <SocialLoginButton
@@ -152,37 +154,36 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: '20%'
+    paddingTop: hp('6%'),
   },
   container: {
-    padding: 24,
-    paddingBottom: 50,
+    paddingHorizontal: wp('6%'),
+    paddingBottom: hp('6%'),
   },
-
   subHeading: {
-    fontSize: 21,
+    fontSize: wp('5%'),
     color: '#333',
-    marginBottom: 10,
+    marginBottom: hp('1%'),
   },
   socialContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 30,
+    marginBottom: hp('4%'),
   },
   termsText: {
-    fontSize: 12,
+    fontSize: wp('3.2%'),
     textAlign: 'center',
     color: '#666',
-    marginTop: 10,
+    marginTop: hp('2%'),
   },
   link: {
     textDecorationLine: 'underline',
   },
   errorText: {
     color: 'red',
-    fontSize: 12,
-    marginTop: 4,
-    marginBottom: 8,
+    fontSize: wp('3.2%'),
+    marginTop: hp('0.5%'),
+    marginBottom: hp('1.5%'),
   },
-
 });
+

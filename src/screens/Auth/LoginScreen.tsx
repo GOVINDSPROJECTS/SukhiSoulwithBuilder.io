@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Animated, Modal, Pressable, TextInput, TouchableOpacity } from 'react-native';
-import IconButton from '../components/IconButton';
-import { handleGoogleSignin } from '../auth/googleAuth';
+import IconButton from '../../components/IconButton';
+import { handleGoogleSignin } from '../../auth/googleAuth';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AuthStackParamList, RootStackParamList } from '../types/navigation';
+import { AuthStackParamList, RootStackParamList } from '../../types/navigation';
 import { BlurView } from '@react-native-community/blur';
-import { getLoginOtp } from '../auth/otpAuth';
-import PrimaryButton from '../components/PrimaryButton';
-import GradientWrapper from '../components/GradientWrapper';
-import AppText from '../components/AppText';
-import CustomTextInput from '../components/CustomTextInput';
+import { getLoginOtp } from '../../auth/otpAuth';
+import PrimaryButton from '../../components/PrimaryButton';
+import GradientWrapper from '../../components/GradientWrapper';
+import AppText from '../../components/AppText';
+import CustomTextInput from '../../components/CustomTextInput';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 
 
 type AuthNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
@@ -53,12 +55,12 @@ const LoginScreen = () => {
         <AppText variant='h1'>Soul</AppText>
         <View style={styles.buttonview}>
           <IconButton style={styles.iconButton}
-            icon={require('../assets/icons/mail.png')}
+            icon={require('../../assets/icons/mail.png')}
             label="Get Email OTP"
             onPress={openModal}
           />
           <IconButton style={styles.iconButton}
-            icon={require('../assets/icons/google.png')}
+            icon={require('../../assets/icons/google.png')}
             label="Continue with Google"
             onPress={() => handleGoogleSignin(navigation)}
           />
@@ -126,75 +128,74 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
     borderRadius: 16,
-    padding: 24,
+    padding: wp('5%'),
     width: '90%',
     elevation: 6,
   },
   buttonview: {
-    marginTop: "30%",
-    marginBottom: '10%',
+    marginTop: hp('6%'),
+    marginBottom: hp('3%'),
   },
   heading: {
-    fontSize: 48,
+    fontSize: wp('12%'),
     fontWeight: 'bold',
-    lineHeight: 38,
+    lineHeight: wp('10%'),
     color: '#fff',
-    marginBottom: 15,
-    marginTop: 20,
+    marginBottom: hp('2%'),
+    marginTop: hp('2%'),
   },
   heading1: {
-    fontSize: 48,
+    fontSize: wp('12%'),
     fontWeight: 'bold',
-    lineHeight: 38,
+    lineHeight: wp('10%'),
     color: '#fff',
-    marginBottom: 100,
+    marginBottom: hp('6%'),
   },
   iconButton: {
     backgroundColor: '#fff',
     color: '#000',
   },
-
   modalBackdrop: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'flex-end',
   },
   modalContainer: {
     backgroundColor: '#fff',
-    padding: 25,
-    paddingBottom: 300,
-    paddingTop: 100,
+    padding: wp('5%'),
+    paddingBottom: hp('30%'),
+    paddingTop: hp('5%'),
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    maxHeight: '80%', // Keeps it from overtaking the screen
-    marginHorizontal: 10,
-
+    maxHeight: '80%',
+    marginHorizontal: wp('2%'),
   },
   modalTitle: {
-    fontSize: 25,
+    fontSize: wp('6%'),
     color: '#000',
-    // marginBottom: 30,
+    marginBottom: hp('2%'),
   },
   input: {
     backgroundColor: '#222',
     color: '#fff',
     borderRadius: 10,
-    padding: 12,
-    marginBottom: 16,
+    padding: wp('4%'),
+    marginBottom: hp('2%'),
   },
   button: {
     backgroundColor: '#fff',
-    padding: 12,
+    padding: wp('3%'),
     borderRadius: 8,
     alignItems: 'center',
   },
   buttonText: {
     color: '#000',
     fontWeight: 'bold',
+    fontSize: wp('4%'),
   },
   modalWrapper: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)', // semi-dark base in case blur fails
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
