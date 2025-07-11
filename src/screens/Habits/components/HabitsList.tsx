@@ -38,10 +38,11 @@ const HabitsList = ({
 }: Props) => {
   const displayedHabits = maxItemsToShow ? habits.slice(0, maxItemsToShow) : habits;
 
-    function onAddHabit(event: GestureResponderEvent): void {
-        throw new Error('Function not implemented.');
-    }
-
+    // function onAddHabit(event: GestureResponderEvent): void {
+      
+    //   onAddHabitPress
+    //     // throw new Error('Function not implemented.');
+    // }
   return (
     <View style={styles.wrapper}>
       {title && <AppText variant= "h2" style={{color: colors.primary, marginBottom: hp('3%'),}} >{title}</AppText>}
@@ -72,7 +73,7 @@ const HabitsList = ({
         </TouchableOpacity>
       )} */}
       {showAddButton && (
-        <TouchableOpacity style={styles.addButton} onPress={onAddHabit}>
+        <TouchableOpacity style={styles.addButton} onPress={onAddHabitPress}>
           {/* <Image source={require('../../../assets/icons/plus.png')} style={styles.plusIcon} /> */}
           <Text style={styles.plusIcon}>+</Text>
         </TouchableOpacity>

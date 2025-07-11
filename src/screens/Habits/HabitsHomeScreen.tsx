@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import WeeklyTracker from './components/WeeklyTracker';
 import HabitsList from './components/HabitsList';
 import GradientWrapper from '../../components/GradientWrapper';
@@ -7,8 +7,16 @@ import AppText from '../../components/AppText';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import CoachCard from './components/CoachCard';
 import InfoCard from './components/InfoCard';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { HabitsStackParamList } from '../../types/navigation';
+
+
 
 const HabitsHomeScreen = () => {
+
+  const navigation = useNavigation<NativeStackNavigationProp<HabitsStackParamList>>();
+
   const [habits, setHabits] = useState([
     { id: '1', title: 'Cold Showers', completed: false },
     { id: '2', title: 'Exercise', completed: true },
@@ -17,6 +25,7 @@ const HabitsHomeScreen = () => {
     { id: '5', title: 'Reading', completed: true },
     { id: '6', title: 'Stretching', completed: true },
   ]);
+
 
   const toggleHabitCompletion = (id: string) => {
     const updated = habits.map((habit) =>
@@ -27,7 +36,9 @@ const HabitsHomeScreen = () => {
 
   const handleAddHabit = () => {
     // 🚧 To be implemented later
-    console.log('Add Habit Pressed');
+    // Alert.alert('hittingggg')
+    navigation.navigate('AddHabit'); // 🔁 Navigates to AddHabitScreen
+    // console.log('Add Habit Pressed');
   };
 
   return (
