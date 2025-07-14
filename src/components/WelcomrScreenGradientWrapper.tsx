@@ -2,11 +2,13 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../theme/colors';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-const GradientWrapper = ({ children }: { children: React.ReactNode }) => {
+
+const WelcomeScreenGradientWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <LinearGradient
-      colors={[colors.gradientStart, colors.gradientMiddle, colors.gradientEnd]}
+      colors={[ colors.gradientMiddle , colors.gradientStart]}
       style={styles.container}
     >
       {children}
@@ -19,9 +21,10 @@ const styles = StyleSheet.create({
     flex: 1,
     // alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 40,  
-    // justifyContent: 'center',
+    paddingVertical: 35,
+    justifyContent: 'center',
+    paddingTop:wp("5%"),
   },
 });
 
-export default GradientWrapper;
+export default WelcomeScreenGradientWrapper;

@@ -14,6 +14,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { getOtp } from '../../auth/otpAuth';
 import GenderSelector from '../../components/GenderSelector';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import colors from '../../theme/colors';
 
 
 type AuthNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
@@ -66,8 +67,8 @@ const SignupScreen = () => {
     >
       <GradientWrapper>
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-          <AppText variant='h1'>Sukhi</AppText>
-          <AppText variant='h1'>Soul</AppText>
+          <AppText variant='h1' style={styles.brand}>Sukhi{'\n'}Soul</AppText>
+          {/* <AppText variant='h1'>Soul</AppText> */}
 
           <AppText
             variant='h2'
@@ -81,7 +82,7 @@ const SignupScreen = () => {
         <CustomTextInput placeholder="Mail" value={email} onChangeText={setEmail} type="email"/> */}
 
           <CustomTextInput
-            placeholder="Full Name"
+            placeholder="Name"
             value={name}
             onChangeText={(text) => {
               setName(text);
@@ -106,7 +107,7 @@ const SignupScreen = () => {
 
 
           <CustomTextInput
-            placeholder="Email Address"
+            placeholder="Email"
             value={email}
             onChangeText={(text) => {
               setEmail(text);
@@ -122,7 +123,7 @@ const SignupScreen = () => {
             onPress={handleSignupOtp}
             // onPress={()=> navigation.navigate('AuthStack', { screen: 'OtpVerification' })}
             // eslint-disable-next-line react-native/no-inline-styles
-            style={{ width: wp('40%'), alignSelf: 'center', marginTop: hp('3%') }}
+            style={{ width: wp('30%'), alignSelf: 'center', marginVertical: hp('2%'), marginBottom: hp('3%') }}
           />
 
           <DividerWithText />
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
   socialContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: hp('4%'),
+    marginBottom: hp('2%'),
   },
   termsText: {
     fontSize: wp('3.2%'),
@@ -184,6 +185,11 @@ const styles = StyleSheet.create({
     fontSize: wp('3.2%'),
     marginTop: hp('0.5%'),
     marginBottom: hp('1.5%'),
+  },
+    brand: {
+    // marginTop: hp('1%'),
+    fontSize: wp('10%'),
+    color:colors.primary,
   },
 });
 

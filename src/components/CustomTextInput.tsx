@@ -153,17 +153,17 @@ export default CustomTextInput;
 const styles = StyleSheet.create({
   inputWrapper: {
     width: '100%',
-    marginVertical: 8,
+    marginVertical: 10,
   },
   input: {
-    backgroundColor: '#fff',
+  backgroundColor: '#fff',
   color: '#000',
   paddingHorizontal: wp('4%'),
   paddingVertical: hp('1.5%'),
   borderRadius: wp('2.5%'),
   fontSize: wp('4%'),
-    borderWidth: 1,
-    borderColor: '#ccc',
+  // borderWidth: 1,
+  // borderColor: '#ccc',s
   },
   inputError: {
     borderColor: 'red',

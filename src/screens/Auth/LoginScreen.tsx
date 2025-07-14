@@ -12,6 +12,7 @@ import GradientWrapper from '../../components/GradientWrapper';
 import AppText from '../../components/AppText';
 import CustomTextInput from '../../components/CustomTextInput';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import colors from '@/theme/colors';
 
 
 
@@ -50,9 +51,9 @@ const LoginScreen = () => {
   return (
     // <View style={styles.container}>
     <GradientWrapper >
-      <View style={styles.card}>
-        <AppText variant='h1'>Sukhi</AppText>
-        <AppText variant='h1'>Soul</AppText>
+      <View style={styles.container}>
+        <View style={styles.card}>
+         <AppText variant='h1' style={styles.brand}>Sukhi{'\n'}Soul</AppText>
         <View style={styles.buttonview}>
           <IconButton style={styles.iconButton}
             icon={require('../../assets/icons/mail.png')}
@@ -71,15 +72,17 @@ const LoginScreen = () => {
         /> */}
         </View>
       </View>
-      <Modal transparent visible={modalVisible} animationType="none">
+      </View>
+      
+      <Modal transparent visible={modalVisible} animationType="slide">
 
         <View style={styles.modalWrapper}>
           {/* Blur background */}
           <BlurView
             style={StyleSheet.absoluteFill}
-            blurType="dark"
-            blurAmount={4}
-            reducedTransparencyFallbackColor="black"
+            blurType="light"
+            blurAmount={2}
+            reducedTransparencyFallbackColor="white"
           />
 
           {/* Modal content with pressable close */}
@@ -92,6 +95,7 @@ const LoginScreen = () => {
               { transform: [{ translateY: slideAnim }] },
             ]}
           >
+            <View style={styles.modalHandle} />
             <Text style={styles.modalTitle}>Enter Your Mail</Text>
             <CustomTextInput
               placeholder="Mail"
@@ -125,6 +129,11 @@ const LoginScreen = () => {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
+  container: {
+    height:hp('85%'),
+    justifyContent:'center',
+    alignItems:'center'
+  },
   card: {
     backgroundColor: '#fff',
     borderRadius: 16,
@@ -163,16 +172,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: wp('5%'),
     paddingBottom: hp('30%'),
-    paddingTop: hp('5%'),
+    // paddingTop: hp('5%'),
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     maxHeight: '80%',
-    marginHorizontal: wp('2%'),
+    shadowColor:'#000',
+    shadowOffset: { width: 0, height: -5 }, // top shadow
+    // marginHorizontal: wp('2%'),
+    elevation: 6,
   },
   modalTitle: {
     fontSize: wp('6%'),
     color: '#000',
     marginBottom: hp('2%'),
+    marginTop:hp('3%'), 
   },
   input: {
     backgroundColor: '#222',
@@ -200,4 +213,17 @@ const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
   },
+      brand: {
+    marginBottom: hp('7%'),
+    fontSize: wp('10%'),
+    color:colors.primary,
+  },
+modalHandle: {
+  width: wp('15%'),        // ~60px on most devices
+  height: hp('0.6%'),      // ~5px
+  borderRadius: wp('5%'),
+  backgroundColor: '#666666',
+  alignSelf: 'center',
+  marginBottom: hp('2%'),
+},
 });

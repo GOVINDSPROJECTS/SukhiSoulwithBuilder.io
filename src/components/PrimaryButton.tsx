@@ -73,16 +73,16 @@ export default PrimaryButton;
 const styles = StyleSheet.create({
    button: {
     backgroundColor: colors.primary,
-    paddingVertical: hp('1.8%'),
+    paddingVertical: hp('1%'),
     borderRadius: wp('2.5%'),
-    paddingHorizontal: 30,
+    // paddingHorizontal: 30,
     alignItems: 'center',
     elevation: 2,
   },
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
-    // fontSize: wp('4.5%'),
+    fontSize: wp('4.5%'),
   },
   disabledButton: {
     backgroundColor: '#ccc',

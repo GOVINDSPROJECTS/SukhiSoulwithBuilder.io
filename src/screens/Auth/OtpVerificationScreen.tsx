@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import OTPTextInput from 'react-native-otp-textinput';
 import PrimaryButton from '../../components/PrimaryButton';
 import { getLoginOtp, verifyOtp } from '../../auth/otpAuth';
@@ -11,6 +11,7 @@ import { useAuthStore } from '../../store/authStore';
 import AppText from '../../components/AppText';
 import GradientWrapper from '../../components/GradientWrapper';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import colors from '@/theme/colors';
 
 
 
@@ -74,9 +75,20 @@ const OtpVerificationScreen = () => {
   };
 
   return (
+    <KeyboardAvoidingView
+      style={styles.wrapper}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
     <GradientWrapper >
+      <AppText variant='h1' style={styles.brand}>Sukhi{'\n'}Soul</AppText>
+          {/* <AppText variant='h1'>Soul</AppText> */}
+
+          <AppText
+            variant='h2'
+            style={{ marginVertical: hp('4%'), marginBottom: hp('4%') }}
+          >Verification Code</AppText>
+
       <View style={styles.card}>
-        <AppText variant="h1" style={styles.brand}>Sukhi Soul</AppText>
         <Text style={styles.subHeading}>We have sent the verification code to your email address.</Text>
 
         <View>
@@ -95,15 +107,15 @@ const OtpVerificationScreen = () => {
         />
 
         {otpError ? (
-          <Text style={{ color: 'red', marginBottom: hp('1%'), marginLeft: wp('1%') }}>
+          <Text style={{ color: 'red', marginBottom: hp('1%'), marginLeft: wp('1%'), textAlign:'center', }}>
             {otpError}
           </Text>
         ) : null}
 
         <PrimaryButton
-          title="Verify"
+          title="Sign Up"
           onPress={handleVerify}
-          style={{ width: wp('40%'), alignSelf: 'center' }}
+          style={{ width: wp('30%'), alignSelf: 'center' }}
 
         />
 
@@ -114,12 +126,18 @@ const OtpVerificationScreen = () => {
         </TouchableOpacity>
       </View>
     </GradientWrapper>
+      </KeyboardAvoidingView>
   );
 };
 
 export default OtpVerificationScreen;
 
 const styles = StyleSheet.create({
+    wrapper: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingTop: hp('8%'),
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -152,15 +170,16 @@ const styles = StyleSheet.create({
   otpContainer: {
     justifyContent: 'space-between',
     marginBottom: hp('2.5%'),
+
   },
   otpBox: {
-    width: wp('11.5%'),
-    height: wp('11.5%'),
+    width: wp('11 %'),
+    height: wp('11%'),
     borderRadius: wp('2%'),
     borderWidth: 1,
-    backgroundColor: '#104256',
+    backgroundColor: colors.secondary,
     borderColor: '#666',
-    color: '#fff',
+    color:'#fff',
     fontSize: wp('4%'),
   },
   resendText: {
@@ -169,7 +188,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: hp('2%'),
   },
-  brand: {
-    marginTop: hp('1%'),
+    brand: {
+    // marginTop: hp('1%'),
+    fontSize: wp('10%'),
+    color:colors.primary,
   },
 });

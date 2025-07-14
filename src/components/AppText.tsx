@@ -21,10 +21,11 @@ const styles = StyleSheet.create({
   },
   h2: {
     fontSize: wp('6%'),
-    fontWeight: '600',
+    // fontWeight: '300',
+    color:'#2D2D2D',
   },
   caption: {
-    fontSize: wp('3.5%'),
+    fontSize: wp('4.5%'),
     color: '#666',
   },
   body: {
