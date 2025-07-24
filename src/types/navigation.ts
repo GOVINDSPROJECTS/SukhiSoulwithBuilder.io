@@ -19,8 +19,10 @@ export type AuthStackParamList = {
 export type AppTabsParamList = {
   Home:  { referralCode?: string }| undefined;
   Profile: undefined;
-  Settings: undefined;
-    Habits:undefined;
+  InSyncIntro: undefined;
+  Habits:undefined;
+  InSync:undefined;
+
 
 };
 
@@ -30,6 +32,12 @@ export type HabitsStackParamList = {
     AddHabit:undefined
 }
 
+export type InSyncStackParamList = {
+  InSyncIntro:undefined;
+  InSyncHome:undefined;
+  InSync:undefined; 
+}
+
 // Root Navigation Stack
 export type RootStackParamList = {
   Habits:undefined;
@@ -37,4 +45,5 @@ export type RootStackParamList = {
   AuthStack: NavigatorScreenParams<AuthStackParamList>;
   AppTabs: NavigatorScreenParams<AppTabsParamList>;
   HabitsStack: NavigatorScreenParams<HabitsStackParamList>;
+  InSyncStack:NavigatorScreenParams<InSyncStackParamList>;
 };

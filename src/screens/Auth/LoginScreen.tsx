@@ -74,7 +74,7 @@ const LoginScreen = () => {
       </View>
       </View>
       
-      <Modal transparent visible={modalVisible} animationType="slide">
+      <Modal transparent visible={modalVisible} animationType="none">
 
         <View style={styles.modalWrapper}>
           {/* Blur background */}

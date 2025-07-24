@@ -8,32 +8,37 @@ import {
   StyleSheet,
   Switch,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import TimePickerModal from '@/components/TimePickerModal';
 import CalendarPickerModal from '@/components/CalendarPickerModal';
 import CustomOptionPickerModal from '@/components/CustomOptionPickerModal';
-
+import { createHabit } from '@/types/habit';
+import { useNavigation } from '@react-navigation/native';
+import { useHabitsStore } from '@/store/habitStore';
 const AddHabitScreen = () => {
-  const [name, setName] = useState('');
-  const [reason, setReason] = useState('');
-  const [selectedTime, setSelectedTime] = useState<Date | null>(null);
+
+  const navigation = useNavigation();
+  const [habit_name, sethabit_name] = useState('');
+  const [habit_description, sethabit_description] = useState('');
+  const [habit_time, sethabit_time] = useState<Date | null>(null);
   const [showTimePicker, setShowTimePicker] = useState(false);
 
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [category, setCategory] = useState('');
-  const [showCategoryPicker, setShowCategoryPicker] = useState(false);
+  const [habit_category, sethabit_category] = useState('');
+  const [showhabit_categoryPicker, setShowhabit_categoryPicker] = useState(false);
 
-  const [startDate, setStartDate] = useState(new Date());
+  const [habit_startdate, sethabit_startdate] = useState(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
 
-  const [frequency, setFrequency] = useState('');
-  const [showFrequencyPicker, setShowFrequencyPicker] = useState(false);
+  const [habit_frequency, sethabit_frequency] = useState('');
+  const [showhabit_frequencyPicker, setShowhabit_frequencyPicker] = useState(false);
 
   const [duration, setDuration] = useState('');
   const [showDurationPicker, setShowDurationPicker] = useState(false);
 
-  const [writeProgress, setWriteProgress] = useState(false);
+  const [habit_progress_status, sethabit_progress_status] = useState(false);
   const [reminders, setReminders] = useState<Date[]>([]);
   const [showReminderPicker, setShowReminderPicker] = useState(false);
 
@@ -42,28 +47,55 @@ const AddHabitScreen = () => {
     setShowReminderPicker(false);
   };
 
+const handleCreateHabit = async () => {
+  try {
+    if (!habit_name) return Alert.alert('habit_name is required');
+
+    const payload = {
+      habit_name,
+      habit_description,
+      time: habit_time ? habit_time.toTimeString().slice(0, 5) : undefined, // HH:MM
+      start_date: habit_startdate.toISOString().split('T')[0], // YYYY-MM-DD
+      habit_category,
+      habit_frequency,
+      duration,
+      write_progress: habit_progress_status,
+      reminders: reminders.map(r => r.toTimeString().slice(0, 5)), // ['08:00', ...]
+      habit_status:"inactive",
+    };
+
+    await createHabit(payload);
+    Alert.alert('Habit created successfully!');
+    // await fetchHabits(); // 👈 REFRESH habits after creation
+    navigation.goBack(); // Or navigate('HabitsHome')
+  } catch (error: any) {
+    console.error('Create habit failed:', error.response?.data || error.message);
+    Alert.alert('Failed to create habit.');
+  }
+};
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.imagePlaceholder} />
       <Text style={styles.label}>New Habit</Text>
 
       <TextInput
-        placeholder="Name"
+        placeholder="habit_name"
         style={styles.input}
-        value={name}
-        onChangeText={setName}
+        value={habit_name}
+        onChangeText={sethabit_name}
       />
       <TextInput
         placeholder="Why this habit? (optional)"
         style={[styles.input, { height: hp('10%') }]}
-        value={reason}
-        onChangeText={setReason}
+        value={habit_description}
+        onChangeText={sethabit_description}
         multiline
       />
 
       {/* Time Picker */}
       <TouchableOpacity onPress={() => setShowTimePicker(true)} style={styles.input}>
-        <Text>{selectedTime ? selectedTime.toLocaleTimeString() : 'Time'}</Text>
+        <Text>{habit_time ? habit_time.toLocaleTimeString() : 'Time'}</Text>
       </TouchableOpacity>
 
       {/* Expand Advanced Edits */}
@@ -75,19 +107,19 @@ const AddHabitScreen = () => {
 
       {showAdvanced && (
         <View style={styles.advancedBox}>
-          {/* Category */}
-          <TouchableOpacity onPress={() => setShowCategoryPicker(true)} style={styles.dropdown}>
-            <Text>{category || 'Category'}</Text>
+          {/* habit_category */}
+          <TouchableOpacity onPress={() => setShowhabit_categoryPicker(true)} style={styles.dropdown}>
+            <Text>{habit_category || 'habit_category'}</Text>
           </TouchableOpacity>
 
           {/* Start Date */}
           <TouchableOpacity onPress={() => setShowCalendar(true)} style={styles.dropdown}>
-            <Text>{startDate.toDateString()}</Text>
+            <Text>{habit_startdate.toDateString()}</Text>
           </TouchableOpacity>
 
-          {/* Frequency */}
-          <TouchableOpacity onPress={() => setShowFrequencyPicker(true)} style={styles.dropdown}>
-            <Text>{frequency || 'Frequency'}</Text>
+          {/* habit_frequency */}
+          <TouchableOpacity onPress={() => setShowhabit_frequencyPicker(true)} style={styles.dropdown}>
+            <Text>{habit_frequency || 'habit_frequency'}</Text>
           </TouchableOpacity>
 
           {/* Duration */}
@@ -98,7 +130,7 @@ const AddHabitScreen = () => {
           {/* Write Progress */}
           <View style={styles.toggleRow}>
             <Text>Write about progress</Text>
-            <Switch value={writeProgress} onValueChange={setWriteProgress} />
+            <Switch value={habit_progress_status} onValueChange={sethabit_progress_status} />
           </View>
 
           {/* Reminder(s) */}
@@ -112,7 +144,7 @@ const AddHabitScreen = () => {
         </View>
       )}
 
-      <TouchableOpacity style={styles.createBtn}>
+      <TouchableOpacity style={styles.createBtn} onPress={handleCreateHabit}>
         <Text style={{ color: '#fff' }}>Create Habit</Text>
       </TouchableOpacity>
 
@@ -120,29 +152,29 @@ const AddHabitScreen = () => {
       <TimePickerModal
         visible={showTimePicker}
         onClose={() => setShowTimePicker(false)}
-        onTimeSelect={setSelectedTime}
+        onTimeSelect={sethabit_time}
       />
 
       <CalendarPickerModal
         visible={showCalendar}
         onClose={() => setShowCalendar(false)}
-        onSelectDate={setStartDate}
-        initialDate={startDate}
+        onSelectDate={sethabit_startdate}
+        initialDate={habit_startdate}
       />
 
       <CustomOptionPickerModal
-        visible={showCategoryPicker}
-        // title="Choose Category"
+        visible={showhabit_categoryPicker}
+        // title="Choose habit_category"
         options={['Health', 'Work', 'Study', 'Personal']}
-        onClose={() => setShowCategoryPicker(false)}
-        onSelect={setCategory} selected={''}      />
+        onClose={() => setShowhabit_categoryPicker(false)}
+        onSelect={sethabit_category} selected={''}      />
 
       <CustomOptionPickerModal
-        visible={showFrequencyPicker}
-        // title="Frequency"
+        visible={showhabit_frequencyPicker}
+        // title="habit_frequency"
         options={['Daily', 'Weekly', 'Monthly']}
-        onClose={() => setShowFrequencyPicker(false)}
-        onSelect={setFrequency} selected={''}      />
+        onClose={() => setShowhabit_frequencyPicker(false)}
+        onSelect={sethabit_frequency} selected={''}      />
 
       <CustomOptionPickerModal
         visible={showDurationPicker}
@@ -241,3 +273,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+

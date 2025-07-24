@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HabitsIntroScreen from '../screens/Habits/HabitsIntroScreen';
 import JoinedHabitsScreen from '../screens/Habits/JoinedHabitsScreen';
 import HabitsHomeScreen from '../screens/Habits/HabitsHomeScreen';
-import CreateHabitScreen from '../screens/Habits/CreateHabitScreen';
 import TrackHabitScreen from '../screens/Habits/TrackHabitScreen';
 import AddHabitScreen from '@/screens/Habits/AddHabitScreen';
 
@@ -26,9 +25,6 @@ const HabitsStack = () => {
         <Stack.Screen name="JoinedHabits" component={JoinedHabitsScreen}/>
         <Stack.Screen name="HabitsIntro" component={HabitsIntroScreen}/>
         <Stack.Screen name="AddHabit" component={AddHabitScreen} />
-
-          {/* <Stack.Screen name="AddHabit" component={a} /> */}
-
     </Stack.Navigator>
   );
 };

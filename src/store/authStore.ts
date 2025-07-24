@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { setAuthToken } from '@/services/api';
 
 
 interface AuthState {
@@ -31,6 +32,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   login: (token, user) => {
     AsyncStorage.setItem('token', token);
     AsyncStorage.setItem('user', JSON.stringify(user));
+    setAuthToken(token); // ✅ <-- attach token to axios
     set({ token, user });
   },
 
@@ -49,7 +51,9 @@ logout: async () => {
 
   restoreSession: async () => {
     const [token, user] = await AsyncStorage.multiGet(['token', 'user']);
-    if (token[1]) set({ token: token[1] });
+    if (token[1])
+      setAuthToken(token[1]); // ✅ <-- attach token on app load
+      set({ token: token[1] });
     if (user[1]) set({ user: JSON.parse(user[1]) });
   },
 }));

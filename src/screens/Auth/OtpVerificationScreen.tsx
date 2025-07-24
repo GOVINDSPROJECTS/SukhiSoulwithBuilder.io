@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, KeyboardAvoidingView, 
 import OTPTextInput from 'react-native-otp-textinput';
 import PrimaryButton from '../../components/PrimaryButton';
 import { getLoginOtp, verifyOtp } from '../../auth/otpAuth';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { getPathFromState, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList, RootStackParamList } from '../../types/navigation';
 import { RouteProp } from '@react-navigation/native';
@@ -72,6 +72,7 @@ const OtpVerificationScreen = () => {
 
   const handleResendOtp = () => {
     getLoginOtp(email, otpnavigation); // THEN call OTP logic
+      setCounter(30); // restart the countdown
   };
 
   return (
