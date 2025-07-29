@@ -33,6 +33,12 @@ import AuthStack from './AuthStack';
 // import AppTabs from './AppTabs';
 import { useAuthStore } from '../store/authStore';
 import AppTabs from './AppTabs';
+import DayDetailScreen from '../screens/Habits/DayDetailScreen';
+import TeamUpFlowScreen from '../screens/Habits/TeamUpFlowScreen';
+import HabitCircleScreen from '../screens/Habits/HabitCircleScreen';
+import FriendDetailScreen from '../screens/Habits/FriendDetailScreen';
+
+
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -49,6 +55,10 @@ const RootNavigator = () => {
       ) : (
         <>
         <Stack.Screen name="AppTabs" component={AppTabs} />
+        <Stack.Screen name="DayDetail" component={DayDetailScreen} />
+        <Stack.Screen name="TeamUpFlow" component={TeamUpFlowScreen} />
+        <Stack.Screen name="HabitCircle" component={HabitCircleScreen} />
+        <Stack.Screen name="FriendDetail" component={FriendDetailScreen} />
         </>
       )}
     </Stack.Navigator>

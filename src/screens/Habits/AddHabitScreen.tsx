@@ -43,28 +43,45 @@ const AddHabitScreen = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.imagePlaceholder} />
       <Text style={styles.label}>New Habit</Text>
 
       <TextInput
         placeholder="Name"
-        style={styles.input}
+        style={[styles.input,{width:wp(80),height:wp(12)}]}
         value={name}
         onChangeText={setName}
       />
-      <TextInput
-        placeholder="Why this habit? (optional)"
-        style={[styles.input, { height: hp('10%') }]}
-        value={reason}
-        onChangeText={setReason}
-        multiline
-      />
+      <View style={styles.textAreaWrapper}>
+        {!reason && (
+          <Text style={styles.textAreaPlaceholder}>
+            Why this habit? (optional)
+          </Text>
+        )}
+        <TextInput
+          style={styles.textAreaInput}
+          value={reason}
+          onChangeText={setReason}
+          multiline
+        />
+      </View>
 
       {/* Time Picker */}
-      <TouchableOpacity onPress={() => setShowTimePicker(true)} style={styles.input}>
-        <Text>{selectedTime ? selectedTime.toLocaleTimeString() : 'Time'}</Text>
+      <TouchableOpacity
+        onPress={() => setShowTimePicker(true)}
+        style={[styles.input, { width: wp(80), height: wp(13), flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',marginTop:hp(1) }]}
+      >
+        <Text style={{ color: '#888888', fontSize: wp(3.5) }}>Time</Text>
+        <View style={{ backgroundColor: '#DCEEF2', borderRadius: 6,width:wp(20),height:wp(5.5),alignItems:"center" }}>
+          <Text style={{ color: '#104256', fontWeight: '600', fontSize: wp(4) }}>
+            {selectedTime ? selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-- : -- AM'}
+          </Text>
+        </View>
       </TouchableOpacity>
+
+
+
 
       {/* Expand Advanced Edits */}
       <TouchableOpacity onPress={() => setShowAdvanced(!showAdvanced)}>
@@ -76,39 +93,82 @@ const AddHabitScreen = () => {
       {showAdvanced && (
         <View style={styles.advancedBox}>
           {/* Category */}
-          <TouchableOpacity onPress={() => setShowCategoryPicker(true)} style={styles.dropdown}>
-            <Text>{category || 'Category'}</Text>
+          <TouchableOpacity onPress={() => setShowCategoryPicker(true)} style={styles.advRow}>
+            <Text style={styles.advLabel}>Category</Text>
+            <View style={styles.advValueRow}>
+              <Text style={styles.advValue}>{category || 'None'}</Text>
+              <Text style={styles.advArrow}>▼</Text>
+            </View>
           </TouchableOpacity>
+
+          {/* Divider */}
+          <View style={styles.advDivider} />
 
           {/* Start Date */}
-          <TouchableOpacity onPress={() => setShowCalendar(true)} style={styles.dropdown}>
-            <Text>{startDate.toDateString()}</Text>
+          <TouchableOpacity onPress={() => setShowCalendar(true)} style={styles.advRow}>
+            <Text style={styles.advLabel}>Start date</Text>
+            <View style={styles.advValueRow}>
+              <Text style={styles.advValue}>{startDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}</Text>
+              <Text style={styles.advArrow}>▼</Text>
+            </View>
           </TouchableOpacity>
+
+          {/* Divider */}
+          <View style={styles.advDivider} />
 
           {/* Frequency */}
-          <TouchableOpacity onPress={() => setShowFrequencyPicker(true)} style={styles.dropdown}>
-            <Text>{frequency || 'Frequency'}</Text>
+          <TouchableOpacity onPress={() => setShowFrequencyPicker(true)} style={styles.advRow}>
+            <Text style={styles.advLabel}>Frequency</Text>
+            <View style={styles.advValueRow}>
+              <Text style={styles.advValue}>{frequency || 'Daily'}</Text>
+              <Text style={styles.advArrow}>▼</Text>
+            </View>
           </TouchableOpacity>
+
+          {/* Divider */}
+          <View style={styles.advDivider} />
 
           {/* Duration */}
-          <TouchableOpacity onPress={() => setShowDurationPicker(true)} style={styles.dropdown}>
-            <Text>{duration || 'Duration'}</Text>
+          <TouchableOpacity onPress={() => setShowDurationPicker(true)} style={styles.advRow}>
+            <Text style={styles.advLabel}>Duration</Text>
+            <View style={styles.advValueRow}>
+              <Text style={styles.advValue}>{duration || '30 Days'}</Text>
+              <Text style={styles.advArrow}>▼</Text>
+            </View>
           </TouchableOpacity>
 
+          {/* Divider */}
+          <View style={styles.advDivider} />
+
           {/* Write Progress */}
-          <View style={styles.toggleRow}>
-            <Text>Write about progress</Text>
+          <View style={[styles.advRow, { justifyContent: 'space-between' }]}> 
+            <Text style={styles.advLabel}>Write about progress.</Text>
             <Switch value={writeProgress} onValueChange={setWriteProgress} />
           </View>
 
-          {/* Reminder(s) */}
-          <Text style={styles.reminderTitle}>Reminders</Text>
-          {reminders.map((r, i) => (
-            <Text key={i} style={styles.reminderTime}>{r.toLocaleTimeString()}</Text>
-          ))}
-          <TouchableOpacity style={styles.reminderBtn} onPress={() => setShowReminderPicker(true)}>
-            <Text>+ Add Reminder</Text>
+          {/* Divider */}
+          <View style={styles.advDivider} />
+
+          {/* Reminders Collapsible */}
+          <TouchableOpacity style={styles.advRow} onPress={() => setShowReminderPicker(true)}>
+            <Text style={styles.advLabel}>Reminders</Text>
+            <Text style={styles.advArrow}>▼</Text>
           </TouchableOpacity>
+
+          {/* Reminders List  reminderList*/}
+          <View style={[styles.reminderListBox]}>
+            {/* <ScrollView style={{ maxHeight: 100 }} nestedScrollEnabled={true}> */}
+              {reminders.length > 0 && reminders.map((r, i) => (
+                <View key={i} style={styles.reminderPill}>
+                  <Text style={styles.reminderPillText}> {r.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+                  <Text style={styles.reminderPillFreq}>Everyday</Text>
+                </View>
+              ))}
+            {/* </ScrollView> */}
+            <TouchableOpacity style={styles.reminderPillAdd} onPress={() => setShowReminderPicker(true)}>
+              <Text style={styles.reminderPillAddText}>+ Add reminder</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
 
@@ -166,39 +226,74 @@ const styles = StyleSheet.create({
   container: {
     padding: wp('6%'),
     backgroundColor: '#f9f9f9',
+    alignItems:"center",
   },
   imagePlaceholder: {
-    width: wp('16%'),
-    height: wp('16%'),
-    backgroundColor: '#ccc',
-    borderRadius: 10,
-    alignSelf: 'center',
+    width: wp(24),
+    height: wp(24),
+    backgroundColor: '#686868',
+    borderRadius: 12,
+    alignSelf: 'flex-start',
     marginBottom: hp('2%'),
+    marginTop:hp(1),
+    marginLeft:wp(2),
   },
   label: {
-    fontSize: wp('6%'),
-    fontWeight: '600',
-    textAlign: 'center',
+    fontSize: wp(9),
+    alignSelf:"flex-start",
+    fontWeight: 'bold',
+    textAlign: 'left',
     color: '#104256',
-    marginBottom: hp('2%'),
+    marginBottom: hp(5),
+    marginLeft:wp(2),
   },
   input: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
     padding: wp('4%'),
     marginBottom: hp('1.5%'),
     borderWidth: 1,
     borderColor: '#ddd',
+    color:'#2D2D2D',
   },
+
+
+   //Why this habit?
+  textAreaWrapper: {
+    position: 'relative',
+    width: wp(80),
+    height: hp(12),
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    backgroundColor: '#fff',
+    padding: wp(1.5),
+  },
+  textAreaPlaceholder: {
+    position: 'absolute',
+    top: wp(4),
+    left: wp(4),
+    color: '#888',
+    fontSize: wp(3.5),
+  },
+  textAreaInput: {
+    flex: 1,
+    textAlignVertical: 'top', // Ensures text starts from top
+    fontSize: wp(4),
+  },
+
+
+  //Expand Advanced Edits
   advancedToggle: {
-    color: '#104256',
+    color: '#666666',
     fontSize: wp('4%'),
-    marginVertical: hp('1%'),
+    marginVertical: hp('2.5%'),
     textAlign: 'center',
   },
   advancedBox: {
+    alignSelf:"center",
     backgroundColor: '#fff',
-    padding: wp('4%'),
+    padding: wp('5%'),
     borderRadius: 12,
     borderColor: '#ccc',
     borderWidth: 1,
@@ -210,7 +305,7 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 6,
     marginBottom: hp('1.5%'),
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#ffffff',
   },
   toggleRow: {
     flexDirection: 'row',
@@ -219,25 +314,110 @@ const styles = StyleSheet.create({
     marginVertical: hp('1%'),
   },
   reminderTitle: {
+    fontSize: wp(4),
     fontWeight: '600',
     marginBottom: hp('1%'),
     marginTop: hp('1%'),
+   
   },
   reminderTime: {
     marginBottom: hp('0.5%'),
+    
   },
-  reminderBtn: {
-    alignSelf: 'flex-start',
-    padding: wp('2%'),
-    backgroundColor: '#e8f0f5',
-    borderRadius: 6,
-    marginTop: hp('1%'),
-  },
+  // reminderBtn: {
+  //   fontSize: wp(4),
+  //   alignSelf: 'flex-start',
+  //   width:wp(80),
+  //   height:wp(9),
+  //   padding: wp('2%'),
+  //   backgroundColor: 'rgba(69, 148, 165, 0.2)',
+  //   borderRadius: 8,
+  //   marginTop: hp('1%'),
+  // },
   createBtn: {
-    marginTop: hp('3%'),
+    alignItems: 'center',
+    alignSelf:"center",
+    marginTop: hp('2%'),
     paddingVertical: hp('1.5%'),
     borderRadius: 10,
+    width:wp(40),
+    height:wp(11),
     backgroundColor: '#104256',
+
+  },
+  advRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: hp('1%'),
+  },
+  advLabel: {
+    fontSize: wp(4),
+    fontWeight: '600',
+    color: '#2D2D2D',
+  },
+  advValueRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  advValue: {
+    fontSize: wp(4),
+    color: '#2D2D2D',
+    marginLeft: wp('1%'),
+  },
+  advArrow: {
+    fontSize: wp(4),
+    color: '#2D2D2D',
+    marginLeft: wp('1%'),
+  },
+  advDivider: {
+    height: 1,
+    backgroundColor: '#0000004D',
+    marginVertical: hp('1%'),
+  },
+  reminderListBox: {
+    marginTop: hp('1%'),
+    
+  },
+  reminderPill: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgba(69, 148, 165, 0.2)',
+    borderRadius: 8,
+    paddingVertical: hp('0.5%'),
+    paddingHorizontal: wp('2%'),
+    marginBottom: hp('0.5%'),
+    height:wp(9),
+  },
+  reminderPillText: {
+    fontSize: wp(3.5),
+    fontWeight: '600',
+    width:wp(18),
+    height:wp(5),
+    color: '#2D2D2D',
+    backgroundColor: '#FFFFFF',
+    
+  },
+  reminderPillFreq: {
+    fontSize: wp(3),
+    fontWeight:400,
+    color: '#2D2D2D',
+    marginLeft: wp('1%'),
+  },
+  reminderPillAdd: {
+    alignSelf: 'center',
+    width:wp(70),
+    height:wp(9),
+    marginTop: hp('1%'),
+    paddingVertical: hp('0.5%'),
+    paddingHorizontal: wp('2%'),
+    backgroundColor: 'rgba(69, 148, 165, 0.2)',
+    borderRadius: 8,
+  },
+  reminderPillAddText: {
+    fontSize: wp(4),
+    color: '#2D2D2D',
+    fontWeight: '600',
   },
 });

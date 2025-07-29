@@ -186,6 +186,7 @@ type Props = {
   };
 };
 
+
 const WeeklyTracker = ({
   title,
   highlightedDates = [],
@@ -208,6 +209,15 @@ const WeeklyTracker = ({
     }, 300); // delay ensures layout is ready
   }, []);
 
+  const scrollToIndex = (index: number) => {
+  if (scrollRef.current) {
+          scrollRef.current.scrollTo({
+            x: index * (wp('12%') + wp('3%')), // Width of circle + gap
+            animated: true,
+          });
+    }
+  };
+
   return (
     <View style={styles.wrapper}>
       {title && <Text style={styles.title}>{title}</Text>}
@@ -225,10 +235,17 @@ const WeeklyTracker = ({
           const percentDone = progress && progress.total > 0 ? progress.completed / progress.total : 0;
 
           return (
-            <TouchableOpacity key={index} onPress={() => onDayPress?.(dateStr)}>
+               <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    onDayPress?.(dateStr);
+                    scrollToIndex(index); // ✅ Scroll to tapped index
+                    
+                  }}
+                >
               <View style={[styles.dateCircle, isToday && styles.today]}>
                 <View style={[styles.fillOverlay, { height: `${percentDone * 100}%` }]} />
-                <Text style={styles.dayText}>{day.format('dd')[0]}</Text>
+                {/* <Text style={styles.dayText}>{day.format('dd')[0]}</Text> */}
                 <Text style={styles.dateText}>{day.date()}</Text>
               </View>
             </TouchableOpacity>
@@ -243,7 +260,7 @@ export default WeeklyTracker;
 
 const styles = StyleSheet.create({
     wrapper: {
-  marginVertical: hp('2%'),
+  marginVertical: hp('3%'),
   padding: wp('4%'),
   backgroundColor: '#fff',
   borderRadius: wp('3%'),
@@ -254,27 +271,34 @@ const styles = StyleSheet.create({
   shadowRadius: 4,
   borderWidth: 1,
   borderColor: '#eee',
-  marginHorizontal: wp('5%'), // add horizontal margin for spacing
+  width: wp('90%'),
+  height:wp(33),
+  // marginHorizontal: wp('5%'), // add horizontal margin for spacing
 },
   title: {
-    fontSize: wp('4.5%'),
-    fontWeight: '600',
-    marginBottom: hp('1.5%'),
-    color: '#104256',
+    fontSize: wp(4.2),
+    fontWeight: '500',
+    marginBottom: hp('2%'),
+    marginHorizontal: wp('2%'),
+    marginRight:wp(30),
+    color: '#2D2D2D',
   },
   container: {
     flexDirection: 'row',
-    gap: wp('3%'),
+    marginLeft:wp(1),
+    gap: wp('2.6%'),
+     alignSelf:'center'
   },
   dateCircle: {
-    width: wp('12%'),
-    height: wp('12%'),
+    width: wp('9%'),
+    height: wp('9%'),
     borderRadius: wp('6%'),
-    backgroundColor: '#eee',
+    backgroundColor: '#8BCAD9',
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
     position: 'relative',
+   
   },
   fillOverlay: {
     position: 'absolute',
@@ -294,7 +318,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   dateText: {
-    fontSize: wp('4%'),
+    fontSize: wp('3.5%'),
     fontWeight: 'bold',
     color: '#333',
     zIndex: 1,

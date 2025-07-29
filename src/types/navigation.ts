@@ -37,4 +37,9 @@ export type RootStackParamList = {
   AuthStack: NavigatorScreenParams<AuthStackParamList>;
   AppTabs: NavigatorScreenParams<AppTabsParamList>;
   HabitsStack: NavigatorScreenParams<HabitsStackParamList>;
+  DayDetail: { date: string };
+  TeamUpFlow: undefined;
+  HabitCircle: undefined;
+  FriendDetail: { friendName: string };
+
 };

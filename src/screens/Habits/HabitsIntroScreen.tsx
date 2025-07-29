@@ -4,7 +4,8 @@ import {
   Text,
   StyleSheet,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Modal
 } from 'react-native';
 
 import GradientWrapper from '../../components/GradientWrapper';
@@ -15,6 +16,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { HabitsStackParamList } from '../../types/navigation';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import Icon from 'react-native-vector-icons/Feather';
+
+
 
 const HabitsIntroScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<HabitsStackParamList>>();
@@ -26,35 +30,101 @@ const HabitsIntroScreen = () => {
     navigation.replace('HabitsHome');
   };
 
+
+
+
+//  <Text style={[styles.heading, {fontSize: 36}]}>How are you{'\n'}feeling{'\n'}today?</Text>
+
+
+// [styles.section, { width: 209, height: 140 }]
+
   return (
     <GradientWrapper>
       <View style={styles.container}>
-        <Text style={styles.title}>Momentum</Text>
-        <Text style={styles.subtitle}>A habit formation tool that keeps you going</Text>
+
+        <View style={[{ width: 270, height: 106},{alignSelf:'flex-start'}]}>
+          <Text style={[styles.title,{fontSize:48}]}>Momentum</Text>
+          <Text style={[styles.subtitle,{fontSize:16}]}>A habit formation tool that keeps {'\n'}you going</Text>
+        </View>
+
+
+
+
+
+
 
         <View style={styles.imageContainer}>
           {/* Replace with real image */}
           <View style={styles.imagePlaceholder} />
         </View>
 
-        <Text style={styles.description}>
+
+
+
+
+
+        <Text style={[styles.description,{ width:274, height: 46 },{alignContent:'center'}]}>
           Repeat it daily — until it becomes as natural as brushing your teeth.
         </Text>
 
-        <TouchableOpacity onPress={() => setShowModal(true)}>
-          <Text style={styles.howLink}>How can I do that?</Text>
-        </TouchableOpacity>
 
-        <PrimaryButton
-          title="Let's get moving"
-          onPress={() => setShowModal(true)}
-          style={styles.button}
-        />
+
+
+
+        <View style={[{ width: 196, height: 72},{alignItems:'center'}]} >
+          <TouchableOpacity onPress={() => setShowModal(true)}>
+            <Text style={styles.howLink}>How can I do that?</Text>
+          </TouchableOpacity>
+
+          <PrimaryButton
+            title="Let's get moving"
+            onPress={() => setShowModal(true)}
+            style={styles.button}
+          />
+        </View>
       </View>
 
-      {/* 🧠 BottomSheetModal with tips */}
+
+
+
+
+
+
+
+      {/* BottomSheetModal */}
       <BottomSheetModal visible={showModal} onClose={() => setShowModal(false)}>
+         <View
+          style={{
+            width: wp(13),
+            height: 2,
+            backgroundColor: '#000000',
+            marginTop: 2,
+            marginBottom: hp(2),
+            borderRadius:12,
+            alignSelf: 'center',
+          }}
+        />
+
+        <TouchableOpacity style={styles.closeTips}  onPress={() => setShowModal(false)}>
+            {/* <Icon name="x" size={16} color="#000000" /> */}
+            <Text style={[{fontSize:wp(3.5)}]}>✕</Text>
+        </TouchableOpacity>
+
+
+
+
         <Text style={styles.modalTitle}>How can I do that?</Text>
+        
+        <View
+          style={{
+            width: wp(90),
+            height: 1,
+            backgroundColor: '#000000',
+            marginTop: 2,
+            marginBottom: 10,
+            alignSelf: 'center',
+          }}
+        />
 
         <View style={styles.tipGroup}>
           {[
@@ -64,17 +134,17 @@ const HabitsIntroScreen = () => {
             ['Track your progress visually', 'Mark each day you do it. Seeing a streak builds motivation.'],
             ['Reward yourself right after', 'Celebrate right after—your brain remembers what feels good.'],
           ].map(([title, desc], i) => (
-            <View key={i} style={{ marginBottom: hp(2.5) }}>
+            <View key={i} style={[{ marginBottom: hp(2.5) },{width:wp(75),height:hp(8)},{alignContent:"center"}]}>
               <Text style={styles.tipTitle}>• {title}</Text>
-              <Text style={styles.tipText}>{desc}</Text>
+              <Text style={[styles.tipText,{marginLeft:wp(2)}]}>{desc}</Text>
             </View>
           ))}
         </View>
-
+  
         <PrimaryButton
           title="Let's get going"
           onPress={handleGetGoing}
-          style={{ marginTop: hp(2) }}
+          style={{ width:wp(45),height:wp(11),alignSelf:"center",marginBottom:hp(10)}}
         />
       </BottomSheetModal>
     </GradientWrapper>
@@ -91,62 +161,70 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: wp(8),
+    fontSize: wp(10),
     fontWeight: 'bold',
     color: '#003a52',
     marginBottom: hp(1),
   },
   subtitle: {
     fontSize: wp(4),
-    color: '#444',
-    textAlign: 'center',
+    color: '#000000',
+    textAlign: 'left',
     marginBottom: hp(5),
+    fontWeight:'semibold'
   },
   imageContainer: {
-    width: wp(60),
-    height: wp(60),
+    width: wp(70),
+    height: wp(65),
     borderRadius: 16,
     backgroundColor: '#ccc',
-    marginBottom: hp(5),
+    marginBottom: hp(2),
+    marginTop:hp(5)
   },
   imagePlaceholder: {
     flex: 1,
     borderRadius: 16,
   },
   description: {
-    fontSize: wp(4),
-    color: '#333',
+    fontSize: wp(4.5),
+    color: '#2D2D2D',
     textAlign: 'center',
-    marginBottom: hp(5),
+    marginBottom: hp(8),
   },
   howLink: {
-    fontSize: wp(3.5),
-    color: '#333',
+    fontSize: wp(3.2),
+    color: '#2D2D2D',
     textDecorationLine: 'underline',
-    marginBottom: hp(3),
+    marginBottom: hp(2),
   },
   button: {
-    width: wp(60),
+    width: wp(52),
+    height:hp(6),
     alignSelf: 'center',
   },
   modalTitle: {
     fontSize: wp(6),
     fontWeight: '600',
     marginBottom: hp(2),
-    color: '#003a52',
+    color: '#2D2D2D',
   },
   tipGroup: {
     paddingBottom: hp(3),
   },
   tipTitle: {
     fontSize: wp(4.2),
-    fontWeight: '500',
-    color: '#111',
+    fontWeight: '600',
+    color: '#2D2D2D',
     marginBottom: hp(0.5),
   },
   tipText: {
     fontSize: wp(3.6),
-    color: '#444',
+    color: '#2D2D2D',
+  },
+  closeTips:{
+    width: wp(5),
+    height:hp(5),
+    alignSelf:"flex-end"
   },
 });
 

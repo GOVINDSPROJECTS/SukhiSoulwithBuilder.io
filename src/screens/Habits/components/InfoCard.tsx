@@ -23,7 +23,9 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#f9f9f9',
     borderRadius: wp('3%'),
-    padding: wp('5%'),
+    width:wp(86),
+    alignSelf:'center',
+    padding: wp('4%'),
     marginVertical: hp('1%'),
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -34,9 +36,11 @@ const styles = StyleSheet.create({
 
   },
   title: {
-    fontSize: wp('4%'),
-    fontWeight: '500',
-    color: '#104256',
+    fontSize: wp('5.5%'),
+    fontWeight: '700',
+    color: '#2D2D2D',
+    marginRight:wp(15),
+    
   },
   subtitle: {
     fontSize: wp('3.5%'),

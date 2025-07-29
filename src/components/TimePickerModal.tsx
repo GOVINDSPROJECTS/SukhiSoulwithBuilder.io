@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Modal,
   Text,
   StyleSheet,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   ScrollView,
 } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -20,7 +21,7 @@ const meridiem = ['AM', 'PM'];
 type Props = {
   visible: boolean;
   onClose: () => void;
-  onTimeSelect: (time: Date) => void; // ⬅️ update this line
+  onTimeSelect: (time: Date) => void;
   initialTime?: string; // e.g. '02:30 PM'
 };
 
@@ -29,30 +30,44 @@ const TimePickerModal = ({ visible, onClose, onTimeSelect, initialTime = '12:00 
   const [selectedMinute, setSelectedMinute] = useState('00');
   const [selectedMeridiem, setSelectedMeridiem] = useState('AM');
 
- const confirmTime = () => {
-  const timeString = `${selectedHour}:${selectedMinute} ${selectedMeridiem}`;
-  
-  // Convert string to Date object
-  const now = new Date();
-  const [hour, minute] = [parseInt(selectedHour), parseInt(selectedMinute)];
-  const isPM = selectedMeridiem === 'PM';
+  // Populate initialTime when modal opens
+  useEffect(() => {
+    if (visible && initialTime) {
+      const [timePart, meridian] = initialTime.split(' ');
+      const [hr, min] = timePart.split(':');
+      setSelectedHour(hr.padStart(2, '0'));
+      setSelectedMinute(min.padStart(2, '0'));
+      setSelectedMeridiem(meridian === 'PM' ? 'PM' : 'AM');
+    }
+  }, [visible, initialTime]);
 
-  const date = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
-    isPM ? (hour % 12) + 12 : hour % 12,
-    minute
-  );
+  const confirmTime = () => {
+    const now = new Date();
+    const hourNum = parseInt(selectedHour);
+    const minuteNum = parseInt(selectedMinute);
+    const isPM = selectedMeridiem === 'PM';
 
-  onTimeSelect(date); // ✅ Pass correct Date type
-  onClose();
-};
+    const date = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      isPM ? (hourNum % 12) + 12 : hourNum % 12,
+      minuteNum
+    );
 
+    onTimeSelect(date);
+    onClose(); // Close modal after selection
+  };
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.overlay}>
+        {/* Background Tap Area */}
+        <TouchableWithoutFeedback onPress={onClose}>
+          <View style={{ flex: 1 }} />
+        </TouchableWithoutFeedback>
+
+        {/* Foreground Modal Content */}
         <View style={styles.container}>
           <Text style={styles.title}>Select Time</Text>
           <View style={styles.pickerRow}>
@@ -89,6 +104,7 @@ const TimePickerModal = ({ visible, onClose, onTimeSelect, initialTime = '12:00 
               </ScrollView>
             ))}
           </View>
+
           <TouchableOpacity onPress={confirmTime} style={styles.button}>
             <Text style={styles.buttonText}>Set Time</Text>
           </TouchableOpacity>
