@@ -96,7 +96,7 @@ const TeamUpFlowScreen = () => {
                 title="Done"
                   onPress={() => {
                     setVisible(false);
-                    navigation.navigate('HabitCircle');
+                    navigation.replace('HabitCircle');
                   }}
                 style={{ width:wp(26),height:wp(11),alignSelf:"center",marginBottom: hp(1) }}
             />

@@ -88,14 +88,13 @@ const HabitsHomeScreen = () => {
         <AppText variant= "caption" style={[styles.subtext,colors.muted]}>Quick tools to support your habit journey</AppText>
 
 
-
-
-
+ 
+        {/*Coach Card */}
         <CoachCard
           title="Not sure where to begin? Let's figure it out together "
           subtitle=""
           buttonText="Talk to a Habit Coach"
-          onPress={() => console.log('Coach card pressed')}
+          onPress={() => setShowModal(true)}
         />
 
         <InfoCard
@@ -153,7 +152,7 @@ const styles = StyleSheet.create({
 
 
     //Habit Coach Page.......
-    modalTitle: {
+  modalTitle: {
     fontSize: wp(6),
     fontWeight: '600',
     marginBottom: hp(2),
