@@ -1,6 +1,8 @@
 // src/types/navigation.ts
 
 import { NavigatorScreenParams } from '@react-navigation/native';
+import HabitsHomeScreen from './../screens/Habits/HabitsHomeScreen';
+
 
 // Auth Screens
 export type AuthStackParamList = {
@@ -37,9 +39,11 @@ export type RootStackParamList = {
   AuthStack: NavigatorScreenParams<AuthStackParamList>;
   AppTabs: NavigatorScreenParams<AppTabsParamList>;
   HabitsStack: NavigatorScreenParams<HabitsStackParamList>;
+  HomeScreen: { scrollToDiscover?: boolean };
+  HabitsHomeScreen: undefined;
   DayDetail: { date: string };
   TeamUpFlow: undefined;
   HabitCircle: undefined;
   FriendDetail: { friendName: string };
-
+  AddHabitScreen: undefined;
 };

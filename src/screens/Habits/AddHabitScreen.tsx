@@ -13,8 +13,13 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import TimePickerModal from '@/components/TimePickerModal';
 import CalendarPickerModal from '@/components/CalendarPickerModal';
 import CustomOptionPickerModal from '@/components/CustomOptionPickerModal';
+import PrimaryButton from '@/components/PrimaryButton';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../types/navigation';
 
 const AddHabitScreen = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [name, setName] = useState('');
   const [reason, setReason] = useState('');
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
@@ -172,9 +177,13 @@ const AddHabitScreen = () => {
         </View>
       )}
 
-      <TouchableOpacity style={styles.createBtn}>
-        <Text style={{ color: '#fff' }}>Create Habit</Text>
-      </TouchableOpacity>
+      {/* Create Habit Button */}
+      <PrimaryButton
+                title="Create Habit"
+                onPress={() => navigation.navigate('HabitsHomeScreen' as any)}
+                style={{ width:wp(40),height:wp(11),alignSelf:"center",marginBottom: hp(5),marginTop:wp(8) }}
+        />
+      
 
       {/* Modals */}
       <TimePickerModal

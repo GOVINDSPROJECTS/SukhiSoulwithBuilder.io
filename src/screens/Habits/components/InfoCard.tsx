@@ -1,16 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 type Props = {
   title: string;
   subtitle?: string;
   onPress?: () => void;
+  style?: ViewStyle; // 👈 Add this
 };
 
-const InfoCard = ({ title, subtitle, onPress }: Props) => {
+const InfoCard = ({ title, subtitle, onPress, style }: Props) => {
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={onPress ? 0.7 : 1}>
+    <TouchableOpacity style={[styles.card, style]} onPress={onPress} activeOpacity={onPress ? 0.7 : 1}>
       <Text style={styles.title}>{title}</Text>
       {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
     </TouchableOpacity>

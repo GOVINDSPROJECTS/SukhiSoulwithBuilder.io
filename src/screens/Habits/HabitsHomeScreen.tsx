@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert,TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert,TouchableOpacity, Image } from 'react-native';
 import WeeklyTracker from './components/WeeklyTracker';
 import HabitsList from './components/HabitsList';
 import GradientWrapper from '../../components/GradientWrapper';
@@ -24,7 +24,7 @@ const HabitsHomeScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const [showModal, setShowModal] = useState(false);
-
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const [habits, setHabits] = useState([
     { id: '1', title: 'Cold Showers', completed: false },
@@ -87,8 +87,6 @@ const HabitsHomeScreen = () => {
         </AppText>
         <AppText variant= "caption" style={[styles.subtext,colors.muted]}>Quick tools to support your habit journey</AppText>
 
-
- 
         {/*Coach Card */}
         <CoachCard
           title="Not sure where to begin? Let's figure it out together "
@@ -97,10 +95,74 @@ const HabitsHomeScreen = () => {
           onPress={() => setShowModal(true)}
         />
 
+         <BottomSheetModal visible={showModal} onClose={() => setShowModal(false)}>
+              <View
+                style={{
+                  width: wp(13),
+                  height: 5,
+                  backgroundColor: '#000000',
+                  marginTop: 2,
+                  marginBottom: hp(2),
+                  borderRadius:12,
+                  alignSelf: 'center',
+                }}
+              />
+              <Text style={[styles.coachModalTitle,{width:wp(70)}]}>Go Premium, Grow Faster</Text>
+              <Text style={[styles.coachModalSubtitle,{width:wp(68)}]}>Want to build habits faster and smarter? Get personal guidance, accountability, and tips tailored just for you</Text>
+              <Text style={[styles.text18,{marginTop:hp(8)}]}>Your coach will help turn efforts into real progress.</Text>
+
+              <View style={styles.grayBox} />
+
+              <PrimaryButton
+                title="Unlock Your Coach"
+                onPress={() => setShowPaymentModal(true)}
+                style={{ width: wp(50), height: wp(11), alignSelf: 'center', marginBottom: hp(5) }}
+              />
+          </BottomSheetModal>
+
+
+
+          <BottomSheetModal visible={showPaymentModal} onClose={() => setShowPaymentModal(false)}>
+              <View
+                style={{
+                  width: wp(13),
+                  height: 5,
+                  backgroundColor: '#000000',
+                  marginTop: 2,
+                  marginBottom: hp(2),
+                  borderRadius:12,
+                  alignSelf: 'center',
+                }}
+              />
+
+            <Image
+              source={require('../../assets/icons/correct.png')}
+              style={styles.image}
+            />
+            
+
+          <View style={{alignSelf:'center'}}>
+            <Text style={[styles.coachModalTitle,{alignSelf:'center',width:wp(40)}]}>Payment Received</Text>
+
+            <Text style={[styles.text18,{marginTop:hp(5)}]}>Thank you for upgrading to Premium! </Text> 
+            <Text style={[styles.text18,{width:wp(75),marginTop:hp(10)}]}>We’ve received your payment, and our team will reach out to you within 3 days to get you started.</Text>        
+            <Text style={[styles.text18,{width:wp(75),marginBottom:hp(12)}]}>We’re excited to support your habit journey!</Text>
+          </View> 
+
+          <PrimaryButton
+                title="Thank You"
+                 onPress={() => {
+                      setShowModal(false);
+                      setShowPaymentModal(false); // Show next modal
+                  }}
+                style={{ width: wp(35), height: wp(11), alignSelf: 'center', marginBottom: hp(5) }}
+          />
+        </BottomSheetModal>
+
         <InfoCard
           title="Understand Your Habits"
           subtitle="Learn what helps habits last."
-          onPress={() => console.log('Info card pressed')}
+          onPress={() => navigation.navigate('HomeScreen', { scrollToDiscover: true })}
         />
 
         <BuildHabitTogetherCard onPress={() => navigation.navigate('TeamUpFlow')} />
@@ -175,5 +237,52 @@ const styles = StyleSheet.create({
     width: wp(5),
     height:hp(5),
     alignSelf:"flex-end"
+  },
+  coachModalTitle:{
+    fontSize: wp(9),
+    fontWeight: '700',
+    marginBottom: hp(2),
+    marginTop:hp(2),
+    color: '#2D2D2D',
+  },
+  coachModalSubtitle:{
+    fontSize: wp(3.5),
+    color: 'rgba(0, 0, 0, 0.54)',
+    fontWeight: '500',
+  },
+
+  text18:{
+    fontSize: wp(4.5),
+    color: '#2D2D2D',
+    marginBottom: hp(1),
+    fontWeight:'500'
+  },
+    grayBox: {
+    marginLeft:wp(6),
+    marginRight:wp(6),
+    width: wp(82),
+    height: wp(62),
+    backgroundColor: '#686868',
+    marginBottom: wp(10),
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    borderRadius: wp(2.5),
+    marginTop: hp(2),
+    elevation: 5, // For Android shadow
+  },
+  image: {
+    width: wp(13),
+    height: wp(13),
+    marginTop: hp(5),
+    alignSelf: 'center',
+    resizeMode: 'contain',
   },
 });

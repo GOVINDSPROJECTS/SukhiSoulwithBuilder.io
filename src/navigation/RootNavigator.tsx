@@ -37,6 +37,9 @@ import DayDetailScreen from '../screens/Habits/DayDetailScreen';
 import TeamUpFlowScreen from '../screens/Habits/TeamUpFlowScreen';
 import HabitCircleScreen from '../screens/Habits/HabitCircleScreen';
 import FriendDetailScreen from '../screens/Habits/FriendDetailScreen';
+import AddHabitScreen from '../screens/Habits/AddHabitScreen';
+import HabitsHomeScreen from '../screens/Habits/HabitsHomeScreen';
+import HomeScreen from '@/screens/Auth/HomeScreen';
 
 
 
@@ -55,10 +58,13 @@ const RootNavigator = () => {
       ) : (
         <>
         <Stack.Screen name="AppTabs" component={AppTabs} />
+        <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="DayDetail" component={DayDetailScreen} />
         <Stack.Screen name="TeamUpFlow" component={TeamUpFlowScreen} />
         <Stack.Screen name="HabitCircle" component={HabitCircleScreen} />
         <Stack.Screen name="FriendDetail" component={FriendDetailScreen} />
+        <Stack.Screen name="AddHabitScreen" component={AddHabitScreen} />
+        <Stack.Screen name="HabitsHomeScreen" component={HabitsHomeScreen} />
         </>
       )}
     </Stack.Navigator>

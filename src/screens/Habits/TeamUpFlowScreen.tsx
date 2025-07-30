@@ -29,17 +29,17 @@ const TeamUpFlowScreen = () => {
       case 'teamup':
         return (
           <View>
-            <View style={{width: wp(73),height:hp(25)}}>
+            <View style={{width: wp(73),height:hp(30)}}>
               <Text style={styles.heading}>Team Up to Stay On Track</Text>
               <Text style={styles.subHeading}>Create your Habit Circle, a group to start your habit journey. Track progress together, send nudges, and celebrate wins!</Text>
             </View>
             <View style={styles.grayBox} />
-            <Text style={[styles.desc,{marginVertical:wp(10)}]}>Stick to habits 95% better—together</Text>
+            <Text style={[styles.desc,{marginVertical:wp(7)}]}>Stick to habits 95% better—together</Text>
           
             <PrimaryButton
                 title="Create Habit Circle"
                 onPress={handleNext}
-                style={{ width:wp(50),height:wp(11),alignSelf:"center",marginBottom: hp(5) }}
+                style={{ width:wp(50),height:wp(11),alignSelf:"center",marginBottom: hp(7) }}
             />
 
           </View>
@@ -68,7 +68,7 @@ const TeamUpFlowScreen = () => {
             />
             <View style={{width:wp(55),alignSelf:'center',marginBottom:hp(35)}}>
                 <Text style={[styles.heading,{alignSelf: 'center',textAlign:'center'}]}>Circle Created</Text>
-                <Text style={[styles.desc,{alignSelf: 'center'}]}>We'll notify you when they join</Text>
+                <Text style={[styles.desc,{alignSelf: 'center',marginBottom:hp(5)}]}>We'll notify you when they join</Text>
             </View>
            
             <PrimaryButton
@@ -110,7 +110,7 @@ const TeamUpFlowScreen = () => {
   };
 
   return (
-    <BottomSheetModal visible={visible} onClose={() => setVisible(false)}>
+    <BottomSheetModal visible={visible} onClose={() => navigation.navigate('HabitsHomeScreen' as any)}>
         <View
                 style={{
                   width: wp(13),
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     height: wp(12),
     padding: 10,
     borderRadius: 10,
-    marginBottom: wp(12),
+    marginBottom: wp(20),
   },
   grayBox: {
     marginLeft:wp(6),
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     width: wp(88),
     height: wp(62),
     backgroundColor: '#686868',
-    marginBottom: wp(5),
+    marginBottom: wp(8),
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',

@@ -1,28 +1,60 @@
 // src/screens/FriendDetailScreen.tsx
 
 import { RouteProp, useRoute } from '@react-navigation/native';
-import React from 'react';
-import { View, Text,Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text,Image, TouchableOpacity, StyleSheet,FlatList, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import PrimaryButton from '../../components/PrimaryButton';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import WeeklyTracker from './components/WeeklyTracker';
-
-
-
+import HabitsList from './components/HabitsList';
+import BottomSheetModal from '../../components/BottomSheetModal';
+import InfoCard from './components/InfoCard';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { HabitsStackParamList } from '../../types/navigation';
 
 
 type FriendDetailRouteProp = RouteProp<RootStackParamList, 'FriendDetail'>;
 
 const FriendDetailScreen = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<HabitsStackParamList>>();
   const route = useRoute<FriendDetailRouteProp>();
   const { friendName } = route.params;
+  const [showModal, setShowModal] = useState(false);
+
+
+    const [habits, setHabits] = useState([
+      { id: '1', title: 'Cold Showers', completed: false },
+      { id: '2', title: 'Exercise', completed: true },
+      { id: '3', title: 'Meditation', completed: true },
+    ]);
+    const toggleHabitCompletion = (id: string) => {
+        const updated = habits.map((habit) =>
+          habit.id === id ? { ...habit, completed: !habit.completed } : habit
+        );
+        setHabits(updated);
+    };
+    const handleAddHabit = () => {
+      setShowModal(true);
+    };
 
   const activity = ["Running", "Beating Madhura", "Sketching", "Movie"];
   const schedule=["Daily", "Every Hour", "Weekly","Monthly"];
   const score=125;
+
+  //For Existing Habits
+  const [selectedHabits, setSelectedHabits] = useState<string[]>([]);
+  const toggleHabit = (habit: string) => {
+    if (selectedHabits.includes(habit)) {
+      setSelectedHabits((prev) => prev.filter((h) => h !== habit));
+    } else {
+      setSelectedHabits((prev) => [...prev, habit]);
+    }
+  };
+
+
 
   return (
     <ScrollView style={{backgroundColor: '#FFFFFF'}}>
@@ -33,6 +65,13 @@ const FriendDetailScreen = () => {
           <Text style={styles.subheading}>Shared Habits</Text>
 
           {/* Here is a component for the habits */}
+          <HabitsList
+            title="Here’s what you’re building daily"
+            habits={habits}
+            onToggle={toggleHabitCompletion}
+            showAddButton
+            onAddHabitPress={handleAddHabit}
+          />
 
           <Text style={styles.subheading}>Keep each other going</Text>
           <Text style={[styles.subText,{width:wp(40)}]}>A little motivation goes a long way</Text>
@@ -93,6 +132,60 @@ const FriendDetailScreen = () => {
           </View>
 
         </View>
+          <BottomSheetModal
+            visible={showModal}
+            onClose={() => setShowModal(false)}
+          >
+            <View
+              style={{
+                width: wp(13),
+                height: 5,
+                backgroundColor: '#000000',
+                marginTop: 2,
+                marginBottom: hp(10),
+                borderRadius:12,
+                alignSelf: 'center',
+              }}
+            />
+            <View style={styles.card}>
+              <View style={styles.headerRow}>
+                <Text style={styles.headerText}>Existing Habits</Text>
+              </View>
+
+              <FlatList
+                data={activity}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => (
+                  <View style={styles.habitRow}>
+                    <Text style={styles.habitText}>{item}</Text>
+                    <TouchableOpacity
+                      onPress={() => toggleHabit(item)}
+                    >
+                      <View
+                        style={[
+                          styles.checkbox,
+                          selectedHabits.includes(item) && styles.checkedBox,
+                        ]}
+                      />
+                    </TouchableOpacity>
+
+                  </View>
+                )}
+              />
+
+            </View>
+              <TouchableOpacity onPress={() => navigation.navigate('AddHabitScreen' as any)} style={{ alignSelf: 'flex-end', marginRight: wp(4), marginTop: wp(2) }}>
+                <Text style={styles.addNew}>+Add New Habit</Text>
+              </TouchableOpacity>
+
+        
+            <PrimaryButton
+                title="Done"
+                onPress={() => console.log('Done')}
+                style={{ width:wp(40),height:wp(11),alignSelf:"center",marginBottom: hp(5),marginTop:wp(8) }}
+            />
+
+          </BottomSheetModal>
     </ScrollView>
   );
 };
@@ -127,16 +220,11 @@ const styles = StyleSheet.create({
     borderWidth: wp(0.2),
     borderColor: '#2D2D2D',
     marginTop: wp(5),
-    shadowColor: '#00000040', // Transparent black
-    shadowOffset: {
-        width: 0,
-        height: 2,
-    },
-    shadowOpacity: 1, 
-    shadowRadius: 6,
-
-    // Android-specific elevation (optional for consistent cross-platform shadow)
-    elevation: 4,
+    elevation: 4, // Android shadow
+    shadowColor: '#000', // iOS shadow
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   text18:{
     fontSize: wp(4.5),
@@ -166,5 +254,64 @@ const styles = StyleSheet.create({
     marginLeft: wp(2),
     alignSelf: 'flex-end',
     resizeMode: 'contain',
+  },
+
+
+  // Existing Habits
+  card: {
+    width: wp(88),
+    height: hp(50),
+    alignSelf: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 10,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
+    marginBottom: 24,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  headerText: {
+    fontSize: wp(9),
+    fontWeight: '700',
+    color: '#2D2D2D',
+    marginBottom: wp(2),
+  },
+  habitRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 6,
+  },
+  habitText: {
+    fontSize: wp(6),
+    color: '#2D2D2D',
+    fontWeight: '400',
+  },
+  checkbox: {
+    width: wp(7.5),
+    height: wp(7.5),
+    borderWidth: 1,
+    borderColor: '#666',
+    borderRadius: 2,
+  },
+  checkedBox: {
+    backgroundColor: '#555',
+  },
+  addNew: {
+    marginTop: wp(1),
+    color: '#666666',
+    fontWeight: '700',
+    fontSize: wp(5),
+    textAlign: 'right',
+    marginBottom: wp(8),
+    marginRight: wp(4),
   },
 });

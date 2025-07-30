@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import { useRoute } from '@react-navigation/native';
+import { useEffect } from 'react';
 import {
   ScrollView,
   Text,
@@ -37,6 +39,7 @@ const discoverPosts = [
 ];
 
 export default function HomeScreen() {
+  const route = useRoute<any>();
   const [moodValue, setMoodValue] = useState(0.5);
   const [habits, setHabits] = useState([
     { name: 'Cold Showers', done: true },
@@ -106,7 +109,14 @@ export default function HomeScreen() {
         setActiveTab(activeKey);
       }
     };
-    
+    useEffect(() => {
+      if (route.params?.scrollToDiscover && scrollViewRef.current && sectionPositions.current['Educate']) {
+        scrollViewRef.current.scrollTo({
+          y: sectionPositions.current['Educate'],
+          animated: true,
+        });
+      }
+    }, [route.params]);
 
   return (
     <GradientWrapper>
