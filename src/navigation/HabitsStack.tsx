@@ -6,6 +6,10 @@ import HabitsHomeScreen from '../screens/Habits/HabitsHomeScreen';
 import CreateHabitScreen from '../screens/Habits/CreateHabitScreen';
 import TrackHabitScreen from '../screens/Habits/TrackHabitScreen';
 import AddHabitScreen from '@/screens/Habits/AddHabitScreen';
+import DayDetailScreen from '../screens/Habits/DayDetailScreen';
+import HabitCircleScreen from '../screens/Habits/HabitCircleScreen';
+import FriendDetailScreen from '../screens/Habits/FriendDetailScreen';
+import TeamUpFlowScreen from '../screens/Habits/TeamUpFlowScreen';
 
 export type HabitsStackParamList = {
   HabitsIntro: undefined;
@@ -14,6 +18,11 @@ export type HabitsStackParamList = {
   TrackHabit: undefined;
   JoinedHabits: undefined;
   AddHabit:undefined;
+
+  DayDetail: undefined;
+  HabitCircle: undefined;
+  FriendDetail: undefined;
+  TeamUpFlow: undefined;
 };
 
 const Stack = createNativeStackNavigator<HabitsStackParamList>();
@@ -28,6 +37,11 @@ const HabitsStack = () => {
         <Stack.Screen name="AddHabit" component={AddHabitScreen} />
 
           {/* <Stack.Screen name="AddHabit" component={a} /> */}
+
+        <Stack.Screen name="DayDetail" component={DayDetailScreen} />
+        <Stack.Screen name="HabitCircle" component={HabitCircleScreen} />
+        <Stack.Screen name="FriendDetail" component={FriendDetailScreen} />
+        <Stack.Screen name="TeamUpFlow" component={TeamUpFlowScreen} />
 
     </Stack.Navigator>
   );
