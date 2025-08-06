@@ -14,6 +14,7 @@ import BottomSheetModal from '../../components/BottomSheetModal';
 import InfoCard from './components/InfoCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HabitsStackParamList } from '../../types/navigation';
+import Feather from 'react-native-vector-icons/Feather';
 
 
 type FriendDetailRouteProp = RouteProp<RootStackParamList, 'FriendDetail'>;
@@ -82,7 +83,7 @@ const FriendDetailScreen = () => {
                     <Text style={styles.subText}>Remind Mugdha to track today</Text>
                 </View>
                   <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                      <Text style={{ fontSize: wp(5), color: '#2D2D2D' }}>{'🔔'}</Text>
+                      <Feather name="bell" color="#000" size={24} />
                   </View>
            </View>
           <View style={[styles.motivationCard, { flexDirection: 'row', alignItems: 'center', marginTop: wp(5) }]}>
@@ -91,7 +92,7 @@ const FriendDetailScreen = () => {
                     <Text style={styles.subText}>You’ve got this, let’s complete the challenge</Text>
                 </View>
                   <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                      <Text style={{ fontSize: wp(5), color: '#2D2D2D' }}>{'⭐'}</Text>
+                      <Feather name="star" color="#000" size={24} />
                   </View>
            </View>
 

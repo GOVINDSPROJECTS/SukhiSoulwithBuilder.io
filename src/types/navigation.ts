@@ -46,4 +46,13 @@ export type RootStackParamList = {
   HabitCircle: undefined;
   FriendDetail: { friendName: string };
   AddHabitScreen: undefined;
+  otpVerificationScreen: undefined;
+  UpdateEmailOtp: {
+      email: string;
+      name?: string;
+      age?: string;
+      sex?: string;
+  };
+  ReportsLogsScreen:undefined;
+  SavedItemsScreen:undefined;
 };
