@@ -16,7 +16,7 @@ const AppText = ({ variant = 'body', style, ...props }: Props) => {
 
 const styles = StyleSheet.create({
    h1: {
-    fontSize: wp('12%'),
+    fontSize: wp('8%'),
     fontWeight: '700',
   },
   h2: {

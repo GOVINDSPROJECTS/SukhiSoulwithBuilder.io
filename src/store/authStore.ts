@@ -12,11 +12,36 @@ interface AuthState {
   login: (token: string, user: { name: string; email: string }) => void;
   logout: () => void;
   restoreSession: () => Promise<void>;
+  introShown: boolean;
+  habit: any;
+  setHabit: (habit: any) => void;
+  setIntroShown: (value: boolean) => void;
+  loadIntroStatus: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   token: null,
   user: null,
+  habit:null,
+  introShown: false,
+
+
+  setHabit: (habit) => {
+    AsyncStorage.setItem('habit', JSON.stringify(habit));
+    set({ habit });
+  },
+
+  setIntroShown: async (value) => {
+    await AsyncStorage.setItem('introShown', JSON.stringify(value));
+    set({ introShown: value });
+  },
+
+  loadIntroStatus: async () => {
+    const value = await AsyncStorage.getItem('introShown');
+    if (value !== null) {
+      set({ introShown: JSON.parse(value) });
+    }
+  },
 
   setToken: (token) => {
     AsyncStorage.setItem('token', token);

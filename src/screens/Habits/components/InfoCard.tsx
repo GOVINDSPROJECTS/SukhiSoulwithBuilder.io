@@ -1,16 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 type Props = {
   title: string;
   subtitle?: string;
   onPress?: () => void;
+  style?: ViewStyle; // 👈 Add this
 };
 
-const InfoCard = ({ title, subtitle, onPress }: Props) => {
+const InfoCard = ({ title, subtitle, onPress, style }: Props) => {
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={onPress ? 0.7 : 1}>
+    <TouchableOpacity style={[styles.card, style]} onPress={onPress} activeOpacity={onPress ? 0.7 : 1}>
       <Text style={styles.title}>{title}</Text>
       {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
     </TouchableOpacity>
@@ -23,7 +24,9 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#f9f9f9',
     borderRadius: wp('3%'),
-    padding: wp('5%'),
+    width:wp(86),
+    alignSelf:'center',
+    padding: wp('4%'),
     marginVertical: hp('1%'),
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -34,9 +37,11 @@ const styles = StyleSheet.create({
 
   },
   title: {
-    fontSize: wp('4%'),
-    fontWeight: '500',
-    color: '#104256',
+    fontSize: wp('5.5%'),
+    fontWeight: '700',
+    color: '#2D2D2D',
+    marginRight:wp(15),
+    
   },
   subtitle: {
     fontSize: wp('3.5%'),

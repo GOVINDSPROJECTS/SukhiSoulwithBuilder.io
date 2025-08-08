@@ -1,0 +1,254 @@
+import React, { useState } from 'react';
+import { Text, View, Button,Image, StyleSheet, TextInput, Touchable, TouchableOpacity, Alert } from 'react-native';
+import BottomSheetModal from '../../components/BottomSheetModal';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import PrimaryButton from '../../components/PrimaryButton';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../types/navigation';
+import Clipboard from '@react-native-clipboard/clipboard';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+
+
+
+
+const TeamUpFlowScreen = () => {
+   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [visible, setVisible] = useState(true);
+  const [step, setStep] = useState<'teamup' | 'circle' | 'created' | 'invite'>('teamup');
+const [habitID, setHabitID] = useState('');
+
+  const handleNext = () => {
+    if (step === 'teamup') setStep('circle');
+    else if (step === 'circle') setStep('created');
+    else if (step === 'created') setStep('invite');
+    else setVisible(false); // Done
+  };
+  
+  const generateID = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let id = '';
+  for (let i = 0; i < 6; i++) {
+    id += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return id;
+};
+
+  React.useEffect(() => {
+    // Generate only once when circle step starts
+    if (step === 'circle' && !habitID) {
+      setHabitID(generateID());
+    }
+  }, [step, habitID]);
+
+  const renderStepContent = () => {
+    switch (step) {
+      case 'teamup':
+        return (
+          <View>
+            <View style={{width: wp(73),height:hp(30)}}>
+              <Text style={styles.heading}>Team Up to Stay On Track</Text>
+              <Text style={styles.subHeading}>Create your Habit Circle, a group to start your habit journey. Track progress together, send nudges, and celebrate wins!</Text>
+            </View>
+            <View style={styles.grayBox} />
+            <Text style={[styles.desc,{marginVertical:wp(7)}]}>Stick to habits 95% better—together</Text>
+          
+            <PrimaryButton
+                title="Create Habit Circle"
+                onPress={handleNext}
+                style={{ width:wp(50),height:wp(11),alignSelf:"center",marginBottom: hp(7) }}
+            />
+
+          </View>
+        );
+      case 'circle':
+        return (
+          <View>
+            <Text style={styles.heading}>Your Habit Circle</Text>
+
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={[styles.input, { flex: 1 }]}
+                value={habitID}
+                editable={false}
+                selectTextOnFocus={false}
+              />
+              <TouchableOpacity onPress={() => {
+                Clipboard.setString(habitID);
+                Alert.alert("Copied", "Habit Circle ID copied!");
+              }}>
+                <Ionicons name="copy-outline" size={wp(6)} color="#000" style={styles.copyIcon} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.grayBox} />
+            <Text style={[styles.desc, { marginVertical: wp(15) }]}>
+              Stick to habits 95% better—together
+            </Text>
+
+            <PrimaryButton
+              title="Share this ID"
+              onPress={handleNext}
+              style={{
+                width: wp(40),
+                height: wp(11),
+                alignSelf: 'center',
+                marginBottom: hp(6),
+              }}
+            />
+          </View>
+        );
+      case 'created':
+        return (
+          <View>
+            <Image
+              source={require('../../assets/icons/correct.png')}
+              style={styles.image}
+            />
+            <View style={{width:wp(55),alignSelf:'center',marginBottom:hp(35)}}>
+                <Text style={[styles.heading,{alignSelf: 'center',textAlign:'center'}]}>Circle Created</Text>
+                <Text style={[styles.desc,{alignSelf: 'center',marginBottom:hp(5)}]}>We'll notify you when they join</Text>
+            </View>
+           
+            <PrimaryButton
+                title="Proceed"
+                onPress={handleNext}
+                style={{ width:wp(36),height:wp(11),alignSelf:"center",marginBottom: hp(1) }}
+            />
+            <Text style={[styles.desc,{alignSelf: 'center',marginBottom: hp(5)}]}>You can see your Habit Circle on Momentum</Text>
+          </View>
+        );
+      case 'invite':
+        return (
+          <View>
+             <Image
+              source={require('../../assets/icons/correct.png')}
+              style={styles.image}
+            />
+
+            <View style={{width:wp(55),alignSelf:'center',marginBottom:hp(40)}}>
+              <Text style={[styles.heading,{alignSelf: 'center',textAlign:'center'}]}>Invite Sent</Text>
+              <Text style={[{alignSelf: 'center',}]}>We’ll notify you when they join</Text>
+            </View>
+
+            <PrimaryButton
+                title="Done"
+                  onPress={() => {
+                    setVisible(false);
+                    navigation.replace('HabitCircle');
+                  }}
+                style={{ width:wp(26),height:wp(11),alignSelf:"center",marginBottom: hp(1) }}
+            />
+
+            <TouchableOpacity>
+                <Text style={[styles.desc,{alignSelf: 'center',marginBottom: hp(45)}]}>Cancel Invite</Text>
+            </TouchableOpacity>
+          </View>
+        );
+    }
+  };
+
+  return (
+    <BottomSheetModal visible={visible} onClose={() => navigation.navigate('HabitsHomeScreen' as any)}>
+        <View
+                style={{
+                  width: wp(13),
+                  height: 5,
+                  backgroundColor: '#171717',
+                  marginTop: 2,
+                  marginBottom: hp(2),
+                  borderRadius:12,
+                  alignSelf: 'center',
+                }}
+        />
+      {renderStepContent()}
+    </BottomSheetModal>
+  );
+};
+
+export default TeamUpFlowScreen;
+
+const styles = StyleSheet.create({
+  heading: {
+    fontSize: wp(9),
+    fontWeight: 700,
+    marginBottom: 10,
+    color: '#171717',
+    marginTop: 20,
+
+  },
+  subHeading: {
+    fontSize: wp(3.5),
+    fontWeight: 500,
+    color: 'rgba(23, 23, 23, 0.54)',
+    marginBottom: 16,
+  },
+  desc: {
+    // marginVertical: wp(10),
+    textAlign: 'center',
+    fontSize: wp(3.5),
+    color: '#171717',
+    fontWeight: '400',
+    marginBottom: wp(1),
+  },
+  input: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: wp(0.1),
+    borderColor: '#000000',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    height: wp(12),
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: wp(20),
+    color: '#000000',
+    fontSize: wp(3.5),
+  },
+  inputContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: wp(10),
+},
+copyIcon: {
+  marginLeft: wp(2),
+},
+
+  grayBox: {
+    marginLeft:wp(6),
+    marginRight:wp(6),
+    width: wp(88),
+    height: wp(62),
+    backgroundColor: '#686868',
+    marginBottom: wp(8),
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    borderRadius: wp(2.5),
+    marginVertical: 16,
+  },
+
+  //Correct.png Icon 
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  image: {
+    width: wp(13),
+    height: wp(13),
+    marginTop: hp(5),
+    alignSelf: 'center',
+    resizeMode: 'contain',
+  },
+});

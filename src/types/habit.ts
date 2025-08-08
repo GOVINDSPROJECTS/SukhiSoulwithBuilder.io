@@ -5,18 +5,21 @@ export interface Habit {
   id: string;
   title: string;
   completed: boolean;
-}
+  progress_status: string; // add this
+  habit_progress_status:string; // e.g. 'active' or 'inactive'
+  habit_frequency?: string; // e.g. 'daily', 'weekly'
 
+}
 
 export interface CreateHabitPayload {
   habit_name: string;
   habit_description?: string;
-  habit_time?: string; // e.g. '08:30'
+  habit_time: string; // e.g. '08:30'
   habit_startdate?: string; // e.g. '2025-07-25'
   habit_category?: string;
   habit_frequency?: string;
   duration?: string;
-  habit_progress_status?: boolean;
+  habit_progress_status?: string;
   reminders?: string[]; // e.g. ['09:00', '18:00']
   habit_status?:String;
 }
