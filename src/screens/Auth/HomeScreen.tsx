@@ -16,6 +16,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import GradientWrapper from '../../components/GradientWrapper';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 // import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 // import { RootStackParamList } from '@/types/navigation';
 import HabitsList from '../Habits/components/HabitsList';
@@ -354,7 +355,7 @@ const fetchHabits = async () => {
 
   return (
     <GradientWrapper>
-<View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 16 , marginHorizontal:5, marginTop:0}}>
+<View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: wp(4) ,marginTop:0}}>
   {['Mood','Habits','Activity', 'Educate'].map((tab) => (
     <TouchableOpacity
       key={tab}
@@ -366,17 +367,17 @@ const fetchHabits = async () => {
         setActiveTab(tab);
       }}
       style={{
-        paddingHorizontal: 12,
-        paddingVertical: 4,
-        borderRadius: 16,
-        marginHorizontal: 6,
+        paddingHorizontal: wp(3),
+        paddingVertical: wp(1),
+        borderRadius: wp(4),
+        marginHorizontal: wp(1.2),
         backgroundColor: activeTab === tab ? '#245C73' : 'transparent',
       }}
     >
       <Text
         style={{
           color: activeTab === tab ? '#fff' : '#1B3C3E',
-          fontSize: 14,
+          fontSize: wp(3.5),
           fontWeight: '500',
         }}
       >
@@ -399,24 +400,25 @@ const fetchHabits = async () => {
       <View
           ref={moodRef}
           onLayout={(e) => handleLayout('Mood', e)}
-          style={[styles.section, { width: 209, height: 140 }]}
+          style={[styles.section, { width: wp(53), height: wp(34) }]}
       >
-        <Text style={[styles.heading, {fontSize: 36}]}>How are you{'\n'}feeling{'\n'}today?</Text>
+        <Text style={[styles.heading, {fontSize:wp(8.5)}]}>How are you{'\n'}feeling{'\n'}today?</Text>
       </View>
 
                   {/* Mood Slider Card */}
-        <View style={[styles.moodCardSlider, { width: 354, height: 136, alignSelf: 'center' }]}>
-                  <Text style={[styles.moodCardTitle, { fontSize: 20, fontWeight: '600', color: '#2d4c5a', marginBottom: 10 }]}>
+        <View style={[styles.moodCardSlider, { width: wp(89), height: wp(34), alignSelf: 'center' }]}>
+                  <Text style={[styles.moodCardTitle, { fontSize: wp(5), fontWeight: '600', color: '#2d4c5a', marginBottom: wp(2.5) }]}>
                     Take a moment to check in
                   </Text>
 
-                  <View style={{ flexDirection: 'row', width: 270, alignSelf: 'center', justifyContent: 'space-between', marginBottom: 0 }}>
+                  {/* Labels Row */}
+                  <View style={{ flexDirection: 'row', width: wp(68), alignSelf: 'center', justifyContent: 'space-between', marginBottom: wp(0) }}>
                     <Text style={styles.sliderLabel}>Dukhi</Text>
                     <Text style={styles.sliderLabel}>Sukhi</Text>
                   </View>
                   
                   <View
-                    style={[styles.sliderTrack, { backgroundColor: 'transparent', height: 32, width: 270, alignSelf: 'center', marginTop: 0 }]}
+                    style={[styles.sliderTrack, { backgroundColor: 'transparent', height: 32, width: wp(68), alignSelf: 'center', marginTop: 0 }]}
                     onLayout={e => setSliderLeft(e.nativeEvent.layout.x)}
                   >
                     <LinearGradient
@@ -425,17 +427,17 @@ const fetchHabits = async () => {
                       end={{ x: 1, y: 0.5 }}
                       style={{
                         position: 'absolute',
-                        width: 270,
-                        height: 16,
-                        borderRadius: 8,
-                        left: 0,
-                        top: 8,
+                        width: wp(68),
+                        height: wp(4),
+                        borderRadius: wp(2),
+                        left: wp(0),
+                        top: wp(2),
                       }}
                     />
                     <View
                       style={[
                         styles.sliderThumb,
-                        { left: moodValue * (270 - 28), top: 2 },
+                        { left: moodValue * (270 - 28), top: wp(0.5)},
                       ]}
                       {...panResponder.panHandlers}
                     />
@@ -459,15 +461,15 @@ const fetchHabits = async () => {
       <View
           ref={activityRef}
           onLayout={(e) => handleLayout('Activity', e)}
-          style={[styles.card, { width: 354, alignSelf: 'center', padding: 0, height: 111, backgroundColor: '#fff' }]} // added backgroundColor
+          style={[styles.card, { width: wp(89), alignSelf: 'center', padding: 0, height: wp(28), backgroundColor: '#fff' }]} // added backgroundColor
       >
-      <View style={{ padding: 18, flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'flex-end' }}>
-        <Text style={[styles.cardTitle, { fontSize: 32, color: '#3D88A7', marginBottom: 0, alignSelf: 'flex-start' }]}>
+      <View style={{ padding: wp(4.5), flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'flex-end' }}>
+        <Text style={[styles.cardTitle, { fontSize: wp(8), color: '#3D88A7', marginBottom: 0, alignSelf: 'flex-start' }]}>
           Connections
         </Text>
         <TouchableOpacity style={[styles.allHabitsBtn, { marginBottom: 0 }]}>
           <Text style={[styles.allHabitsText, { color: '#666666' }]}>Explore Activities</Text>
-          <Icon name="chevron-right" size={18} color="#3D88A7" />
+          <Icon name="chevron-right" size={18} color="#2D2D2D" style={{marginTop:wp(1)}} />
         </TouchableOpacity>
       </View>
     </View>
@@ -478,22 +480,20 @@ const fetchHabits = async () => {
         onLayout={(e) => handleLayout('Educate', e)}
         style={styles.section}
       >
-        <Text style={[styles.heading,{fontSize:48,marginBottom:0,marginTop:0}]}>Discover</Text>
+        <Text style={[styles.heading,{fontSize:wp(12),marginBottom:0,marginTop:0}]}>Discover</Text>
 
-        <Text style={[{fontSize:16, color: '#000000',marginBottom: 24,marginTop: 0 }]}>Mindful Reads</Text>
+        <Text style={[{fontSize:wp(4), color: '#000000',marginBottom: wp(6),marginTop: 0 }]}>Mindful Reads</Text>
 
         {discoverPosts.map((item) => (
-        <View key={item.id} style={{ marginBottom: 32 }}>
+        <View key={item.id} style={{ marginBottom: wp(8) }}>
           {/* Username and avatar row */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8, marginLeft: 4 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom:wp(2), marginLeft: wp(1) }}>
             <View style={{
-              width: 16, height: 16, borderRadius: 8, backgroundColor: '#B6E388', marginRight: 6
+              width: wp(4), height: wp(4), borderRadius: wp(2), backgroundColor: '#B6E388', marginRight: 6
             }} />
-            <Text style={{ fontWeight: '600', color: '#222', fontSize: 13 }}>{item.author}</Text>
+            <Text style={{ fontWeight: '600', color: '#222', fontSize: wp(3.2) }}>{item.author}</Text>
           </View>
 
-          {/* Card */}
-          <View style={styles.postCard}>
             {item.image ? (
               <View>
                 <Image
@@ -501,7 +501,7 @@ const fetchHabits = async () => {
                   style={styles.postImage}
                   resizeMode="cover"
                 />
-                {/* Overlay title */}
+                {/* Overlay title
                 <Text style={{
                   position: 'absolute',
                   top: '45%',
@@ -514,31 +514,34 @@ const fetchHabits = async () => {
                   textShadowRadius: 6,
                 }}>
                   {item.title}
-                </Text>
+                </Text> */}
               </View>
             ) : (
               <View style={styles.textPostCard}>
-                <Text style={{ color: '#222', fontWeight: '600', fontSize: 15 }}>{item.author}</Text>
+                <Text style={{ color: '#222', fontWeight: '600', fontSize: wp(4) }}>{item.author}</Text>
                 {/*..Error fixed (item.text) to (item.author) */}
               </View>
             )}
+          {/* Card */}
+          
+
 
           <View style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginTop: 10,
-            paddingHorizontal: 10,
+            marginTop: wp(2.5),
+            paddingHorizontal: wp(2.5),
           }}>
 
                 {/* Left Text */}
-                <Text style={{ color: '#252525', fontSize: 12 ,marginLeft: 15}}>
+                <Text style={{ color: '#252525', fontSize: wp(3) ,marginLeft: wp(4.5)}}>
                   Breathing from art!
                 </Text>
 
                 {/* Right Icons */}
                 <View style={{ flexDirection: 'row' }}>
-                  <TouchableOpacity style={{ marginRight: 16}}>
+                  <TouchableOpacity style={{ marginRight: wp(4)}}>
                     <Icon name="heart" size={22} color="#222" />
                   </TouchableOpacity>
                   <TouchableOpacity style={{ marginRight: 16}}>
@@ -547,9 +550,7 @@ const fetchHabits = async () => {
                 </View>
 
           </View>
-
-          
-          </View>        
+             
         </View>
       ))}
         {/* Comments Section (after Discover) */}
@@ -562,21 +563,21 @@ const fetchHabits = async () => {
           {/* Top Row: Avatar + Username */}
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
             <View style={{
-              width: 32,
-              height: 32,
-              borderRadius: 16,
+              width: wp(8),
+              height: wp(8),
+              borderRadius: wp(4),
               backgroundColor: '#D0F288', // dummy avatar color
-              marginRight: 10,
+              marginRight: wp(2.5),
             }} />
-            <Text style={{ fontWeight: 'bold', fontSize: 15 }}>Slimjopesh11</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: wp(3.8) }}>Slimjopesh11</Text>
           </View>
 
           {/* Comment Content */}
-          <View style={{ marginBottom: 12 ,}}>
-            <Text style={{ fontSize: 15, fontWeight: '600', marginBottom: 4 }}>
-              Want to gain healthy body fat? 🍽️
+          <View style={{ marginBottom: wp(3)}}>
+            <Text style={{ fontSize:wp(3.9), fontWeight: '600', marginBottom: wp(1.5) }}>
+              Want to gain healthy body fat? 
             </Text>
-            <Text style={{ color: '#252525', fontSize: 14, lineHeight: 20,textAlign: 'justify' }}>
+            <Text style={{ color: '#252525', fontSize: wp(3.5), lineHeight: wp(5),textAlign: 'justify' }}>
               Try adding calorie-dense foods like creamy avocados, crunchy nuts, and rich olive oil to your meals! 🥑🥜 Don’t forget to up your meal frequency and hit the gym for some strength training! 💪 Always check with a healthcare pro before making big changes!
               {'\n'}
               #HealthyGains #NutritionTips
@@ -585,10 +586,10 @@ const fetchHabits = async () => {
 
           {/* Action Icons */}
           <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 12 }}>
-            <TouchableOpacity style={{ marginRight: 16 }}>
+            <TouchableOpacity style={{ marginRight: wp(4) }}>
               <Icon name="heart" size={22} color="#222" />
             </TouchableOpacity>
-            <TouchableOpacity style={{ marginRight: 8 }}>
+            <TouchableOpacity style={{ marginRight: wp(2) }}>
               <Icon name="bookmark" size={22} color="#222" />
             </TouchableOpacity>
           </View>
@@ -621,13 +622,13 @@ const fetchHabits = async () => {
 const styles = StyleSheet.create({
 
   container: {
-    padding: 16,
+    padding: wp(4),
   },
 commentCard: {
   backgroundColor: '#fff',
-  borderRadius: 16,
-  padding: 16,
-  marginBottom: 32,
+  borderRadius: wp(4),
+  padding: wp(4),
+  marginBottom: wp(8),
   shadowColor: '#000',
   shadowOffset: { width: 0, height: 1 },
   shadowOpacity: 0.05,
@@ -637,35 +638,35 @@ commentCard: {
   topNav: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 16,
+    marginBottom: wp(4),
   },
 topNavText: {
-  fontSize: 16,
+  fontSize: wp(4),
   color: '#888',
-  marginRight: 20,
+  marginRight: wp(5),
 },
 topNavTextActive: {
   fontWeight: 'bold',
-  fontSize: 16,
+  fontSize: wp(4),
   color: '#222',
-  marginRight: 20,
+  marginRight: wp(5),
   textDecorationLine: 'underline',
 },
 
   heading: {
-    fontSize: 18,
+    fontSize: wp(4.5),
     fontWeight: '600',
-    marginBottom: 10,
+    marginBottom: wp(2.5),
     color: '#2D2D2D',
   },
   moodScroll: {
-    marginBottom: 12,
+    marginBottom: wp(3),
   },
 moodCardSlider: {
   backgroundColor: '#FFFFFFCC',  // white with 80% opacity
-  borderRadius: 24,
-  padding: 18,
-  marginBottom: 24,
+  borderRadius: wp(6),
+  padding: wp(4.5),
+  marginBottom: wp(6),
   alignItems: 'center',
   shadowColor: '#b0c4d4',
   shadowOffset: { width: 0, height: 2 },
@@ -675,16 +676,16 @@ moodCardSlider: {
 },
   moodCard: {
     backgroundColor: '#245C73',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    marginRight: 10,
+    paddingVertical: wp(2.5),
+    paddingHorizontal: wp(5),
+    borderRadius: wp(5),
+    marginRight: wp(2.5),
   },
 moodCardTitle: {
-  fontSize: 20,
+  fontSize: wp(5),
   fontWeight: '600',
   color: '#2d4c5a',
-  marginBottom: 10,
+  marginBottom: wp(2.5),
 },
   moodCardActive: {
     backgroundColor: '#0e3c61',
@@ -695,53 +696,53 @@ moodCardTitle: {
   },
   quoteBox: {
     backgroundColor: '#c6dbe8',
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 20,
+    padding: wp(3),
+    borderRadius: wp(3),
+    marginBottom: wp(5),
   },
   quoteText: {
     color: '#333',
     fontStyle: 'italic',
   },
   section: {
-    marginBottom: 20,
+    marginBottom: wp(5),
   },
 sliderRow: {
   flexDirection: 'row',
   alignItems: 'center',
   width: '100%',
-  marginBottom: 6,
+  marginBottom: wp(1.5),
   justifyContent: 'space-between',
 },
 sliderLabel: {
-  fontSize: 12,
+  fontSize: wp(3),
   color: '#2d4c5a',
-  width: 48,
+  width: wp(12),
   textAlign: 'center',
   fontWeight: '500',
 },
 sliderTrack: {
   flex: 1,
-  height: 32,
+  height: wp(8),
   justifyContent: 'center',
   alignItems: 'center',
   marginHorizontal: 6,
   position: 'relative',
 },
   sliderBg: {
-    height: 8,
-    borderRadius: 4,
+    height:wp(2),
+    borderRadius: wp(1),
     backgroundColor: '#b6d6c9',
     width: '100%',
     position: 'absolute',
   },
 sliderThumb: {
   position: 'absolute',
-  width: 28,
-  height: 28,
-  borderRadius: 14,
+  width: wp(7),
+  height: wp(7),
+  borderRadius: wp(3.2),
   backgroundColor: '#DCEFf2',
-  borderWidth: 2,
+  borderWidth: wp(0.5),
   borderColor: '#fff',
   top: -6,
   shadowColor: '#b0c4d4',
@@ -751,17 +752,17 @@ sliderThumb: {
   elevation: 2,
 },
 sliderHint: {
-  fontSize: 10,
+  fontSize: wp(2.5),
   color: '#245C73',
-  marginTop: 10,
+  marginTop: wp(2.5),
   textAlign: 'center',
 },
   card: {
     // Gradient background for Habits section
     backgroundColor:'#FFFFFF',
-    borderRadius: 18,
-    padding: 18,
-    marginBottom: 20,
+    borderRadius: wp(4.5),
+    padding: wp(4.5),
+    marginBottom: wp(5),
     shadowColor: '#245C73',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
@@ -770,26 +771,26 @@ sliderHint: {
     overflow: 'hidden',
   },
   cardTitle: {
-    fontSize: 32,
+    fontSize: wp(8),
     fontWeight: '700',
     color: '#3D88A7',
-    marginBottom: 18,
+    marginBottom: wp(4.5),
   },
   habitRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: wp(3),
   },
 habitCircle: {
-  width: 26,
-  height: 26,
-  borderRadius: 18,
-  borderWidth: 4,
+  width: wp(6.5),
+  height: wp(6.5),
+  borderRadius: wp(4.5),
+  borderWidth: wp(1),
   borderColor: '#3D88A7',
   backgroundColor: '#fff',
   alignItems: 'center',
   justifyContent: 'center',
-  marginLeft: 10,
+  marginLeft: wp(2.5),
 },
   habitCircleActive: {
     backgroundColor: '#fff',
@@ -799,84 +800,85 @@ habitCircle: {
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-end',
-    marginTop: 5,
+    marginTop:wp(1.3),
   },
   allHabitsText: {
     color: '#666666',
     fontWeight: '500',
-    fontSize: 15,
+    fontSize: wp(4),
     marginRight: 2,
     marginTop: 2,
   },
   habitText: {
     color: '#245C73',
     fontWeight: '700',
-    fontSize: 24,
+    fontSize: wp(6),
     flex: 1,
   },
   habitCircleDot: {
-    width: 26,
-    height: 26,
+    width: wp(6.5),
+    height: wp(6.5),
     borderRadius: 14,
     backgroundColor: '#3D88A7', // dark center    #3D88A7
   },
   taskCard: {
     backgroundColor: '#fff',
-    padding: 14,
-    borderRadius: 10,
-    marginBottom: 10,
+    padding: wp(3.5),
+    borderRadius: wp(2.5),
+    marginBottom: wp(2.5),
   },
   taskText: {
     color: '#333',
   },
-postCard: {
-  backgroundColor: '#fff',
-  borderRadius: 24,
-  width: 354,
-  alignSelf: 'center',
-  marginBottom: 20,
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.08,
-  shadowRadius: 8,
-  elevation: 3,
-  paddingBottom: 12,
-  overflow: 'hidden',
-},
+// postCard: {
+//   backgroundColor: '#fff',
+//   borderRadius: wp(6),
+//   width: wp(89),
+//   alignSelf: 'center',
+//   marginBottom: wp(5),
+//   shadowColor: '#000',
+//   shadowOffset: { width: 0, height: 2 },
+//   shadowOpacity: 0.08,
+//   shadowRadius: 8,
+//   elevation: 3,
+//   paddingBottom: wp(3),
+//   overflow: 'hidden',
+// },
 textPostCard: {
-  backgroundColor: '#fff',
-  borderRadius: 18,
-  padding: 18,
-  minHeight: 80,
+  borderRadius: wp(4.5),
+  padding: wp(4.5),
+  minHeight: wp(20),
   justifyContent: 'center',
 },
 postImage: {
-  width: 354,
-  height: 443,
-  borderRadius: 24,
+  width: wp(84),
+  height: wp(110),
+  borderRadius: wp(6),
+  justifyContent: 'center',
+  // marginRight:wp(8)
 },
   postTitle: {
-    fontSize: 16,
+    fontSize: wp(4),
     fontWeight: 'bold',
     color: '#222',
   },
   postAuthor: {
-    fontSize: 12,
+    fontSize: wp(3),
     color: '#777',
-    marginBottom: 6,
+    marginBottom: wp(1.5),
   },
   postText: {
     color: '#444',
-    marginBottom: 10,
+    marginBottom: wp(2.5),
   },
 actions: {
   flexDirection: 'row',
   alignItems: 'center',
-  marginTop: 8,
-  marginLeft: 8,
-  gap: 18,
+  marginTop: wp(2),
+  marginLeft: wp(2),
+  gap: wp(4.5),
 },
 actionIcon: {
-  marginRight: 18,
+  marginRight: wp(4.5),
 },
 });

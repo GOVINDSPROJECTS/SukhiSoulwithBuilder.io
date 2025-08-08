@@ -39,9 +39,9 @@ import HabitCircleScreen from '../screens/Habits/HabitCircleScreen';
 import FriendDetailScreen from '../screens/Habits/FriendDetailScreen';
 import AddHabitScreen from '../screens/Habits/AddHabitScreen';
 import HomeScreen from '@/screens/Auth/HomeScreen';
-
-
-
+import UpdateEmailOtp from '../screens/UpdateEmailOtp'
+import ReportsLogsScreen from '../screens/ReportsLogsScreen'
+import SavedItemsScreen from '../screens/SavedItemsScreen'
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
@@ -63,6 +63,10 @@ const RootNavigator = () => {
         <Stack.Screen name="HabitCircle" component={HabitCircleScreen} />
         <Stack.Screen name="FriendDetail" component={FriendDetailScreen} />
         <Stack.Screen name="AddHabitScreen" component={AddHabitScreen} />
+        <Stack.Screen name="UpdateEmailOtp" component={UpdateEmailOtp} />
+        <Stack.Screen name="ReportsLogsScreen" component={ReportsLogsScreen} />
+        <Stack.Screen name="SavedItemsScreen" component={SavedItemsScreen} />
+
         </>
       )}
     </Stack.Navigator>
