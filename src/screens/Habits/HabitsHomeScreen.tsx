@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, ScrollView, Image, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Image, Alert,TouchableOpacity } from 'react-native';
 import WeeklyTracker from './components/WeeklyTracker';
 import HabitsList from './components/HabitsList';
 import GradientWrapper from '../../components/GradientWrapper';
@@ -31,6 +31,9 @@ const HabitsHomeScreen = () => {
 
   const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
   const [showProgressModal, setShowProgressModal] = useState(false);
+
+
+  const [showTogetherHabbit, setShowTogetherHabbit] = useState(false);
 
 
   const [habits, setHabits] = useState<Habit[]>([]);
@@ -226,6 +229,16 @@ const fetchHabits = async () => {
         />
 
 
+
+
+
+
+
+
+
+
+
+
         <HabitsList
           title="Let's kick off Your routine"
           habits={habits}
@@ -234,6 +247,17 @@ const fetchHabits = async () => {
           onAddHabitPress={handleAddHabit}
           maxItemsToShow={50}
         />
+
+
+
+
+
+
+
+
+
+
+
 
         <AppText variant="h1" style={[styles.text]}>
           Building habbits don't have to be hard
@@ -248,6 +272,7 @@ const fetchHabits = async () => {
           onPress={() => setShowModal(true)}
         />
 
+        {/* coach payment and etc. */}
         <BottomSheetModal visible={showModal} onClose={() => setShowModal(false)}>
           <View
             // eslint-disable-next-line react-native/no-inline-styles
@@ -275,7 +300,7 @@ const fetchHabits = async () => {
         </BottomSheetModal>
 
 
-
+        {/* Progress Input */}
         <BottomSheetModal visible={showPaymentModal} onClose={() => setShowPaymentModal(false)}>
           <View
             style={{
@@ -312,6 +337,11 @@ const fetchHabits = async () => {
             style={{ width: wp(35), height: wp(11), alignSelf: 'center', marginBottom: hp(5) }}
           />
         </BottomSheetModal>
+
+
+
+
+
         <ProgressInputModal
           visible={showProgressModal}
           onClose={() => setShowProgressModal(false)}
@@ -335,7 +365,72 @@ const fetchHabits = async () => {
           onPress={() => navigation.navigate('HomeScreen', { scrollToDiscover: true })}
         />
 
-        <BuildHabitTogetherCard onPress={() => navigation.navigate('TeamUpFlow')} />
+        {/* <BuildHabitTogetherCard onPress={() => navigation.navigate('TeamUpFlow')} /> */}
+
+        <View style={styles.card}>
+                <Text style={styles.desc}>
+                Team up for better habits. Consistency loves company.
+                </Text>
+            <TouchableOpacity onPress={() => setShowTogetherHabbit(true)}>
+                <View style={styles.ctaRow}>
+                    <Text style={styles.cta}>Build a Habit Together</Text>
+                    <Text style={styles.arrow}>{' >'}</Text>
+                </View>
+            </TouchableOpacity>
+
+        </View>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <BottomSheetModal visible={showTogetherHabbit} onClose={() => setShowTogetherHabbit(false)}>
+            <View>
+              <View style={{width: wp(73),height:hp(30)}}>
+                <Text style={styles.heading}>Team Up to Stay On Track</Text>
+                <Text style={styles.subHeading}>Create your Habit Circle, a group to start your habit journey. Track progress together, send nudges, and celebrate wins!</Text>
+              </View>
+              <View style={styles.grayBox} />
+              <Text style={[styles.desc,{marginVertical:wp(7)}]}>Stick to habits 95% better—together</Text>
+            
+              <PrimaryButton
+                  title="Create Habit Circle"
+                  onPress={() => navigation.navigate('GetEnterCode')} 
+                  style={{ width:wp(50),height:wp(11),alignSelf:"center",marginBottom: hp(7) }}
+              />
+
+            </View>
+        </BottomSheetModal>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
 
 
       </ScrollView>
@@ -348,6 +443,54 @@ const fetchHabits = async () => {
 export default HabitsHomeScreen;
 
 const styles = StyleSheet.create({
+    heading: {
+      fontSize: wp(9),
+      fontWeight: 700,
+      marginBottom: 10,
+      color: '#171717',
+      marginTop: 20,
+    },
+    subHeading: {
+      fontSize: wp(3.5),
+      fontWeight: 500,
+      color: 'rgba(23, 23, 23, 0.54)',
+      marginBottom: 16,
+    },
+    card: {
+    backgroundColor: '#f9f9f9',
+    borderRadius: wp('3%'),
+    padding: wp('5%'),
+    marginVertical: hp('1%'),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    marginHorizontal: wp('2%'), // add horizontal margin for spacing
+  },
+  desc: {
+    fontSize: wp('3.5%'),
+    color: '#2D2D2D',
+    marginRight:wp(2),
+    marginBottom: hp('1%'),
+  },
+  ctaRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginLeft:wp(18),
+    marginTop: hp('2%'),
+  },
+  cta: {
+    fontSize: wp('5%'),
+    fontWeight: 'bold',
+    color: '#222',
+  },
+  arrow: {
+    fontSize: wp('5%'),
+    fontWeight: 'bold',
+    color: '#2D2D2D',
+  },
+
   container: {
     paddingBottom: hp('5%'),
     paddingTop: hp('1%'),

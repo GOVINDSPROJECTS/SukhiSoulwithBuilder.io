@@ -73,6 +73,13 @@ const ProfileScreen = () => {
     }
   }, [user]);
 
+  const handleLogout = () => {
+    logout();
+    // navigation.navigate('AuthStack', { screen: 'Login' });
+  };
+
+  
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Profile Picture */}
@@ -114,9 +121,7 @@ const ProfileScreen = () => {
         {/* Log Out Button */}
         <PrimaryButton
               title="Log Out"
-                onPress={() => {
-                  
-                }}
+              onPress={handleLogout}
               style={styles.logoutButton}
         />   
 

@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 
 type Habit = {
     id: string;
@@ -77,11 +79,15 @@ const HabitsList = ({
 
   {showAddButton ? (
     <TouchableOpacity style={styles.addButton} onPress={onAddHabitPress}>
-      <Text style={styles.plusIcon}>+</Text>
+      <Text style={styles.plusIcon}>{'+'}</Text>
     </TouchableOpacity>
   ):
   <TouchableOpacity>
-    <Text style={styles.emptyStateText} onPress={onAllHabitPress}>All habits</Text>
+    <View style={[styles.emptyStateText,{flexDirection:"row",alignSelf:"flex-end"}]}>
+        <Text style={[styles.allHabitsText,{color:"#666666",fontSize:wp(4)}]} onPress={onAllHabitPress}>All habits</Text>
+        <AntDesign name="right" color="#2D2D2D" size={14} style={{marginTop:hp(0.4)}}/>
+    </View>
+
   </TouchableOpacity>
   }
 </View>
@@ -93,7 +99,7 @@ export default HabitsList;
 const styles = StyleSheet.create({
   wrapper: {
     marginVertical: hp('2%'),
-    width: wp('90%'),
+    width: wp(90),
     padding: wp('4%'),
     backgroundColor: '#fff',
     borderRadius: wp('3%'),
@@ -104,6 +110,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+    alignSelf:"center",
 
   },
   habitRow: {
@@ -163,15 +170,22 @@ const styles = StyleSheet.create({
   emptyStateContainer: {
   alignItems: 'center',
   justifyContent: 'center',
-  marginTop: hp('5%'),
+  marginTop: hp('1'),
 },
 
 emptyStateText: {
-  fontSize: 16,
+  fontSize: wp(3.6),
   color: '#888',
   fontStyle: 'italic',
   textAlign: 'right',
   marginTop: hp('2%'),
+},
+allHabitsText: {
+    color: '#666666',
+    fontWeight: '500',
+    fontSize: wp(4),
+    marginRight: 2,
+    marginTop: 2,
 },
 
 });

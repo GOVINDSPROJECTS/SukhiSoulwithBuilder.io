@@ -51,7 +51,8 @@ export type RootStackParamList = {
   HabitsHome: undefined;
   DayDetail: { date: string };
   TeamUpFlow: undefined;
-  HabitCircle: undefined;
+  // HabitCircle: undefined;
+   HabitCircleScreen: { joinedCode: string }; 
   FriendDetail: { friendName: string };
   AddHabitScreen: undefined;
   otpVerificationScreen: undefined;
@@ -60,7 +61,10 @@ export type RootStackParamList = {
       name?: string;
       age?: string;
       sex?: string;
-  };
+    };
   ReportsLogsScreen:undefined;
   SavedItemsScreen:undefined;
+  NextScreen: { roomId: string }; 
+  GetEnterCode:undefined;
+  EnterCodeScreen: undefined;
 };

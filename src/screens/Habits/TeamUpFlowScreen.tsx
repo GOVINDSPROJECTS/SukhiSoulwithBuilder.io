@@ -25,6 +25,33 @@ const [habitID, setHabitID] = useState('');
     else if (step === 'created') setStep('invite');
     else setVisible(false); // Done
   };
+const handleCreateHabitCircle = async () => {
+  try {
+    const response = await fetch('http://3.6.142.117/api/habitrooms', {
+      method: 'POST', // or 'GET' depending on API spec
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // body: JSON.stringify({ /* if API needs data */ })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      const roomId = data.room_id; // adjust if API response structure is different
+
+      // Store roomId in navigation params
+      navigation.navigate('NextScreen', { roomId });
+
+    } else {
+      console.error('API Error:', data);
+      Alert.alert('Failed to create habit circle.');
+    }
+  } catch (error) {
+    console.error('Network Error:', error);
+    Alert.alert('Something went wrong. Please try again.');
+  }
+};
   
   const generateID = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -62,6 +89,35 @@ const [habitID, setHabitID] = useState('');
 
           </View>
         );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       case 'circle':
         return (
           <View>
@@ -99,6 +155,31 @@ const [habitID, setHabitID] = useState('');
             />
           </View>
         );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       case 'created':
         return (
           <View>
@@ -119,6 +200,36 @@ const [habitID, setHabitID] = useState('');
             <Text style={[styles.desc,{alignSelf: 'center',marginBottom: hp(5)}]}>You can see your Habit Circle on Momentum</Text>
           </View>
         );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
       case 'invite':
         return (
           <View>
@@ -132,14 +243,14 @@ const [habitID, setHabitID] = useState('');
               <Text style={[{alignSelf: 'center',}]}>We’ll notify you when they join</Text>
             </View>
 
-            <PrimaryButton
+            {/* <PrimaryButton
                 title="Done"
                   onPress={() => {
                     setVisible(false);
-                    navigation.replace('HabitCircle');
+                    navigation.navigate('HabitCircleScreen');
                   }}
                 style={{ width:wp(26),height:wp(11),alignSelf:"center",marginBottom: hp(1) }}
-            />
+            /> */}
 
             <TouchableOpacity>
                 <Text style={[styles.desc,{alignSelf: 'center',marginBottom: hp(45)}]}>Cancel Invite</Text>
@@ -209,10 +320,10 @@ const styles = StyleSheet.create({
     fontSize: wp(3.5),
   },
   inputContainer: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  marginBottom: wp(10),
-},
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: wp(10),
+  },
 copyIcon: {
   marginLeft: wp(2),
 },
