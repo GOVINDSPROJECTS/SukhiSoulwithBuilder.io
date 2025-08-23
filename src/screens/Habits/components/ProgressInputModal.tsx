@@ -129,7 +129,7 @@ const ProgressInputModal = ({ visible, onClose, habit, onSubmitSuccess }: Props)
       formData.append('title', habit.title);
       formData.append('description', note.trim() || '.');
       formData.append('status', 'true'); // always submitting progress as complete
-    formData.append('tracked_date', new Date().toISOString().split('T')[0]); // Format as YYYY-MM-DD
+      formData.append('tracked_date', new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" })); // Format as YYYY-MM-DD
 
 
       await api.post('/userhabitprogressreports', formData, {

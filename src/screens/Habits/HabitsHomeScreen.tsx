@@ -22,6 +22,7 @@ import { useAuthStore } from '@/store/authStore';
 
 
 
+
 const HabitsHomeScreen = () => {
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -40,89 +41,66 @@ const HabitsHomeScreen = () => {
 
   const progressMapRef = useRef<Record<string, any>>({}); // 👈 Add this at the top (before useEffect)
 
-  interface Plan {
-    id: string;
-    title: string;
-    features: string[];
-    price: string;
-    buttonText: string;
-  }
-  const plans: Plan[] = [
-    {
-      id: '1',
-      title: 'Habit Coach',
-      features: ['1:1 personal support', 'Weekly guidance', 'Tailored suggestions'],
-      price: '₹1999',
-      buttonText: 'Unlock Your Coach',
-    },
-    {
-      id: '2',
-      title: 'Momentum',
-      features: ['7 Premium habits', 'Premium analytics', 'Smart reminders'],
-      price: '₹399',
-      buttonText: 'Get Premium',
-    },
-    {
-      id: '3',
-      title: 'Ingeno',
-      features: ['7 Premium habits', 'AI-based suggestions', 'Premium insights'],
-      price: '₹599',
-      buttonText: 'Get Premium',
-    },
-    {
-      id: '4',
-      title: 'Momentum and Ingeno',
-      features: ['All Momentum features', 'All Ingeno features', 'Exclusive insights'],
-      price: '₹899',
-      buttonText: 'Get Premium',
-    },
-    {
-      id: '5',
-      title: 'Therapy',
-      features: ['1:1 personal support', 'Professional guidance', 'Private sessions'],
-      price: '₹2499',
-      buttonText: 'Get Premium',
-    },
-  ];
-
-// const PrimaryButton = ({ title, onPress, style }: any) => (
-//   <TouchableOpacity style={[styles.primaryButton, style]} onPress={onPress}>
-//     <Text style={styles.primaryButtonText}>{title}</Text>
-//   </TouchableOpacity>
-// );
+  const [habitCompletionMap, setHabitCompletionMap] = useState<Record<string, { completed: number; total: number }>>({});
 
 
 const fetchHabits = async () => {
   try {
+    console.log("📡 Fetching habits + progress reports...");
     const [habitRes, progressRes] = await Promise.all([
       api.get('/userhabits'),
       api.get('/userhabitreports'),
     ]);
 
-    const rawHabits = habitRes.data.habits;
-    const progressReports = progressRes.data.habitreport;
+    console.log("✅ Habits API:", habitRes.data);
+    console.log("✅ Reports API:", progressRes.data);
+
+    const rawHabits = habitRes.data.habits || [];
+    const progressReports = progressRes.data.habitreport || [];
 
     if (!Array.isArray(progressReports)) {
-      console.error("progressReports is not an array:", progressReports);
+      console.error('❌ progressReports is not an array:', progressReports);
       return;
     }
 
     const latestProgressMap: Record<string, any> = {};
+    const completionMap: Record<string, { completed: number; total: number }> = {};
+
+    const totalHabits = rawHabits.length;
+    console.log("📊 Total habits:", totalHabits);
 
     progressReports.forEach((report: any) => {
       const habitId = report.habit_id.toString();
 
+      // ✅ track latest report
       if (
         !latestProgressMap[habitId] ||
         new Date(report.updated_at) > new Date(latestProgressMap[habitId].updated_at)
       ) {
         latestProgressMap[habitId] = report;
       }
+
+      // ✅ build per-day completion
+      const day = report.tracked_date;
+      if (!completionMap[day]) {
+        completionMap[day] = { completed: 0, total: totalHabits };
+      }
+
+      if (report.status === 'true') {
+        completionMap[day].completed += 1;
+      }
     });
 
+    console.log("📅 CompletionMap built:", completionMap);
+
+    // ✅ keep refs
     progressMapRef.current = latestProgressMap;
 
-    const today = new Date().toISOString().split('T')[0];
+    // ✅ update completion map for WeeklyTracker
+    setHabitCompletionMap(completionMap);
+
+    // keep existing formatting for habits list
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
 
     const formattedHabits: Habit[] = rawHabits.map((habit: any) => {
       const habitId = habit.id.toString();
@@ -163,11 +141,11 @@ const fetchHabits = async () => {
     });
 
     setHabits(formattedHabits);
+
   } catch (error) {
-    console.error('Error fetching habits or progress reports:', error);
+    console.error('❌ Error fetching habits or progress reports:', error);
   }
 };
-
 
   useEffect(() => {
     fetchHabits();
@@ -207,7 +185,7 @@ const fetchHabits = async () => {
   const token = useAuthStore.getState().token;
   const isCurrentlyCompleted = habit.completed;
   const newStatus = !isCurrentlyCompleted;
-  const todayDate = new Date().toISOString().split('T')[0];
+  const todayDate = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
 
   try {
     const alreadySubmitted = await checkAlreadySubmitted(habit.id);
@@ -296,14 +274,11 @@ const fetchHabits = async () => {
         <AppText variant="caption" style={[styles.subHeader,{color:"#245C73"}]}>Create habits that stick</AppText>
 
         <WeeklyTracker
-          title="Here's how far you've come >"
-          habitCompletionMap={{
-            '2025-08-09': { completed: 2, total: 10 },
-            '2025-08-08': { completed: 10, total: 10 },
-            '2025-08-07': { completed: 5, total: 10 },
-          }}
-          onDayPress={(date) => navigation.navigate('DayDetail', { date })}
-        />
+  title="Here's how far you've come >"
+  habitCompletionMap={habitCompletionMap}
+  onDayPress={(date) => navigation.navigate('DayDetail', { date })}
+/>
+
 
 
 
