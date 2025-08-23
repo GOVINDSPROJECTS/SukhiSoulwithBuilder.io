@@ -169,7 +169,7 @@
 
 // });
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import dayjs from 'dayjs';
@@ -186,7 +186,6 @@ type Props = {
   };
 };
 
-
 const WeeklyTracker = ({
   title,
   highlightedDates = [],
@@ -194,6 +193,8 @@ const WeeklyTracker = ({
   habitCompletionMap = {},
 }: Props) => {
   const scrollRef = useRef<ScrollView>(null);
+  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD")); // 👈 Track selected date
+
   const weekDays = Array.from({ length: 7 }).map((_, i) =>
     dayjs().startOf('week').add(i + 1, 'day')
   );
@@ -201,20 +202,19 @@ const WeeklyTracker = ({
   const todayIndex = weekDays.findIndex((d) => dayjs().isSame(d, 'day'));
 
   useEffect(() => {
-    // Auto-scroll to today's position after layout
     setTimeout(() => {
       if (scrollRef.current && todayIndex >= 0) {
         scrollRef.current.scrollTo({ x: todayIndex * (wp('12%') + wp('3%')), animated: true });
       }
-    }, 300); // delay ensures layout is ready
+    }, 300);
   }, []);
 
   const scrollToIndex = (index: number) => {
-  if (scrollRef.current) {
-          scrollRef.current.scrollTo({
-            x: index * (wp('12%') + wp('3%')), // Width of circle + gap
-            animated: true,
-          });
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        x: index * (wp('12%') + wp('3%')),
+        animated: true,
+      });
     }
   };
 
@@ -230,22 +230,27 @@ const WeeklyTracker = ({
         {weekDays.map((day, index) => {
           const dateStr = day.format('YYYY-MM-DD');
           const isToday = dayjs().isSame(day, 'day');
-          const isHighlighted = highlightedDates.includes(dateStr);
+          const isSelected = selectedDate === dateStr; // 👈 check if selected
           const progress = habitCompletionMap?.[dateStr];
           const percentDone = progress && progress.total > 0 ? progress.completed / progress.total : 0;
 
           return (
-               <TouchableOpacity
-                  key={index}
-                  onPress={() => {
-                    onDayPress?.(dateStr);
-                    scrollToIndex(index); // ✅ Scroll to tapped index
-                    
-                  }}
-                >
-              <View style={[styles.dateCircle, isToday && styles.today]}>
+            <TouchableOpacity
+              key={index}
+              onPress={() => {
+                setSelectedDate(dateStr); // 👈 set selected
+                onDayPress?.(dateStr);   // 👈 notify parent
+                scrollToIndex(index);
+              }}
+            >
+              <View
+                style={[
+                  styles.dateCircle,
+                  isToday && styles.today,
+                  isSelected && styles.selected, // 👈 apply selected style
+                ]}
+              >
                 <View style={[styles.fillOverlay, { height: `${percentDone * 100}%` }]} />
-                {/* <Text style={styles.dayText}>{day.format('dd')[0]}</Text> */}
                 <Text style={styles.dateText}>{day.date()}</Text>
               </View>
             </TouchableOpacity>
@@ -259,35 +264,35 @@ const WeeklyTracker = ({
 export default WeeklyTracker;
 
 const styles = StyleSheet.create({
-    wrapper: {
-  marginVertical: hp('3%'),
-  padding: wp('4%'),
-  backgroundColor: '#fff',
-  borderRadius: wp('3%'),
-  elevation: 4, // Android shadow
-  shadowColor: '#000', // iOS shadow
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 4,
-  borderWidth: 1,
-  borderColor: '#eee',
-  width: wp('90%'),
-  height:wp(33),
-  // marginHorizontal: wp('5%'), // add horizontal margin for spacing
-},
+  wrapper: {
+    marginVertical: hp('3%'),
+    padding: wp('4%'),
+    backgroundColor: '#fff',
+    borderRadius: wp('3%'),
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    borderWidth: 1,
+    borderColor: '#eee',
+    width: wp('90%'),
+    height: wp(33),
+  },
   title: {
+     width: wp('100%'),
     fontSize: wp(4.2),
     fontWeight: '500',
     marginBottom: hp('2%'),
     marginHorizontal: wp('2%'),
-    marginRight:wp(30),
+    marginRight: wp(30),
     color: '#2D2D2D',
   },
   container: {
     flexDirection: 'row',
-    marginLeft:wp(1),
+    marginLeft: wp(1),
     gap: wp('2.6%'),
-     alignSelf:'center'
+    alignSelf: 'center',
   },
   dateCircle: {
     width: wp('9%'),
@@ -298,7 +303,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'hidden',
     position: 'relative',
-   
   },
   fillOverlay: {
     position: 'absolute',
@@ -312,15 +316,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#104256',
   },
-  dayText: {
-    fontSize: wp('3%'),
-    color: '#333',
-    zIndex: 1,
+  selected: {
+    backgroundColor: '#245C73', // 👈 Dark highlight for selected
   },
   dateText: {
     fontSize: wp('3.5%'),
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff', // 👈 white text when selected
     zIndex: 1,
   },
 });

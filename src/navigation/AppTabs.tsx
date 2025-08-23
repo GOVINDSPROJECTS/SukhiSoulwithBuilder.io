@@ -231,7 +231,7 @@ const AppTabs = () => {
   const renderScene = ({ route }: any) => {
     switch (route.key) {
       case 'home':
-        return <HomeScreen />;
+        return <HomeScreen goToHabits={() => setIndex(1)} goToInsync={() => setIndex(2)}/>;
       case 'habits':
         return <HabitsStack />;
       case 'settings':

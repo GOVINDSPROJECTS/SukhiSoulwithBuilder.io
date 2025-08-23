@@ -89,8 +89,8 @@ const ProfileScreen = () => {
       />
 
       {/* Name and Created Date */}
-      <Text style={styles.userName}>{username}</Text>
-      <Text style={styles.createdDate}>created on {actOpen}</Text>
+      <Text style={styles.userName}>{user?.name}</Text>
+      {/* <Text style={styles.createdDate}>member since {user?.created_at}</Text> */}
 
       {/* Reports and Logs (Card Style) */}
       <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('ReportsLogsScreen')} >
@@ -166,7 +166,7 @@ const ProfileScreen = () => {
            
             <View style={{ marginTop:wp(0.5),flexDirection: 'row',justifyContent:'space-evenly',gap:wp(27)}}>
             
-                  <Text style={styles.name}>{firstName} {lastName}</Text>
+                  <Text style={styles.name}>{user?.name}</Text>
                    <TouchableOpacity
                       onPress={()=>setShowUpdateModal(true)}
                     >
@@ -181,7 +181,7 @@ const ProfileScreen = () => {
            
             <View style={{ marginTop:wp(0.5),flexDirection: 'row',justifyContent:'space-evenly',gap:wp(27)}}>
             
-                  <Text style={styles.name}>{email} </Text>
+                  <Text style={styles.name}>{user?.email} </Text>
                    <TouchableOpacity
                       onPress={() => setShowEmailModal(true)}
                     >
@@ -196,7 +196,7 @@ const ProfileScreen = () => {
            
             <View style={{ marginTop:wp(0.5),flexDirection: 'row',justifyContent:'space-evenly',gap:wp(27)}}>
             
-                  <Text style={styles.name}>{gender}</Text>
+                  <Text style={styles.name}>{user?.gender ?? 'Not mentioned'}</Text>
                    <TouchableOpacity
                       onPress={()=>setShowGenderPicker(true)}
                     >
@@ -250,19 +250,19 @@ const ProfileScreen = () => {
         </View>
 
 
-        <Text style={[styles.text18,{marginLeft:wp(3)}]}>First Name</Text>
+        <Text style={[styles.text18,{marginLeft:wp(3)}]}>Full Name</Text>
         <TextInput
-          value={firstName}
+          value={user?.name ?? ''}
           style={styles.inputStyle}
           onChangeText={(text) => setFirstName(text)}
         />
 
-        <Text style={[styles.text18,{marginLeft:wp(3),marginTop:hp(4)}]}>Last Name</Text>
+        {/* <Text style={[styles.text18,{marginLeft:wp(3),marginTop:hp(4)}]}>Last Name</Text>
         <TextInput
           value={lastName}
           style={styles.inputStyle}
           onChangeText={(text) => setLastName(text)}
-        />
+        /> */}
 
         <PrimaryButton
           title="Save"
