@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '@/types/navigation';
@@ -10,7 +10,7 @@ import colors from '@/theme/colors';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import HabitsList from './components/HabitsList';
 import GrowthChart from './components/GrowthChart';
-
+import { useIsFocused } from '@react-navigation/native';
 
 
 const TABS = ['Today', 'Week', 'Month'];
@@ -21,16 +21,20 @@ const DayDetailScreen = () => {
   const route = useRoute<DayDetailScreenRouteProp>();
   const { date } = route.params;
 
+  
+  const isFocused = useIsFocused();
+  
+  // if (!isFocused) return null; // Don't render until focused
   const [activeTab, setActiveTab] = useState('Today');
   const [selectedDate, setSelectedDate] = useState(date);
 
   const [habits, setHabits] = useState([
-    { id: '1', title: 'Cold Showers', completed: false },
-    { id: '2', title: 'Exercise', completed: true },
-    { id: '3', title: 'Meditation', completed: true },
-    { id: '4', title: 'Journaling', completed: true },
-    { id: '5', title: 'Reading', completed: true },
-    { id: '6', title: 'Stretching', completed: true },
+    { id: '1', title: 'Cold Showers', completed: false, habit_progress_status: 'incomplete' },
+    { id: '2', title: 'Exercise', completed: true, habit_progress_status: 'complete' },
+    { id: '3', title: 'Meditation', completed: true, habit_progress_status: 'complete' },
+    { id: '4', title: 'Journaling', completed: true, habit_progress_status: 'complete' },
+    { id: '5', title: 'Reading', completed: true, habit_progress_status: 'complete' },
+    { id: '6', title: 'Stretching', completed: true, habit_progress_status: 'complete' },
   ]);
 
   const habitCompletionMap = {
@@ -42,6 +46,14 @@ const DayDetailScreen = () => {
     '2024-07-04': { completed: 2, total: 3 },
     '2024-07-05': { completed: 3, total: 3 },
   };
+
+    // 2. Update state when date or focus changes
+  useEffect(() => {
+    if (isFocused) {
+      setSelectedDate(date);
+      setActiveTab('Today'); // Optional: reset tab to Today on new date
+    }
+  }, [date, isFocused]);
 
   const toggleHabitCompletion = (id: string) => {
     const updated = habits.map(habit =>
@@ -140,7 +152,7 @@ const DayDetailScreen = () => {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff',paddingHorizontal: 20,paddingVertical: 40, }}>
+    <View style={{ flex: 1, backgroundColor: '#ffffff',paddingHorizontal: 20,paddingVertical: 40, }}>
 
         {/* Custom Tab Bar */}
         <View style={styles.tabBar}>

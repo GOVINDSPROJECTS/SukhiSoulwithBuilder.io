@@ -232,7 +232,7 @@ const handleCreateHabit = async () => {
       <PrimaryButton
                 title="Create Habit"
                 onPress={handleCreateHabit}
-                style={{ width:wp(40),height:wp(11),alignSelf:"center",marginBottom: hp(5),marginTop:wp(8) }}
+                style={{ width:wp(40),height:wp(11),alignSelf:"center",marginBottom: hp(22),marginTop:wp(8) }}
         />
       
 
@@ -284,20 +284,30 @@ export default AddHabitScreen;
 
 const styles = StyleSheet.create({
   container: {
-    padding: wp('6%'),
-    backgroundColor: '#f9f9f9',
+    padding: wp('4%'),
+    backgroundColor: '#ffffff',
     alignItems:"center",
+    
   },
-  imagePlaceholder: {
-    width: wp(24),
-    height: wp(24),
-    backgroundColor: '#686868',
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-    marginBottom: hp('2%'),
-    marginTop:hp(1),
-    marginLeft:wp(2),
-  },
+imagePlaceholder: {
+  width: wp(24),
+  height: wp(24),
+  backgroundColor: '#ffffff',  // white background for the image placeholder
+  borderRadius: 12,
+  alignSelf: 'flex-start',
+  marginBottom: hp('2%'),
+  marginTop: hp(5),
+  marginLeft: wp(2),
+
+  // Shadow for iOS
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+
+  // Elevation for Android
+  elevation: 4,
+},
   label: {
     fontSize: wp(9),
     alignSelf:"flex-start",
@@ -315,6 +325,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     color:'#2D2D2D',
+      // Shadow for iOS
+  shadowColor: '#000',
+  shadowOffset: { width: 10, height: 10 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+
+  // Elevation for Android
+  elevation: 4,
   },
 
 
@@ -328,6 +346,14 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     backgroundColor: '#fff',
     padding: wp(1.5),
+          // Shadow for iOS
+    shadowColor: '#000',
+    shadowOffset: { width: 10, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+
+    // Elevation for Android
+    elevation: 4,
   },
   textAreaPlaceholder: {
     position: 'absolute',

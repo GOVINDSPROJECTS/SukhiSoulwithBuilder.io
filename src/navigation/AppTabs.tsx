@@ -245,12 +245,12 @@ const AppTabs = () => {
 
   const renderTabBar = () => (
     <View style={styles.tabBarWrapper}>
-      <BlurView
+      {/* <BlurView
         style={StyleSheet.absoluteFill}
         blurType="light"
         blurAmount={5}
         reducedTransparencyFallbackColor="rgba(255,255,255,0.8)"
-      />
+      /> */}
       {routes.map((route, i) => {
         const isFocused = i === index;
 
@@ -260,33 +260,33 @@ const AppTabs = () => {
             style={styles.tabItem}
             onPress={() => setIndex(i)}
           >
-            {route.iconType === 'image' && (
-              <Image
-                source={route.icon}
-                style={{
-                  width: 30,
-                  height: 30,
-                  tintColor: isFocused ? '#1e1e1e' : 'rgba(255, 255, 255, 10)',
-                }}
-                resizeMode="contain"
-              />
-            )}
+{route.iconType === 'image' && (
+  <Image
+    source={route.icon}
+    style={{
+      width: 30,
+      height: 30,
+      tintColor: isFocused ? '#1e1e1e' : 'rgba(255, 255, 255, 10)', // FIXED
+    }}
+    resizeMode="contain"
+  />
+)}
 
-            {route.iconType === 'ionicon' && (
-              <Ionicons
-                name={route.icon}
-                size={30}
-                color={isFocused ? '#1e1e1e' : 'rgba(255, 255, 255, 10)'}
-              />
-            )}
+{route.iconType === 'ionicon' && (
+  <Ionicons
+    name={route.icon}
+    size={30}
+    color={isFocused ? '#1e1e1e' : 'rgba(255, 255, 255, 10)'} // FIXED
+  />
+)}
 
-            {route.iconType === 'entypo' && (
-              <Entypo
-                name={route.icon}
-                size={30}
-                color={isFocused ? '#1e1e1e' : 'rgba(255, 255, 255, 10)'}
-              />
-            )}
+{route.iconType === 'entypo' && (
+  <Entypo
+    name={route.icon}
+    size={30}
+    color={isFocused ? '#1e1e1e' : 'rgba(255, 255, 255, 10)'} // FIXED
+  />
+)}
           </TouchableOpacity>
         );
       })}

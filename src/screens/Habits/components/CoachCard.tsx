@@ -33,7 +33,7 @@ export default CoachCard;
 const styles = StyleSheet.create({
   card: {
     padding: wp('4%'),
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#FFFFFF',
     borderRadius: wp('3%'),
     
     marginVertical: hp('1%'),

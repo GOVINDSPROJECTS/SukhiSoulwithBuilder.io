@@ -16,7 +16,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
 import GradientWrapper from '../../components/GradientWrapper';
-import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp,heightPercentageToDP as hp} from 'react-native-responsive-screen';
 // import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 // import { RootStackParamList } from '@/types/navigation';
 import HabitsList from '../Habits/components/HabitsList';
@@ -27,6 +27,8 @@ import { HabitsStackParamList } from '@/types/navigation';
 // import MoodSliderCard from '@/components/MoodSliderCard';
 import { useAuthStore } from '@/store/authStore';
 import ProgressInputModal from '../Habits/components/ProgressInputModal';
+import { Album } from 'lucide-react-native';
+import { useFocusEffect} from '@react-navigation/native';
 // import AddHabitScreen from '../Habits/AddHabitScreen';
 
 // const { width } = Dimensions.get('window');
@@ -105,7 +107,7 @@ export default function HomeScreen() {
 
     const [activeTab, setActiveTab] = useState('Mood');
 
-    const handleLayout = (name: string, event: LayoutChangeEvent) => {
+    const handleLayout = (name: string, event:any) => {
       sectionPositions.current[name] = event.nativeEvent.layout.y;
     };
 
@@ -136,7 +138,7 @@ export default function HomeScreen() {
         });
       }
     }, [route.params]);
-
+    
     
 const fetchHabits = async () => {
   try {
@@ -351,7 +353,7 @@ const fetchHabits = async () => {
 
     // console.log('Add Habit Pressed');
   };
-
+  
 
   return (
     <GradientWrapper>
@@ -402,7 +404,7 @@ const fetchHabits = async () => {
           onLayout={(e) => handleLayout('Mood', e)}
           style={[styles.section, { width: wp(53), height: wp(34) }]}
       >
-        <Text style={[styles.heading, {fontSize:wp(8.5)}]}>How are you{'\n'}feeling{'\n'}today?</Text>
+        <Text style={[styles.heading, {fontSize:wp(8.5),color:"#245C73"}]}>How are you{'\n'}feeling{'\n'}today?</Text>
       </View>
 
                   {/* Mood Slider Card */}
@@ -480,9 +482,9 @@ const fetchHabits = async () => {
         onLayout={(e) => handleLayout('Educate', e)}
         style={styles.section}
       >
-        <Text style={[styles.heading,{fontSize:wp(12),marginBottom:0,marginTop:0}]}>Discover</Text>
+        <Text style={[styles.heading,{fontSize:wp(12),marginBottom:0,marginTop:hp(3)}]}>Discover</Text>
 
-        <Text style={[{fontSize:wp(4), color: '#000000',marginBottom: wp(6),marginTop: 0 }]}>Mindful Reads</Text>
+        <Text style={[{fontSize:wp(4), color: '#000000',marginBottom: wp(6),marginTop: 0,marginLeft:wp(1) }]}>Mindful Reads</Text>
 
         {discoverPosts.map((item) => (
         <View key={item.id} style={{ marginBottom: wp(8) }}>
@@ -545,7 +547,11 @@ const fetchHabits = async () => {
                     <Icon name="heart" size={22} color="#222" />
                   </TouchableOpacity>
                   <TouchableOpacity style={{ marginRight: 16}}>
-                    <Icon name="bookmark" size={22} color="#222" />
+                      <Album 
+                          color="#000"      // icon color
+                          size={23}         // icon size
+                          strokeWidth={2}   // stroke thickness
+                      />
                   </TouchableOpacity>
                 </View>
 
@@ -562,27 +568,30 @@ const fetchHabits = async () => {
 
           {/* Top Row: Avatar + Username */}
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-            <View style={{
+          <Image
+            source={require('../../assets/images/avatar.png')} // adjust the path if needed
+            style={{
               width: wp(8),
               height: wp(8),
               borderRadius: wp(4),
-              backgroundColor: '#D0F288', // dummy avatar color
               marginRight: wp(2.5),
-            }} />
+            }}
+          />
             <Text style={{ fontWeight: 'bold', fontSize: wp(3.8) }}>Slimjopesh11</Text>
           </View>
 
           {/* Comment Content */}
-          <View style={{ marginBottom: wp(3)}}>
-            <Text style={{ fontSize:wp(3.9), fontWeight: '600', marginBottom: wp(1.5) }}>
-              Want to gain healthy body fat? 
-            </Text>
-            <Text style={{ color: '#252525', fontSize: wp(3.5), lineHeight: wp(5),textAlign: 'justify' }}>
-              Try adding calorie-dense foods like creamy avocados, crunchy nuts, and rich olive oil to your meals! 🥑🥜 Don’t forget to up your meal frequency and hit the gym for some strength training! 💪 Always check with a healthcare pro before making big changes!
-              {'\n'}
-              #HealthyGains #NutritionTips
-            </Text>
-          </View>
+<View style={{ marginBottom: wp(3), marginLeft: wp(8) }}>
+  <Text style={{ color: '#252525', fontSize: wp(3.5), lineHeight: wp(5), textAlign: 'justify' }}>
+    <Text style={{ fontSize: wp(3.5), fontWeight: '600' }}>
+      Want to gain healthy body fat? 
+    </Text>
+    {' '}
+    Try adding calorie-dense foods like creamy avocados, crunchy nuts, and rich olive oil to your meals! 🥑🥜 Don’t forget to up your meal frequency and hit the gym for some strength training! 💪 Always check with a healthcare pro before making big changes!
+    {'\n'}
+    #HealthyGains #NutritionTips
+  </Text>
+</View>
 
           {/* Action Icons */}
           <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 12 }}>
@@ -590,7 +599,11 @@ const fetchHabits = async () => {
               <Icon name="heart" size={22} color="#222" />
             </TouchableOpacity>
             <TouchableOpacity style={{ marginRight: wp(2) }}>
-              <Icon name="bookmark" size={22} color="#222" />
+                  <Album 
+                    color="#000"     
+                    size={23}       
+                    strokeWidth={2}   
+                  />
             </TouchableOpacity>
           </View>
         </View>
@@ -626,9 +639,9 @@ const styles = StyleSheet.create({
   },
 commentCard: {
   backgroundColor: '#fff',
-  borderRadius: wp(4),
+  borderRadius: wp(7),
   padding: wp(4),
-  marginBottom: wp(8),
+  marginBottom: hp(10),
   shadowColor: '#000',
   shadowOffset: { width: 0, height: 1 },
   shadowOpacity: 0.05,
@@ -655,7 +668,7 @@ topNavTextActive: {
 
   heading: {
     fontSize: wp(4.5),
-    fontWeight: '600',
+    fontWeight: '700',
     marginBottom: wp(2.5),
     color: '#2D2D2D',
   },

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, ScrollView, Image, Alert,TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, Image, Alert,TouchableOpacity,FlatList } from 'react-native';
 import WeeklyTracker from './components/WeeklyTracker';
 import HabitsList from './components/HabitsList';
 import GradientWrapper from '../../components/GradientWrapper';
@@ -40,6 +40,58 @@ const HabitsHomeScreen = () => {
 
   const progressMapRef = useRef<Record<string, any>>({}); // 👈 Add this at the top (before useEffect)
 
+  interface Plan {
+    id: string;
+    title: string;
+    features: string[];
+    price: string;
+    buttonText: string;
+  }
+  const plans: Plan[] = [
+    {
+      id: '1',
+      title: 'Habit Coach',
+      features: ['1:1 personal support', 'Weekly guidance', 'Tailored suggestions'],
+      price: '₹1999',
+      buttonText: 'Unlock Your Coach',
+    },
+    {
+      id: '2',
+      title: 'Momentum',
+      features: ['7 Premium habits', 'Premium analytics', 'Smart reminders'],
+      price: '₹399',
+      buttonText: 'Get Premium',
+    },
+    {
+      id: '3',
+      title: 'Ingeno',
+      features: ['7 Premium habits', 'AI-based suggestions', 'Premium insights'],
+      price: '₹599',
+      buttonText: 'Get Premium',
+    },
+    {
+      id: '4',
+      title: 'Momentum and Ingeno',
+      features: ['All Momentum features', 'All Ingeno features', 'Exclusive insights'],
+      price: '₹899',
+      buttonText: 'Get Premium',
+    },
+    {
+      id: '5',
+      title: 'Therapy',
+      features: ['1:1 personal support', 'Professional guidance', 'Private sessions'],
+      price: '₹2499',
+      buttonText: 'Get Premium',
+    },
+  ];
+
+// const PrimaryButton = ({ title, onPress, style }: any) => (
+//   <TouchableOpacity style={[styles.primaryButton, style]} onPress={onPress}>
+//     <Text style={styles.primaryButtonText}>{title}</Text>
+//   </TouchableOpacity>
+// );
+
+
 const fetchHabits = async () => {
   try {
     const [habitRes, progressRes] = await Promise.all([
@@ -78,6 +130,29 @@ const fetchHabits = async () => {
 
       const isToday = progress?.tracked_date === today;
       const completed = progress?.status === 'true' && isToday;
+
+
+
+        const renderPlan = ({ item }: { item: Plan }) => (
+          <View style={styles.planCard}>
+            <Text style={styles.planTitle}>{item.title}</Text>
+            {item.features.map((feature, index) => (
+              <Text key={index} style={styles.featureText}>• {feature}</Text>
+            ))}
+            <View style={styles.priceRow}>
+              <PrimaryButton
+                title={item.buttonText}
+                onPress={() => setShowModal(true)}
+                style={{ width: wp(50), height: wp(11), alignSelf: 'center', marginTop: hp(2) }}
+              />
+              <TouchableOpacity>
+                <Text style={styles.oneTimeText}>One-time payment</Text>
+              </TouchableOpacity>
+              <Text style={styles.priceText}>{item.price}</Text>
+            </View>
+          </View>
+        );
+
 
       return {
         id: habitId,
@@ -212,11 +287,13 @@ const fetchHabits = async () => {
   return (
     <GradientWrapper>
 
-      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={styles.container} 
+      showsVerticalScrollIndicator={false}
+      >
         <AppText variant="h2" style={[styles.header, styles.title]}>
           Momentum
         </AppText>
-        <AppText variant="caption" style={styles.header}>Create habits that stick</AppText>
+        <AppText variant="caption" style={[styles.subHeader,{color:"#245C73"}]}>Create habits that stick</AppText>
 
         <WeeklyTracker
           title="Here's how far you've come >"
@@ -260,7 +337,7 @@ const fetchHabits = async () => {
 
 
         <AppText variant="h1" style={[styles.text]}>
-          Building habbits don't have to be hard
+          Building habits don't have to be hard
         </AppText>
         <AppText variant="caption" style={[styles.subtext, colors.muted]}>Quick tools to support your habit journey</AppText>
 
@@ -272,32 +349,123 @@ const fetchHabits = async () => {
           onPress={() => setShowModal(true)}
         />
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         {/* coach payment and etc. */}
-        <BottomSheetModal visible={showModal} onClose={() => setShowModal(false)}>
-          <View
-            // eslint-disable-next-line react-native/no-inline-styles
-            style={{
-              width: wp(13),
-              height: 5,
-              backgroundColor: '#000000',
-              marginTop: 2,
-              marginBottom: hp(2),
-              borderRadius: 12,
-              alignSelf: 'center',
-            }}
-          />
-          <Text style={[styles.coachModalTitle, { width: wp(70) }]}>Go Premium, Grow Faster</Text>
-          <Text style={[styles.coachModalSubtitle, { width: wp(68) }]}>Want to build habits faster and smarter? Get personal guidance, accountability, and tips tailored just for you</Text>
-          <Text style={[styles.text18, { marginTop: hp(8) }]}>Your coach will help turn efforts into real progress.</Text>
+   <BottomSheetModal visible={showModal} onClose={() => setShowModal(false)}>
+  <View
+    style={{
+      width: wp(13),
+      height: 5,
+      backgroundColor: '#000000',
+      marginTop: 2,
+      marginBottom: hp(2),
+      borderRadius: 12,
+      alignSelf: 'center',
+    }}
+  />
 
-          <View style={styles.grayBox} />
+  <Text style={[styles.coachModalTitle, { width: wp(70) }]}>Go Premium, Grow Faster</Text>
+  <Text style={[styles.coachModalSubtitle, { width: wp(68) }]}>
+    Want to build habits faster and smarter? Get personal guidance, accountability, and tips tailored just for you
+  </Text>
+  <Text style={[styles.text18, { marginTop: hp(4), marginBottom: hp(2) }]}>
+    Available Plans
+  </Text>
 
+  {/* Scrollable Plans instead of grayBox */}
+  <FlatList
+    data={plans} // use the same plans array
+    keyExtractor={(item) => item.id}
+    style={{ maxHeight: hp(40) }} // limit height so it scrolls
+    showsVerticalScrollIndicator={false}
+    renderItem={({ item }) => (
+      <View style={styles.planCard}>
+        <Text style={styles.planTitle}>{item.title}</Text>
+        {item.features.map((feature, index) => (
+          <Text key={index} style={styles.featureText}>• {feature}</Text>
+        ))}
+        <View style={styles.priceRow}>
           <PrimaryButton
-            title="Unlock Your Coach"
+            title={item.buttonText}
             onPress={() => setShowPaymentModal(true)}
-            style={{ width: wp(50), height: wp(11), alignSelf: 'center', marginBottom: hp(5) }}
+            style={{ width: wp(50), height: wp(11), alignSelf: 'center', marginTop: hp(1) }}
           />
-        </BottomSheetModal>
+          <TouchableOpacity>
+            <Text style={styles.oneTimeText}>One-time payment</Text>
+          </TouchableOpacity>
+          <Text style={styles.priceText}>{item.price}</Text>
+        </View>
+      </View>
+    )}
+  />
+
+  {/* Bottom button */}
+  <PrimaryButton
+    title="Unlock Your Coach"
+    onPress={() => setShowPaymentModal(true)}
+    style={{ width: wp(50), height: wp(11), alignSelf: 'center', marginVertical: hp(3) }}
+  />
+</BottomSheetModal>
 
 
         {/* Progress Input */}
@@ -398,12 +566,27 @@ const fetchHabits = async () => {
 
         <BottomSheetModal visible={showTogetherHabbit} onClose={() => setShowTogetherHabbit(false)}>
             <View>
+                <View
+                  style={{
+                    width: wp(13),
+                    height: 5,
+                    backgroundColor: '#000000',
+                    marginTop: 2,
+                    marginBottom: hp(3),
+                    borderRadius:12,
+                    alignSelf: 'center',
+                  }}
+                />
               <View style={{width: wp(73),height:hp(30)}}>
                 <Text style={styles.heading}>Team Up to Stay On Track</Text>
                 <Text style={styles.subHeading}>Create your Habit Circle, a group to start your habit journey. Track progress together, send nudges, and celebrate wins!</Text>
               </View>
-              <View style={styles.grayBox} />
-              <Text style={[styles.desc,{marginVertical:wp(7)}]}>Stick to habits 95% better—together</Text>
+              <Image
+                source={require('../../assets/images/RectangleTeamUp.png')} 
+                style={styles.grayBox}
+                resizeMode="cover"
+              />
+              <Text style={[styles.desc,{marginVertical:wp(7),alignSelf:'center'}]}>Stick to habits 95% better—together</Text>
             
               <PrimaryButton
                   title="Create Habit Circle"
@@ -443,6 +626,93 @@ const fetchHabits = async () => {
 export default HabitsHomeScreen;
 
 const styles = StyleSheet.create({
+  header: {
+    fontSize: wp(6),
+    fontWeight: '700',
+    textAlign: 'left',
+    marginTop: hp(2),
+  },
+  subHeader: {
+    fontSize: wp(4),
+    color: '#245C73',
+    // marginVertical: hp(1),
+    fontWeight:500,
+    marginLeft:(4),
+    width: wp(80),
+  },
+  planCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: wp(4),
+    marginVertical: hp(1),
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  planTitle: {
+    fontSize: wp(4.5),
+    fontWeight: '600',
+    marginBottom: hp(1),
+  },
+  featureText: {
+    fontSize: wp(3.8),
+    color: '#333',
+    marginVertical: hp(0.2),
+  },
+  priceRow: {
+    marginTop: hp(1),
+    alignItems: 'center',
+  },
+  oneTimeText: {
+    fontSize: wp(3.5),
+    color: '#666',
+    marginTop: hp(1),
+  },
+  priceText: {
+    fontSize: wp(4),
+    fontWeight: '600',
+    marginTop: hp(0.5),
+  },
+  primaryButton: {
+    backgroundColor: '#16697A',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+  },
+  primaryButtonText: {
+    color: '#fff',
+    fontSize: wp(4),
+    fontWeight: '600',
+  },
+  // modalTitle: {
+  //   fontSize: wp(5),
+  //   fontWeight: '700',
+  // },
+  modalSubtitle: {
+    fontSize: wp(4),
+    color: '#555',
+    marginTop: hp(1),
+  },
+  modalDescription: {
+    fontSize: wp(4),
+    color: '#333',
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     heading: {
       fontSize: wp(9),
       fontWeight: 700,
@@ -454,10 +724,10 @@ const styles = StyleSheet.create({
       fontSize: wp(3.5),
       fontWeight: 500,
       color: 'rgba(23, 23, 23, 0.54)',
-      marginBottom: 16,
+      // marginBottom: hp(2),
     },
     card: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#ffffff',
     borderRadius: wp('3%'),
     padding: wp('5%'),
     marginVertical: hp('1%'),
@@ -467,6 +737,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
     marginHorizontal: wp('2%'), // add horizontal margin for spacing
+    marginBottom:hp(4),
   },
   desc: {
     fontSize: wp('3.5%'),
@@ -508,10 +779,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: hp(5),
   },
-  header: {
-    marginLeft: wp('5%'),
-    color: '#104256',
-  },
+  // header: {
+  //   marginLeft: wp('5%'),
+  //   color: '#104256',
+  // },
   subtext: {
     marginLeft: wp('5%'),
     fontSize: wp(4),
@@ -573,23 +844,14 @@ const styles = StyleSheet.create({
   grayBox: {
     marginLeft: wp(6),
     marginRight: wp(6),
-    width: wp(82),
-    height: wp(62),
-    backgroundColor: '#686868',
-    marginBottom: wp(10),
+    borderRadius:10,
+    width: wp(83),
+    height: hp(31),
+    backgroundColor: '#ffffff',
+    marginBottom: wp(9),
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    borderRadius: wp(2.5),
-    marginTop: hp(2),
-    elevation: 5, // For Android shadow
   },
   image: {
     width: wp(13),

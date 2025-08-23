@@ -26,7 +26,7 @@ const HabitsIntroScreen = () => {
 
   const handleGetGoing = async () => {
     setIntroShown(true);
-    navigation.replace('HabitsHome');
+    navigation.navigate('HabitsHome');
   };
 
 

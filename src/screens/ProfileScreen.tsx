@@ -36,7 +36,6 @@ const ProfileScreen = () => {
 
 
 
-  const username="God Madhura";
   const actOpen="6 July 2025";
 
   const name='Dhanashri Deokar';
@@ -89,7 +88,8 @@ const ProfileScreen = () => {
       />
 
       {/* Name and Created Date */}
-      <Text style={styles.userName}>{username}</Text>
+      {/* <Text style={styles.userName}>{username}</Text> */}
+      <Text style={styles.userName}>{user?.name}</Text>
       <Text style={styles.createdDate}>created on {actOpen}</Text>
 
       {/* Reports and Logs (Card Style) */}
@@ -166,7 +166,7 @@ const ProfileScreen = () => {
            
             <View style={{ marginTop:wp(0.5),flexDirection: 'row',justifyContent:'space-evenly',gap:wp(27)}}>
             
-                  <Text style={styles.name}>{firstName} {lastName}</Text>
+                  <Text style={styles.name}>{user?.name}</Text>
                    <TouchableOpacity
                       onPress={()=>setShowUpdateModal(true)}
                     >
@@ -181,7 +181,7 @@ const ProfileScreen = () => {
            
             <View style={{ marginTop:wp(0.5),flexDirection: 'row',justifyContent:'space-evenly',gap:wp(27)}}>
             
-                  <Text style={styles.name}>{email} </Text>
+                  <Text style={styles.name}>{user?.email} </Text>
                    <TouchableOpacity
                       onPress={() => setShowEmailModal(true)}
                     >

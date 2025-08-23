@@ -22,7 +22,7 @@ export default InfoCard;
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#FFFFFF',
     borderRadius: wp('3%'),
     width:wp(86),
     alignSelf:'center',
