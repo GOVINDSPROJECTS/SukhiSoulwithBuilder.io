@@ -56,7 +56,7 @@ if (token && user) {
     api_token: null,
     device_token: null,
     profile_status: null,
-    is_paid: null,
+    is_paid: user?.is_paid,
     created_at:user?.created_at,
   });
 
