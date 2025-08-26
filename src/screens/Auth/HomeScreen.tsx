@@ -22,6 +22,7 @@ import { HabitsStackParamList } from '@/types/navigation';
 import ProgressInputModal from '../Habits/components/ProgressInputModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuthStore } from '@/store/authStore';
+import Notification from '@/components/Notification';
 
 export default function HomeScreen({ goToHabits, goToInsync }) {
   const [posts, setPosts] = useState<any[]>([]);
@@ -132,7 +133,7 @@ export default function HomeScreen({ goToHabits, goToInsync }) {
 
     try {
       // Check if already submitted
-      const alreadySubmittedRes = await api.get(`/userhabitreportswithfrequency/${habit.id}`, {
+      const alreadySubmittedRes = await api.get(`/habitalreadysubmitted/${habit.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const alreadySubmitted = alreadySubmittedRes.data.already_submitted;
@@ -204,7 +205,9 @@ export default function HomeScreen({ goToHabits, goToInsync }) {
   };
 
   return (
+    
     <GradientWrapper>
+      <Notification/>
       {/* Tabs */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: wp(4) }}>
         {['Mood', 'Habits', 'Activity', 'Educate'].map(tab => (

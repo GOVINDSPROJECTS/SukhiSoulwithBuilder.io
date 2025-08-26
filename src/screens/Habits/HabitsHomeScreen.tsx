@@ -90,7 +90,7 @@ const HabitsHomeScreen = () => {
   const checkAlreadySubmitted = async (habitId: string): Promise<boolean> => {
     try {
       const token = useAuthStore.getState().token;
-      const response = await api.get(`/userhabitreportswithfrequency/${habitId}`, {
+      const response = await api.get(`/habitalreadysubmitted/${habitId}`, {
         headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
       });
       return response.data.already_submitted === true;
