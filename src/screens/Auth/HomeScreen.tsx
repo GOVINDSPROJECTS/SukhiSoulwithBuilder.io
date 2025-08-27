@@ -25,6 +25,8 @@ import { useAuthStore } from '@/store/authStore';
 import Notification from '@/components/Notification';
 
 export default function HomeScreen({ goToHabits, goToInsync }) {
+  const user = useAuthStore((state) => state.user);
+  console.log(user?.display_photo);
   const [posts, setPosts] = useState<any[]>([]);
   const [habits, setHabits] = useState<Habit[]>([]);
   const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
@@ -207,7 +209,7 @@ export default function HomeScreen({ goToHabits, goToInsync }) {
   return (
     
     <GradientWrapper>
-      <Notification/>
+      
       {/* Tabs */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: wp(4) }}>
         {['Mood', 'Habits', 'Activity', 'Educate'].map(tab => (
@@ -222,7 +224,7 @@ export default function HomeScreen({ goToHabits, goToInsync }) {
       </View>
 
       <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={16} style={styles.container} showsVerticalScrollIndicator={false} >
-
+<Notification/>
         {/* Mood */}
         <View ref={moodRef} onLayout={(e) => handleLayout('Mood', e)} style={[styles.section, { width: wp(53), height: wp(34) }]}>
           <Text style={[styles.heading, { fontSize: wp(8.5) }]}>How are you{'\n'}feeling{'\n'}today?</Text>

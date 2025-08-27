@@ -46,7 +46,7 @@ if (token && user) {
     email: user?.email,
     age: null,
     gender: null,
-    display_photo: null,
+    display_photo: user?.display_photo,
     mobile_no: null,
     google_id: null,
     apple_id: null,

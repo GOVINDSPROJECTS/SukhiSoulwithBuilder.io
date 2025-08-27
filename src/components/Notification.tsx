@@ -54,16 +54,10 @@ const Notification = () => {
           );
       }
     });
-
-    return () => {
-      subscriptionObserver.remove();
-    };
   }, []);
 
   return (
-    <View>
-      <Text>Notification</Text>
-    </View>
+<></>
   );
 };
 
