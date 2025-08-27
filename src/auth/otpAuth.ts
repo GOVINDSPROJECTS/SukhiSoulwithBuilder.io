@@ -4,8 +4,9 @@ import axios from 'axios';
 import { Alert } from 'react-native';
 import { AuthStackParamList } from '../types/navigation';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { OtpVerifyResponse } from '@services/api';
-import { useState } from 'react';
+import api from '@/services/api';
+// import { OtpVerifyResponse } from '@services/api';
+// import { useState } from 'react';
 // import { NavigationProp } from '@react-navigation/native';
 
 type AuthNavigation = NativeStackNavigationProp<AuthStackParamList>;
@@ -27,8 +28,8 @@ export const getOtp = async (
     const payload = new FormData();
     payload.append('email', email);
 
-    const response = await axios.post(
-      'http://3.6.142.117/api/auth/request-otp',
+    const response = await api.post(
+      '/auth/request-otp',
       payload,
       {
         headers: { 'Content-Type': 'multipart/form-data' },

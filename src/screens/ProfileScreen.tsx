@@ -1,9 +1,10 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect ,useState} from 'react';
-import { View, Text, Button, StyleSheet, Image, ScrollView, TouchableOpacity, TextInput, Animated } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { useAuthStore } from '../store/authStore';
 import { fetchUserInfo } from '../services/auth';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import GradientWrapper from '../components/GradientWrapper';
+// import GradientWrapper from '../components/GradientWrapper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PrimaryButton from '../components/PrimaryButton';
 import BottomSheetModal from '../components/BottomSheetModal';
@@ -12,11 +13,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import CustomOptionPickerModal from '@/components/CustomOptionPickerModal';
 import Feather from 'react-native-vector-icons/Feather';
-
-
-
-
-
 
 
 
@@ -30,28 +26,28 @@ const ProfileScreen = () => {
   const [showModal, setShowModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
-  const [isOtpVerified, setIsOtpVerified] = useState(false);
+  // const [isOtpVerified, setIsOtpVerified] = useState(false);
   const [showGenderPicker, setShowGenderPicker] = useState(false);
 
 
 
 
-  const username="God Madhura";
+  const username=user ? user.name : 'User Name';
   const actOpen="6 July 2025";
 
-  const name='Dhanashri Deokar';
+  // const name= user ? user.name : 'User Name';
 
 
-  const [fullName, setFullName] = useState(name);
-  const [email, setEmail] = useState('deokardhanshri@gmail.com ');
-  const [gender, setGender] = useState('Female');
-  const [firstName, setFirstName] = useState('Dhanashri');
-  const [lastName, setLastName] = useState('Deokar');
+  // const [fullName, setFullName] = useState(name);
+  const [email, setEmail] = useState(user ? user.email : '');
+  const [gender, setGender] = useState(user ? user.gender:'not specified');
+  const [firstName, setFirstName] = useState(username.split(' ')[0]);
+  const [lastName, setLastName] = useState(username.split(' ')[1] || '');
 
   // Add handler functions if needed
   const handleSaveAccountInfo = () => {
     // Do something with fullName, email, gender
-    console.log({ fullName, email, gender });
+    // console.log({ fullName, email, gender });
     setShowModal(false);
   };
 
@@ -114,9 +110,7 @@ const ProfileScreen = () => {
         {/* Log Out Button */}
         <PrimaryButton
               title="Log Out"
-                onPress={() => {
-                  
-                }}
+                onPress={logout}
               style={styles.logoutButton}
         />   
 
@@ -306,7 +300,7 @@ const ProfileScreen = () => {
         <TextInput
             value={email}
             onChangeText={setEmail}
-            style={[styles.inputStyle, !isOtpVerified && styles.disabledInput]}
+            style={[styles.inputStyle && styles.disabledInput]}
             // editable={isOtpVerified} // <--- disables editing until OTP is verified
         />
 
@@ -323,7 +317,7 @@ const ProfileScreen = () => {
           title="Get OTP"
           onPress={() => navigation.getParent()?.navigate('UpdateEmailOtp', {
             email: email.trim(), // trim to avoid trailing space issue
-            name: fullName,
+            name: username,
             age: '22',
             sex: gender,
           })}

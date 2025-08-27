@@ -1,4 +1,4 @@
-// src/screens/Habits/AddHabitScreen.tsx
+// src/screens/Habits/AddTogetherHabitScreen.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -14,14 +14,22 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import TimePickerModal from '@/components/TimePickerModal';
 import CalendarPickerModal from '@/components/CalendarPickerModal';
 import CustomOptionPickerModal from '@/components/CustomOptionPickerModal';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { HabitsStackParamList } from '../../types/navigation';
+import {  RootStackParamList } from '../../types/navigation';
 import api from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PrimaryButton from '@/components/PrimaryButton';
-const AddHabitScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<HabitsStackParamList>>();
+import { useAuthStore } from '@/store/authStore';
+
+type FriendDetailRouteProp = RouteProp<RootStackParamList, 'AddTogetherHabit'>;
+
+const AddTogetherHabitScreen = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const route = useRoute<FriendDetailRouteProp>();
+    const { room_id } = route.params;
+
+    const member_id = useAuthStore.getState().user?.id; // Replace with actual user ID logic
     const [habit_name, sethabit_name] = useState('');
     const [habit_description, sethabit_description] = useState('');
     
@@ -47,7 +55,7 @@ const AddHabitScreen = () => {
 
 
  const handleAddReminder = (time: Date) => {
-      setReminders([...reminders, time]); 
+      setReminders([...reminders, time]);
       setShowReminderPicker(false);
     };
 
@@ -69,6 +77,7 @@ const handleCreateHabit = async () => {
     }
 
     const formData = new FormData();
+    formData.append('room_id', room_id);
     formData.append('habit_name', habit_name);
     formData.append('habit_description', habit_description);
     formData.append('habit_time', habit_time ? habit_time.toTimeString().slice(0, 5) : '');
@@ -79,18 +88,20 @@ const handleCreateHabit = async () => {
     formData.append('habit_progress_status', habit_progress_status ? 'true' : 'false');
     formData.append('reminders', JSON.stringify(reminders.map(r => r.toTimeString().slice(0, 5))));
     formData.append('habit_status', 'inactive');
+    formData.append('member_id', member_id);
 
-    const response = await api.post('/userhabits', formData, {
+    const response = await api.post('/togetherhabits', formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: 'application/json',
         'Content-Type': 'multipart/form-data',
       },
     });
+    Alert.alert(member_id?.toString() || 'no id');
 
     console.log('Habit created successfully:', response.data);
     Alert.alert('Success', 'Habit created successfully!');
-    navigation.navigate('HabitsHome');
+    navigation.navigate('FriendDetail', { room_id: room_id });
 
   } catch (error) {
     console.error('Habit creation failed:', error);
@@ -280,7 +291,7 @@ const handleCreateHabit = async () => {
   );
 };
 
-export default AddHabitScreen;
+export default AddTogetherHabitScreen;
 
 const styles = StyleSheet.create({
   container: {

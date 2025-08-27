@@ -2,7 +2,7 @@
 import React from 'react';
 import { Text, StyleSheet, TextProps } from 'react-native';
 import colors from '../theme/colors';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
 
 interface Props extends TextProps {
@@ -16,8 +16,9 @@ const AppText = ({ variant = 'body', style, ...props }: Props) => {
 
 const styles = StyleSheet.create({
    h1: {
-    fontSize: wp('8%'),
     fontWeight: '700',
+    fontSize: wp('10%'),
+    color:colors.primary,
   },
   h2: {
     fontSize: wp('6%'),

@@ -8,7 +8,7 @@ export interface Habit {
   progress_status: string; // add this
   habit_progress_status:string; // e.g. 'active' or 'inactive'
   habit_frequency?: string; // e.g. 'daily', 'weekly'
-
+  room_id: string; // add this
 }
 
 export interface CreateHabitPayload {

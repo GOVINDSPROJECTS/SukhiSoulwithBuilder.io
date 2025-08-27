@@ -1,5 +1,6 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react';
-import { Text, View, Button,Image, StyleSheet, TextInput, Touchable, TouchableOpacity, Alert } from 'react-native';
+import { Text, View, Image, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import BottomSheetModal from '../../components/BottomSheetModal';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import PrimaryButton from '../../components/PrimaryButton';
@@ -8,58 +9,162 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
-
-
+// import axios from 'axios'; // <-- use axios for API calls
+import api from '@/services/api';
+import { useAuthStore } from '@/store/authStore';
+import { Share } from 'react-native';
 
 
 const TeamUpFlowScreen = () => {
-   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [visible, setVisible] = useState(true);
-  const [step, setStep] = useState<'teamup' | 'circle' | 'created' | 'invite'>('teamup');
-const [habitID, setHabitID] = useState('');
+  const [step, setStep] = useState<'teamup' | 'circle' | 'circleToInvite' | 'created' | 'invite'>('teamup');
+  const [habitID, setHabitID] = useState('');
+  // const [loading, setLoading] = useState(false);
+  const token = useAuthStore.getState().token;
+  const [hasShared, setHasShared] = useState(false);
+  const [code, setCode] = useState("");
 
-  const handleNext = () => {
-    if (step === 'teamup') setStep('circle');
-    else if (step === 'circle') setStep('created');
-    else if (step === 'created') setStep('invite');
-    else setVisible(false); // Done
-  };
-  
-  const generateID = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let id = '';
-  for (let i = 0; i < 6; i++) {
-    id += chars.charAt(Math.floor(Math.random() * chars.length));
+
+  const handleCreateCircleUsingCode = () => {
+    setStep('circle');
   }
-  return id;
-};
+
+  const handleCreateCircleWithCode = () => {
+    setStep('circleToInvite');
+  }
+
+  const handleShare = async () => {
+    try {
+      const message = `Hey! 👋 Join my Habit Circle using this ID: ${habitID}\n\nLet's track our habits together! 🚀`;
+      const result = await Share.share({ message });
+
+      if (result.action === Share.sharedAction) {
+        // Close bottom sheet first
+        setVisible(false);
+
+        // Reopen with "created" step after small delay
+        setTimeout(() => {
+          setStep("created");
+          setVisible(true);
+        }, 300);
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "Unable to share Habit Circle ID");
+    }
+  };
+
 
   React.useEffect(() => {
-    // Generate only once when circle step starts
-    if (step === 'circle' && !habitID) {
-      setHabitID(generateID());
+    if (hasShared) {
+      // wait a tick before moving to created step
+      const timer = setTimeout(() => {
+        setStep("created");
+        setHasShared(false);
+      }, 300);
+      return () => clearTimeout(timer);
     }
-  }, [step, habitID]);
+  }, [hasShared]);
+
+
+// eslint-disable-next-line react-hooks/exhaustive-deps
+const CreateSelfAsMember = async (roomId: string) => {
+  try {
+    const payload = new FormData();
+    payload.append('room_id', roomId);
+
+    await api.post(
+      'habitroommembers',
+      payload,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' ,
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`, // Use the token from the auth store", 
+        },
+        
+      }
+    );
+
+  } catch (error: any) {
+    console.error('Error Joining Room:', error);
+    Alert.alert('Error1111', error?.response?.data?.message || 'Failed to join room.');
+  }
+};
+
+  // API call to create habit circle
+  const createHabitCircle = React.useCallback(async () => {
+    try {
+      // setLoading(true);
+      const response = await api.post('/habitrooms', {}, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`, // Use the token from the auth store", 
+        }
+      });
+
+      if (response.data?.habit_room?.room_id) {
+        // setHabitID(response.data.habit_room.room_id.toString());
+        const roomId = response.data.habit_room.room_id.toString();
+      setHabitID(roomId); // still store in state if needed later
+        await CreateSelfAsMember(roomId); // pass directly here
+      } else {
+        Alert.alert("Error", "Failed to create Habit Circle");
+      }
+      
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "Something went wrong while creating the circle");
+    } finally {
+      // setLoading(false);`
+    }
+  }, [CreateSelfAsMember, token]); // ✅ empty deps → function won't change
+
+
+  React.useEffect(() => {
+    if (step === "circle" && !habitID) {
+      createHabitCircle();
+    }
+  }, [step, habitID, createHabitCircle]);
+
 
   const renderStepContent = () => {
     switch (step) {
       case 'teamup':
         return (
-          <View>
-            <View style={{width: wp(73),height:hp(30)}}>
-              <Text style={styles.heading}>Team Up to Stay On Track</Text>
-              <Text style={styles.subHeading}>Create your Habit Circle, a group to start your habit journey. Track progress together, send nudges, and celebrate wins!</Text>
-            </View>
-            <View style={styles.grayBox} />
-            <Text style={[styles.desc,{marginVertical:wp(7)}]}>Stick to habits 95% better—together</Text>
-          
-            <PrimaryButton
-                title="Create Habit Circle"
-                onPress={handleNext}
-                style={{ width:wp(50),height:wp(11),alignSelf:"center",marginBottom: hp(7) }}
-            />
 
+          <View style={styles.container}>
+            {/* Profile Avatar */}
+
+            {/* Card */}
+            <View style={styles.card}>
+              <Text style={styles.title}>Invite your</Text>
+              <Text style={styles.titleHighlight}> Buddy</Text>
+
+              {/* Get Code */}
+              <TouchableOpacity style={styles.optionBox} onPress={handleCreateCircleUsingCode}>
+                <Text style={styles.optionText}>
+                  Get Code{"\n"}
+                  <Text style={styles.subText}>Share this code with your partner</Text>
+                </Text>
+                <Image
+                  source={{ uri: "https://cdn-icons-png.flaticon.com/512/1828/1828817.png" }}
+                  style={styles.icon}
+                />
+              </TouchableOpacity>
+
+
+              <TouchableOpacity style={styles.optionBox} onPress={handleCreateCircleWithCode}>
+                <Text style={styles.optionText}>
+                  Enter Code{"\n"}
+                  <Text style={styles.subText}>Already have a code? Write it here</Text>
+                </Text>
+                <Image
+                  source={{ uri: "https://cdn-icons-png.flaticon.com/512/84/84380.png" }}
+                  style={styles.icon}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         );
       case 'circle':
@@ -67,18 +172,22 @@ const [habitID, setHabitID] = useState('');
           <View>
             <Text style={styles.heading}>Your Habit Circle</Text>
 
-            <View style={styles.inputContainer}>
+            {/* Wrapper with border */}
+            <View style={styles.inputWrapper}>
               <TextInput
-                style={[styles.input, { flex: 1 }]}
+                style={styles.input}
                 value={habitID}
                 editable={false}
                 selectTextOnFocus={false}
               />
-              <TouchableOpacity onPress={() => {
-                Clipboard.setString(habitID);
-                Alert.alert("Copied", "Habit Circle ID copied!");
-              }}>
-                <Ionicons name="copy-outline" size={wp(6)} color="#000" style={styles.copyIcon} />
+              <TouchableOpacity
+                onPress={() => {
+                  Clipboard.setString(habitID);
+                  Alert.alert("Copied", "Habit Circle ID copied!");
+                }}
+                style={styles.copyButton}
+              >
+                <Ionicons name="copy-outline" size={wp(6)} color="#000" />
               </TouchableOpacity>
             </View>
 
@@ -89,7 +198,7 @@ const [habitID, setHabitID] = useState('');
 
             <PrimaryButton
               title="Share this ID"
-              onPress={handleNext}
+              onPress={handleShare}
               style={{
                 width: wp(40),
                 height: wp(11),
@@ -99,50 +208,94 @@ const [habitID, setHabitID] = useState('');
             />
           </View>
         );
-      case 'created':
+
+      case 'circleToInvite':
+
+
+        const handlAcceptInvite = async () => {
+          try {
+            const payload = new FormData();
+            payload.append('room_id', code);
+
+            const response = await api.post(
+              'habitroommembers',
+              payload,
+              {
+                headers: { 'Content-Type': 'multipart/form-data' },
+              }
+            );
+
+            if (response?.data?.message?.includes('Member added to room successfully')) {
+              // ✅ Navigate to OTP Screen with required data
+              navigation.navigate('HabitCircle');
+            } else {
+              Alert.alert('Error', response.data?.message || 'Something went wrong.');
+            }
+          } catch (error: any) {
+            console.error('Error Joining Room:', error);
+            Alert.alert('Error', error?.response?.data?.message || 'Failed to send OTP.');
+          }
+
+        }
+
+        return (
+          <View style={{ paddingHorizontal: wp(6), paddingVertical: hp(2) }}>
+            <Text style={styles.title}>Enter Shared Code</Text>
+            <Text style={styles.subtitle}>
+              Your partner sent you an invite code. Paste it below to get connected.
+            </Text>
+
+            <TextInput
+              style={[
+                styles.inputinvite,
+                {
+                  borderWidth: 1,
+                  borderColor: "#ddd",
+                  borderRadius: 10,
+                  padding: wp(3),
+                  marginBottom: hp(2),
+                },
+              ]}
+              placeholder="Paste code here..."
+              placeholderTextColor="#aaa"
+              value={code}
+              onChangeText={setCode}
+            />
+
+            <TouchableOpacity style={styles.button} onPress={handlAcceptInvite}>
+              <Text style={styles.buttonText}>Sync Now</Text>
+            </TouchableOpacity>
+
+            <Text style={styles.footer}>
+              Secure sync. Only you two can view shared progress.
+            </Text>
+          </View>
+        );
+
+      case 'invite':
         return (
           <View>
             <Image
               source={require('../../assets/icons/correct.png')}
               style={styles.image}
             />
-            <View style={{width:wp(55),alignSelf:'center',marginBottom:hp(35)}}>
-                <Text style={[styles.heading,{alignSelf: 'center',textAlign:'center'}]}>Circle Created</Text>
-                <Text style={[styles.desc,{alignSelf: 'center',marginBottom:hp(5)}]}>We'll notify you when they join</Text>
-            </View>
-           
-            <PrimaryButton
-                title="Proceed"
-                onPress={handleNext}
-                style={{ width:wp(36),height:wp(11),alignSelf:"center",marginBottom: hp(1) }}
-            />
-            <Text style={[styles.desc,{alignSelf: 'center',marginBottom: hp(5)}]}>You can see your Habit Circle on Momentum</Text>
-          </View>
-        );
-      case 'invite':
-        return (
-          <View>
-             <Image
-              source={require('../../assets/icons/correct.png')}
-              style={styles.image}
-            />
 
-            <View style={{width:wp(55),alignSelf:'center',marginBottom:hp(40)}}>
-              <Text style={[styles.heading,{alignSelf: 'center',textAlign:'center'}]}>Invite Sent</Text>
-              <Text style={[{alignSelf: 'center',}]}>We’ll notify you when they join</Text>
+            <View style={{ width: wp(55), alignSelf: 'center', marginBottom: hp(40) }}>
+              <Text style={[styles.heading, { alignSelf: 'center', textAlign: 'center' }]}>Invite Sent</Text>
+              <Text style={[{ alignSelf: 'center', }]}>We’ll notify you when they join</Text>
             </View>
 
             <PrimaryButton
-                title="Done"
-                  onPress={() => {
-                    setVisible(false);
-                    navigation.replace('HabitCircle');
-                  }}
-                style={{ width:wp(26),height:wp(11),alignSelf:"center",marginBottom: hp(1) }}
+              title="Done"
+              onPress={() => {
+                setVisible(false);
+                navigation.replace('HabitCircle');
+              }}
+              style={{ width: wp(26), height: wp(11), alignSelf: "center", marginBottom: hp(1) }}
             />
 
             <TouchableOpacity>
-                <Text style={[styles.desc,{alignSelf: 'center',marginBottom: hp(45)}]}>Cancel Invite</Text>
+              <Text style={[styles.desc, { alignSelf: 'center', marginBottom: hp(45) }]}>Cancel Invite</Text>
             </TouchableOpacity>
           </View>
         );
@@ -150,18 +303,18 @@ const [habitID, setHabitID] = useState('');
   };
 
   return (
-    <BottomSheetModal visible={visible} onClose={() => navigation.navigate('HabitsHomeScreen' as any)}>
-        <View
-                style={{
-                  width: wp(13),
-                  height: 5,
-                  backgroundColor: '#171717',
-                  marginTop: 2,
-                  marginBottom: hp(2),
-                  borderRadius:12,
-                  alignSelf: 'center',
-                }}
-        />
+    <BottomSheetModal visible={visible} onClose={() => navigation.navigate('HabitsHome' as any)}>
+      <View
+        style={{
+          width: wp(13),
+          height: 5,
+          backgroundColor: '#171717',
+          marginTop: 2,
+          marginBottom: hp(2),
+          borderRadius: 12,
+          alignSelf: 'center',
+        }}
+      />
       {renderStepContent()}
     </BottomSheetModal>
   );
@@ -192,34 +345,25 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     marginBottom: wp(1),
   },
+
+
   input: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: wp(0.1),
-    borderColor: '#000000',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    height: wp(12),
-    padding: 10,
-    borderRadius: 10,
-    marginBottom: wp(20),
-    color: '#000000',
+    flex: 1,
     fontSize: wp(3.5),
+    color: '#000',
   },
   inputContainer: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  marginBottom: wp(10),
-},
-copyIcon: {
-  marginLeft: wp(2),
-},
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: wp(10),
+  },
+  copyIcon: {
+    marginLeft: wp(2),
+  },
 
   grayBox: {
-    marginLeft:wp(6),
-    marginRight:wp(6),
+    marginLeft: wp(6),
+    marginRight: wp(6),
     width: wp(88),
     height: wp(62),
     backgroundColor: '#686868',
@@ -242,13 +386,151 @@ copyIcon: {
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    padding: wp(5),
   },
+
+  // container: {
+  //   flex: 1,
+  //   backgroundColor: "#F3FAFF",
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  //   paddingHorizontal: wp("5%"),
+  // },
   image: {
     width: wp(13),
     height: wp(13),
     marginTop: hp(5),
     alignSelf: 'center',
     resizeMode: 'contain',
+  },
+
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: wp(0.1),
+    borderColor: '#000',
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    height: wp(12),
+    marginBottom: wp(20),
+    paddingHorizontal: wp(3),
+  },
+  copyButton: {
+    paddingHorizontal: wp(2), // space so icon doesn’t stick to border
+  },
+
+
+  avatarContainer: {
+    position: "absolute",
+    top: hp("5%"),
+  },
+  avatarCircle: {
+    width: wp("15%"),
+    height: wp("15%"),
+    borderRadius: wp("7.5%"),
+    backgroundColor: "#0088cc",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  avatarText: {
+    color: "#fff",
+    fontSize: wp("6%"),
+    fontWeight: "bold",
+  },
+  card: {
+    backgroundColor: "#fff",
+    width: wp("85%"),
+    padding: wp("6%"),
+    borderRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 6,
+    marginTop: hp("12%"),
+  },
+  title: {
+    fontSize: wp("6%"),
+    fontWeight: "600",
+    color: "#222",
+  },
+  titleHighlight: {
+    fontSize: wp("6.5%"),
+    fontWeight: "700",
+    color: "#0077cc",
+    marginBottom: hp("3%"),
+  },
+  optionBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    padding: wp("4%"),
+    borderRadius: 10,
+    marginBottom: hp("2%"),
+    backgroundColor: "#fff",
+  },
+  optionText: {
+    fontSize: wp("4%"),
+    color: "#222",
+  },
+  subText: {
+    fontSize: wp("3.2%"),
+    color: "#777",
+  },
+
+  icon: {
+    width: wp("6%"),
+    height: wp("6%"),
+    marginLeft: wp("2%"),
+  },
+
+  //   title: {
+  //   fontSize: wp("7%"),
+  //   fontWeight: "bold",
+  //   textAlign: "center",
+  //   marginBottom: hp("1.5%"),
+  // },
+  subtitle: {
+    fontSize: wp("4%"),
+    textAlign: "center",
+    color: "#555",
+    marginBottom: hp("3%"),
+  },
+  inputinvite: {
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    paddingVertical: hp("1.5%"),
+    paddingHorizontal: wp("4%"),
+    fontSize: wp("4%"),
+    marginBottom: hp("3%"),
+  },
+  button: {
+    width: "100%",
+    backgroundColor: "#175873",
+    paddingVertical: hp("2%"),
+    borderRadius: 12,
+    alignItems: "center",
+    marginBottom: hp("2%"),
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: wp("4.5%"),
+    fontWeight: "600",
+  },
+  footer: {
+    fontSize: wp("3.5%"),
+    textAlign: "center",
+    color: "#666",
+  },
+  containerinvite: {
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: wp("8%"),
+    backgroundColor: "#fff",
   },
 });

@@ -1,45 +1,295 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable react-hooks/exhaustive-deps */
 // src/screens/FriendDetailScreen.tsx
 
 import { RouteProp, useRoute } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { View, Text,Image, TouchableOpacity, StyleSheet,FlatList, ScrollView } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text,Image, TouchableOpacity, StyleSheet,FlatList, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import PrimaryButton from '../../components/PrimaryButton';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import WeeklyTracker from './components/WeeklyTracker';
-import HabitsList from './components/HabitsList';
 import BottomSheetModal from '../../components/BottomSheetModal';
-import InfoCard from './components/InfoCard';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { HabitsStackParamList } from '../../types/navigation';
 import Feather from 'react-native-vector-icons/Feather';
+import api from '@/services/api';
+import { useAuthStore } from '@/store/authStore';
+import TogetherHabitsList from './components/TogetherHabitList';
+import { Habit } from '@/types/habit';
+import TogetherProgressInputModal from './components/TogetherProgressInputModal';
+
+
+type HabitRoom = {
+  room_id: number;
+  room_name: string;
+  create_user_id?: number;
+};
 
 
 type FriendDetailRouteProp = RouteProp<RootStackParamList, 'FriendDetail'>;
 
 const FriendDetailScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<HabitsStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<FriendDetailRouteProp>();
-  const { friendName } = route.params;
+  const { room_id } = route.params;
   const [showModal, setShowModal] = useState(false);
+   const [showProgressModal, setShowProgressModal] = useState(false);
+  const token = useAuthStore.getState().token;
+  const [rooms, setRooms] = useState<HabitRoom[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [habits, setHabits] = useState<Habit[]>([]);
+  // const [habit_id, setHabitId] = useState<string>('');
+    const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
+  
+  const memberId = useAuthStore.getState().user?.id?.toString() || '';
+    // const progressMapRef = useRef<Record<string, any>>({}); // 👈 Add this at the top (before useEffect)
+  
+
+////////////////////////////////////////////////////////////////////////
+const fetchTogetherHabits = async (room_id: string) => {
+  try {
+    // Fetch all habits for this room
+    const habitRes = await api.get(`/togetherhabits?room_id=${room_id}`);
+    const rawHabits = habitRes?.data?.habitroommembers ?? [];
+
+    // Fetch progress reports for each habit
+    const reportRequests = rawHabits.map((habit: any) =>
+      api.get(`/togetherhabitreports?together_habit_id=${habit.id}`)
+    );
+    const reportResponses = await Promise.all(reportRequests);
+
+    // Flatten all reports
+    const allReports = reportResponses.flatMap(
+      (res) => res?.data?.togetherhabitreport ?? []
+    );
+
+    // Build map of latest progress by habit_id
+    const latestProgressMap: Record<string, any> = {};
+    allReports.forEach((report: any) => {
+      const habitId = report.together_habit_id.toString();
+
+      if (
+        !latestProgressMap[habitId] ||
+        new Date(report.updated_at) > new Date(latestProgressMap[habitId].updated_at)
+      ) {
+        latestProgressMap[habitId] = report;
+      }
+    });
+
+    // Normalize today's date to same format as tracked_date (DD-MM-YYYY)
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" }); 
+    // const todayFormatted = today.replace(/\//g, "-"); // convert to DD-MM-YYYY
+
+    // Format habits
+    const formattedHabits = rawHabits.map((habit: any) => {
+      const habitId = habit.id.toString(); 
+      // setHabitId(habitId); 
+      const progress = latestProgressMap[habitId];
+      const isToday = progress?.tracked_date === today;
+      const completed = progress?.status?.toLowerCase() === "true" && isToday;
+
+      return {
+        id: habitId,
+        title: habit.habit_name,
+        description: habit.habit_description,
+        completed,
+        room_id: habit.room_id.toString(),
+        member_id:habit.created_member_id,
+        progress_status: habit.habit_progress_status?.toLowerCase() === "true",
+      };
+    });
+
+    console.log("Together Habits:", formattedHabits);
+    setHabits(formattedHabits);
+
+  } catch (error: any) {
+    console.error("Error fetching together habits:", error?.response?.data || error);
+  }
+};
+
+ useEffect(() => {
+    fetchTogetherHabits(room_id);
+  }, []);
+////////////////////////////////////////////////////////////////////////
+// const checkAlreadySubmittedTogether = async (habitId: string) => {
+//   try {
+//     const token = useAuthStore.getState().token;
+//     const response = await api.get(`/togetherhabitalreadysubmitted/${habitId}`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         Accept: 'application/json',
+//       },
+//     });
+//     const res =response.data.already_submitted;
+//     console.log(res);
+//     return res;
+//   } catch (error) {
+//     console.error('Error checking submission:', error);
+//     // return false; // fallback
+//   }
+// };
+const checkAlreadySubmittedTogether = async (habitId: string) => {
+  try {
+    const token = useAuthStore.getState().token;
+    const response = await api.get(`/togetherhabitalreadysubmitted/${habitId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    });
+
+    // Let’s assume backend returns either `null` or an object
+    return response.data.report || null;
+  } catch (error) {
+    console.error("Error checking submission:", error);
+    return null; // fallback
+  }
+};
+
+const togglingTogetherHabits = useRef<Set<string>>(new Set());
+
+const toggleTogetherHabitCompletion = async (
+  id: string,
+  roomId: string,
+) => {
+  if (togglingTogetherHabits.current.has(id)) return;
+  togglingTogetherHabits.current.add(id);
+
+  const habit = habits.find(h => h.id === id);
+  if (!habit) {
+    togglingTogetherHabits.current.delete(id);
+    return;
+  }
+
+  const fetchTogetherHabits = async () => {
+    try {
+      const [habitRes, progressRes] = await Promise.all([
+        api.get(`/togetherhabits?room_id=${roomId}`),
+        api.get(`/togetherhabitreports?together_habit_id=${id}`),
+      ]);
+
+      const rawHabits = habitRes.data.habitroommembers;
+      const progressReports = progressRes.data.togetherhabitreport;
+
+      if (!Array.isArray(progressReports)) {
+        console.error("progressReports is not an array:", progressReports);
+        return;
+      }
+
+      const latestProgressMap: Record<string, any> = {};
+      progressReports.forEach((report: any) => {
+        const habitId = report.together_habit_id.toString();
+
+        if (
+          !latestProgressMap[habitId] ||
+          new Date(report.updated_at) > new Date(latestProgressMap[habitId].updated_at)
+        ) {
+          latestProgressMap[habitId] = report;
+        }
+      });
 
 
-    const [habits, setHabits] = useState([
-      { id: '1', title: 'Cold Showers', completed: false },
-      { id: '2', title: 'Exercise', completed: true },
-      { id: '3', title: 'Meditation', completed: true },
-    ]);
-    const toggleHabitCompletion = (id: string) => {
-        const updated = habits.map((habit) =>
-          habit.id === id ? { ...habit, completed: !habit.completed } : habit
-        );
-        setHabits(updated);
-    };
-    const handleAddHabit = () => {
-      setShowModal(true);
-    };
+      const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+
+      const formattedHabits: Habit[] = rawHabits.map((habit: any) => {
+        const habitId = habit.id.toString();
+        const progress = latestProgressMap[habitId];
+
+        const isToday = progress?.tracked_date === today;
+        const completed = progress?.status.toLowerCase() === 'true' && isToday;
+
+        return {
+          id: habitId,
+        title: habit.habit_name,
+        description: habit.habit_description,
+        completed,
+        room_id: habit.room_id.toString(),
+        member_id:habit.created_member_id,
+        progress_status: habit.habit_progress_status?.toLowerCase() === "true",
+        };
+      });
+
+      setHabits(formattedHabits);
+    } catch (error) {
+      console.error('Error fetching together habits or progress reports:', error);
+    }
+  };
+
+  const token = useAuthStore.getState().token;
+  const isCurrentlyCompleted = habit.completed;
+  const newStatus = !isCurrentlyCompleted;
+  const todayDate = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+  console.log('todaydate' , todayDate)
+
+  try {
+    const alreadySubmitted = await checkAlreadySubmittedTogether(habit.id);
+    console.log('is already submitted:', alreadySubmitted ,'iscurrently completed', isCurrentlyCompleted);
+
+  
+      const existingReport = await checkAlreadySubmittedTogether(habit.id);
+      console.log(existingReport)
+
+      
+// ✅ If already submitted —> DELETE
+if (existingReport && isCurrentlyCompleted) {
+  await api.delete(`/togetherhabitreports/${existingReport.id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  const updated = habits.map(h =>
+    h.id === id ? { ...h, completed: false } : h
+  );
+  setHabits(updated);
+  await fetchTogetherHabits();
+  togglingTogetherHabits.current.delete(id);
+  return;
+}
+    // ✅ If modal required and not completed
+    if (habit.progress_status && !isCurrentlyCompleted) {
+      setSelectedHabit(habit);
+      setShowProgressModal(true);
+      togglingTogetherHabits.current.delete(id);
+            console.log('modal shown .')
+
+      return;
+    }
+
+    // ✅ Otherwise create report
+    const formData = new FormData();
+    formData.append('room_id', roomId);
+    formData.append('together_habit_id', habit.id);
+    formData.append('status', newStatus.toString());
+    formData.append('tracked_date', todayDate);
+    formData.append('member_id', memberId);
+    formData.append('description', '.');
+
+    await api.post('/togetherhabitreports', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log('report created .', formData);
+    const updated = habits.map(h =>
+      h.id === id ? { ...h, completed: newStatus } : h
+    );
+    setHabits(updated);
+    fetchTogetherHabits();
+  } catch (error) {
+    console.error('Toggle Error:', error);
+    Alert.alert('Error', 'Unable to update habit');
+  } finally {
+    togglingTogetherHabits.current.delete(id);
+  }
+};
+
+/////////////////////////////////////////////////////////////////////////
+
+  const handleAddHabit = () => {
+    navigation.navigate('AddTogetherHabit', { room_id: room_id }); // 🔁 Navigates to AddHabitScreen
+  };
 
   const activity = ["Running", "Beating Madhura", "Sketching", "Movie"];
   const schedule=["Daily", "Every Hour", "Weekly","Monthly"];
@@ -55,21 +305,68 @@ const FriendDetailScreen = () => {
     }
   };
 
+  const fetchRooms = async () => {
+    try {
+      const res = await api.get('/habitrooms', {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`, 
+        }
+      });
 
+      // ✅ Safe handling of message
+      const message =
+        res.data?.message?.toString?.() || 'No message from server';
+      console.log("API Message:", message);
+
+      // ✅ Extract all rooms
+      const allRooms = Array.isArray(res.data?.habitrooms) ? res.data.habitrooms : [];
+
+      // ✅ Find the specific room using your propRoomId
+      const specificRoom = allRooms.find(
+        (room: { room_id: string; }) => String(room.room_id) === String(room_id)
+      );
+      
+
+      if (specificRoom) {
+        setRooms([specificRoom]); // store only that one
+        fetchTogetherHabits(room_id); // Fetch habits for the found room
+      } else {
+        setRooms([]); // if not found, empty
+        console.log("Room not found for ID:", room_id);
+      }
+
+    } catch (error: any) {
+      console.error('Error fetching rooms:', error?.response?.data || error);
+      const errMsg =
+        error?.response?.data?.message?.toString?.() || 'Failed to fetch rooms.';
+      Alert.alert('Error', errMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchRooms();
+    fetchTogetherHabits(room_id);
+  }, []);
+
+ 
 
   return (
     <ScrollView style={{backgroundColor: '#FFFFFF'}}>
         <View style={styles.container}>
-          <Text style={styles.title}>{friendName}</Text>
+          <Text style={styles.title}>{rooms[0]?.room_name}</Text>
           <Text style={[styles.subText,{marginTop: wp(3)}]}>Habit Partner since 5th July, 2025</Text>
           <Text style={styles.subText}>Habit Streak of 5 Days</Text>
           <Text style={styles.subheading}>Shared Habits</Text>
 
           {/* Here is a component for the habits */}
-          <HabitsList
-            title="Here’s what you’re building daily"
+          <TogetherHabitsList
+            title="Make your first move"
             habits={habits}
-            onToggle={toggleHabitCompletion}
+            onToggle={toggleTogetherHabitCompletion}
             showAddButton
             onAddHabitPress={handleAddHabit}
           />
@@ -77,16 +374,16 @@ const FriendDetailScreen = () => {
           <Text style={styles.subheading}>Keep each other going</Text>
           <Text style={[styles.subText,{width:wp(40)}]}>A little motivation goes a long way</Text>
 
-          <View style={[styles.motivationCard, { flexDirection: 'row', alignItems: 'center', marginTop: wp(5) }]}>
-                <View>
+          <TouchableOpacity style={[styles.motivationCard, { flexDirection: 'row', alignItems: 'center', marginTop: wp(5) }]} onPress={() => Alert.alert(memberId)}>
+                <View >
                     <Text style={styles.text18}>Nudge to Remind</Text>
                     <Text style={styles.subText}>Remind Mugdha to track today</Text>
                 </View>
                   <View style={{ flex: 1, alignItems: 'flex-end' }}>
                       <Feather name="bell" color="#000" size={24} />
                   </View>
-           </View>
-          <View style={[styles.motivationCard, { flexDirection: 'row', alignItems: 'center', marginTop: wp(5) }]}>
+           </TouchableOpacity>
+          <TouchableOpacity style={[styles.motivationCard, { flexDirection: 'row', alignItems: 'center', marginTop: wp(5) }]}>
                 <View>
                     <Text style={styles.text18}>Cheer your Friend</Text>
                     <Text style={styles.subText}>You’ve got this, let’s complete the challenge</Text>
@@ -94,7 +391,7 @@ const FriendDetailScreen = () => {
                   <View style={{ flex: 1, alignItems: 'flex-end' }}>
                       <Feather name="star" color="#000" size={24} />
                   </View>
-           </View>
+           </TouchableOpacity>
 
 
           <Text style={[styles.subheading,{marginTop: wp(12)}]}>A week at a glance</Text>
@@ -187,6 +484,22 @@ const FriendDetailScreen = () => {
             />
 
           </BottomSheetModal>
+
+           <TogetherProgressInputModal
+          visible={showProgressModal}
+          onClose={() => setShowProgressModal(false)}
+          habit={selectedHabit}
+          onSubmitSuccess={() => {
+            if (!selectedHabit) return;
+            const updated = habits.map(h =>
+              h.id === selectedHabit.id ? { ...h, completed: !h.completed } : h
+            );
+            setHabits(updated);
+            setSelectedHabit(null);
+            fetchTogetherHabits(room_id); // ✅ Re-fetch from API after progress submission
+            // Refresh habits after submission
+          }}
+        />
     </ScrollView>
   );
 };
@@ -316,3 +629,150 @@ const styles = StyleSheet.create({
     marginRight: wp(4),
   },
 });
+
+
+
+
+// src/screens/Habits/FriendDetailScreen.tsx
+
+// import React, { useEffect, useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   ActivityIndicator,
+//   FlatList,
+//   Alert,
+// } from 'react-native';
+// import api from 'api';
+// import colors from '@/theme/colors';
+// import api from '@/services/api';
+// import { useAuthStore } from '@/store/authStore';
+
+// type HabitRoom = {
+//   room_id: number;
+//   create_user_id: number;
+//   room_name: string;
+// };
+
+// type FriendDetailScreenProps = {
+//   route: {
+//     params: {
+//       room_id: number;
+//     };
+//   };
+// };
+
+// const FriendDetailScreen: React.FC<FriendDetailScreenProps> = ({ route }) => {
+//   const { room_id } = route.params;
+//   const [rooms, setRooms] = useState<HabitRoom[]>([]);
+//   const [loading, setLoading] = useState(true);
+//     const token = useAuthStore.getState().token;
+  
+//   useEffect(() => {
+//     fetchRooms();
+//   }, []);
+
+//   const fetchRooms = async () => {
+//     try {
+//       const response = await api.get('/habitrooms', {
+//         headers: {
+//           Accept: 'application/json',
+//           Authorization: `Bearer ${token}`, // Use the token from the auth store", 
+//         },
+//       });
+
+//       console.log('API Response:', response.data);
+
+//       const allRooms: HabitRoom[] = response.data.habitrooms || [];
+//       const specificRoom = allRooms.find(
+//         (room: HabitRoom) => String(room.room_id) === String(room_id)
+//       );
+// if (specificRoom) {
+//   Alert.alert("Found Room", JSON.stringify(specificRoom));
+// } else {
+//   Alert.alert("Not Found", `Room with id ${room_id} not found`);
+// }
+
+//       if (specificRoom) {
+//         setRooms([specificRoom]);
+//       } else {
+//         setRooms([]);
+//       }
+//     } catch (error) {
+//       console.error('Error fetching rooms:', error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   if (loading) {
+//     return (
+//       <View style={styles.loaderContainer}>
+//         <ActivityIndicator size="large" color={colors.primary} />
+//       </View>
+//     );
+//   }
+
+//   return (
+//     <View style={styles.container}>
+//       {rooms.length > 0 ? (
+//         <>
+//           <Text style={styles.title}>{rooms[0].room_name}</Text>
+//           <FlatList
+//             data={rooms}
+//             keyExtractor={(item) => item.room_id.toString()}
+//             renderItem={({ item }) => (
+//               <View style={styles.roomItem}>
+//                 <Text style={styles.roomName}>Room ID: {item.room_id}</Text>
+//                 <Text>Created By: {item.create_user_id}</Text>
+//               </View>
+//             )}
+//           />
+//         </>
+//       ) : (
+//         <Text style={styles.errorText}>Room not found</Text>
+//       )}
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 16,
+//     backgroundColor: colors.background,
+//   },
+//   loaderContainer: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   title: {
+//     fontSize: 22,
+//     fontWeight: '700', // ✅ fixed fontWeight type
+//     color: colors.primary,
+//     marginBottom: 16,
+//     textAlign: 'center',
+//   },
+//   roomItem: {
+//     padding: 16,
+//     backgroundColor: colors.background,
+//     borderRadius: 10,
+//     marginBottom: 12,
+//   },
+//   roomName: {
+//     fontSize: 18,
+//     fontWeight: '500',
+//     color: colors.textPrimary,
+//   },
+//   errorText: {
+//     fontSize: 18,
+//     fontWeight: '600',
+//     color: 'red',
+//     textAlign: 'center',
+//     marginTop: 20,
+//   },
+// });
+
+// export default FriendDetailScreen;

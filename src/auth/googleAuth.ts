@@ -40,10 +40,12 @@ if (token && user) {
   // ✅ Save token
   await useAuthStore.getState().setToken(token);
 
-  // ✅ Save user (name and email)
+  // ✅ Save user (id, name, email, gender if provided)
   await useAuthStore.getState().setUser({
+    id: user.id,              // <-- added
     name: user.name,
     email: user.email,
+    gender: user.gender || "", // fallback if API doesn’t send gender
   });
 
   // ✅ Navigate to home screen

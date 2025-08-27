@@ -35,7 +35,7 @@ const BottomSheetModal: React.FC<Props> = ({ visible, onClose, children, contain
         useNativeDriver: true,
       }).start();
     }
-  }, [visible]);
+  }, [slideAnim, visible]);
 
   return (
     <Modal transparent visible={visible} animationType="none">

@@ -32,6 +32,7 @@ export type HabitsStackParamList = {
     Habits:undefined;
     HabitsHome:undefined;
     AddHabit:undefined
+    AddTogetherHabit:{ room_id: string };
 }
 
 export type InSyncStackParamList = {
@@ -52,7 +53,7 @@ export type RootStackParamList = {
   DayDetail: { date: string };
   TeamUpFlow: undefined;
   HabitCircle: undefined;
-  FriendDetail: { friendName: string };
+  FriendDetail: { room_id : string };
   AddHabitScreen: undefined;
   otpVerificationScreen: undefined;
   UpdateEmailOtp: {
@@ -63,4 +64,5 @@ export type RootStackParamList = {
   };
   ReportsLogsScreen:undefined;
   SavedItemsScreen:undefined;
+  AddTogetherHabit:{ room_id: string };
 };

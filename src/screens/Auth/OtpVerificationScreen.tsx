@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import OTPTextInput from 'react-native-otp-textinput';
 import PrimaryButton from '../../components/PrimaryButton';
 import { getLoginOtp, verifyOtp } from '../../auth/otpAuth';
-import { getPathFromState, useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList, RootStackParamList } from '../../types/navigation';
 import { RouteProp } from '@react-navigation/native';
@@ -54,8 +54,10 @@ const OtpVerificationScreen = () => {
       if (res?.token && res?.user) {
         await setToken(res.token);
         await setUser({
+          id: res.user.id,
           name: res.user.name,
           email: res.user.email,
+          gender: res.user.sex,
         });
 
         navigation.reset({

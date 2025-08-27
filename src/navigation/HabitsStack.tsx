@@ -61,6 +61,7 @@ import HabitCircleScreen from '../screens/Habits/HabitCircleScreen';
 import FriendDetailScreen from '../screens/Habits/FriendDetailScreen';
 import TeamUpFlowScreen from '../screens/Habits/TeamUpFlowScreen';
 import { useAuthStore } from '@/store/authStore';
+// import AddTogetherHabitScreen from '@/screens/Habits/AddTogetherHabitScreen';
 
 export type HabitsStackParamList = {
   HabitsIntro: undefined;
@@ -106,6 +107,8 @@ export default function HabitsNavigator() {
       <Stack.Screen name="HabitCircle" component={HabitCircleScreen} />
       <Stack.Screen name="FriendDetail" component={FriendDetailScreen} />
       <Stack.Screen name="TeamUpFlow" component={TeamUpFlowScreen} />
+      {/* <Stack.Screen name="AddTogetherHabit" component={AddTogetherHabitScreen} /> */}
+      
     </Stack.Navigator>
   );
 }

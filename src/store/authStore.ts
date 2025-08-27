@@ -6,10 +6,10 @@ import { setAuthToken } from '@/services/api';
 
 interface AuthState {
   token: string | null;
-  user: { name: string; email: string } | null;
+  user: {id:string; name: string; email: string; gender:string } | null;
   setToken: (token: string) => void;
-  setUser: (user: { name: string; email: string }) => void;
-  login: (token: string, user: { name: string; email: string }) => void;
+  setUser: (user: {id:string; name: string; email: string; gender:string }) => void;
+  login: (token: string, user: { id:string; name: string; email: string; gender:string }) => void;
   logout: () => void;
   restoreSession: () => Promise<void>;
   introShown: boolean;

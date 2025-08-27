@@ -125,21 +125,24 @@ const ProgressInputModal = ({ visible, onClose, habit, onSubmitSuccess }: Props)
 
     try {
       const formData = new FormData();
-      formData.append('habit_id', habit.id);
-      formData.append('title', habit.title);
+      formData.append('together_habit_id', habit.id);
       formData.append('description', note.trim() || '.');
+      formData.append('title', habit.title);
+      formData.append('room_id', habit.room_id);
       formData.append('status', 'true'); // always submitting progress as complete
       formData.append('tracked_date', new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" })); // Format as YYYY-MM-DD
 
     
-      await api.post('/userhabitprogressreports', formData, {
+      await api.post('/togetherhabitprogressreports', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`, // ✅ Add token here
         },
       });
 
-      await api.post('/userhabitreports', formData, {
+    console.log('progress done .', formData)
+
+      await api.post('/togetherhabitreports', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`,
@@ -148,7 +151,7 @@ const ProgressInputModal = ({ visible, onClose, habit, onSubmitSuccess }: Props)
 
       onSubmitSuccess();
       onClose();
-
+      console.log('report generated .', formData)
     } catch (error) {
       console.error('Progress submission error:', error);
     }

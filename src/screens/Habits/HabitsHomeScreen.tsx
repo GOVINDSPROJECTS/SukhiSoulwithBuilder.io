@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, ScrollView, Image, Alert } from 'react-native';
 import WeeklyTracker from './components/WeeklyTracker';
@@ -19,8 +20,6 @@ import api from '@/services/api';
 import { Habit } from '@/types/habit';
 import ProgressInputModal from './components/ProgressInputModal';
 import { useAuthStore } from '@/store/authStore';
-
-
 
 const HabitsHomeScreen = () => {
 
@@ -67,7 +66,7 @@ const fetchHabits = async () => {
 
     progressMapRef.current = latestProgressMap;
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
 
     const formattedHabits: Habit[] = rawHabits.map((habit: any) => {
       const habitId = habit.id.toString();
@@ -90,11 +89,9 @@ const fetchHabits = async () => {
   }
 };
 
-
   useEffect(() => {
     fetchHabits();
   }, []);
-
 
   const checkAlreadySubmitted = async (habitId: string): Promise<boolean> => {
     try {
@@ -129,7 +126,7 @@ const fetchHabits = async () => {
   const token = useAuthStore.getState().token;
   const isCurrentlyCompleted = habit.completed;
   const newStatus = !isCurrentlyCompleted;
-  const todayDate = new Date().toISOString().split('T')[0];
+  const todayDate = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
 
   try {
     const alreadySubmitted = await checkAlreadySubmitted(habit.id);
@@ -171,6 +168,7 @@ const fetchHabits = async () => {
     formData.append('status', newStatus.toString());
     formData.append('tracked_date', todayDate);
     formData.append('description', '.'); // Default note if no modal
+// Alert.alert(todayDate);
 
     await api.post('/userhabitreports', formData, {
       headers: {
@@ -250,13 +248,12 @@ const fetchHabits = async () => {
 
         <BottomSheetModal visible={showModal} onClose={() => setShowModal(false)}>
           <View
-            // eslint-disable-next-line react-native/no-inline-styles
             style={{
               width: wp(13),
               height: 5,
               backgroundColor: '#000000',
               marginTop: 2,
-              marginBottom: hp(2),
+              marginBottom: hp(2), 
               borderRadius: 12,
               alignSelf: 'center',
             }}
@@ -273,8 +270,6 @@ const fetchHabits = async () => {
             style={{ width: wp(50), height: wp(11), alignSelf: 'center', marginBottom: hp(5) }}
           />
         </BottomSheetModal>
-
-
 
         <BottomSheetModal visible={showPaymentModal} onClose={() => setShowPaymentModal(false)}>
           <View
@@ -335,7 +330,7 @@ const fetchHabits = async () => {
           onPress={() => navigation.navigate('HomeScreen', { scrollToDiscover: true })}
         />
 
-        <BuildHabitTogetherCard onPress={() => navigation.navigate('TeamUpFlow')} />
+        <BuildHabitTogetherCard onPress={() => navigation.navigate('HabitCircle')} />
 
 
       </ScrollView>
