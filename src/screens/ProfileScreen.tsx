@@ -15,6 +15,8 @@ import api from '../services/api';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import DeviceInfo from 'react-native-device-info';
+
 
 
 const ProfileScreen = () => {
@@ -32,6 +34,9 @@ const ProfileScreen = () => {
   const [gender, setGender] = useState(user?.gender ?? '');
   const [age, setAge] = useState(user?.age?.toString() ?? '');
   const token = useAuthStore(state => state.token);
+
+  const appName = DeviceInfo.getApplicationName();
+  const appVersion = DeviceInfo.getVersion();       
 
   const handleChoosePhoto = () => {
     launchImageLibrary(
@@ -186,7 +191,7 @@ useFocusEffect(
 
         {/* Log Out Button */}
         <PrimaryButton title="Log Out" onPress={handleLogout} style={styles.logoutButton} />
-        <Text style={styles.appVersion}>App Version 1.0.1</Text>
+        <Text style={styles.appVersion}>{appName} {appVersion}</Text>
       </View>
 
       {/* Account Modal */}
@@ -312,7 +317,7 @@ const styles = StyleSheet.create({
   optionRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', paddingVertical: wp(4) },
   optionText: { fontSize: wp(4.5), fontWeight: '500', color: '#2D2D2D' },
   logoutButton: { paddingVertical: wp(3), paddingHorizontal: wp(10), borderRadius: wp(2.5), marginTop: hp(5) },
-  appVersion: { fontSize: wp(2.5), color: '#666', marginTop: hp(2), fontWeight: '400' },
+  appVersion: { fontSize: wp(4.0), color: '#666', marginTop: hp(2), fontWeight: '400' },
   inputStyle: {
     borderWidth: 1,
     borderColor: '#ccc',
