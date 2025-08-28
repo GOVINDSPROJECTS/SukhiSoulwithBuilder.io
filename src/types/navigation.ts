@@ -1,5 +1,7 @@
 // src/types/navigation.ts
 
+import { HabitsStackParamList } from '@/navigation/HabitsStack';
+import { InSyncStackParamList } from '@/navigation/InSyncStack';
 import { NavigatorScreenParams } from '@react-navigation/native';
 // import HabitsHomeScreen from './../screens/Habits/HabitsHomeScreen';
 
@@ -28,18 +30,19 @@ export type AppTabsParamList = {
 
 };
 
-export type HabitsStackParamList = {
-    Habits:undefined;
-    HabitsHome:undefined;
-    AddHabit:undefined
-    AddTogetherHabit:{ room_id: string };
-}
+// export type HabitsStackParamList = {
+//     Habits:undefined;
+//     HabitsHome:undefined;
+//     AddHabit:undefined
+//     AddTogetherHabit:{ room_id: string };
+//     EditOrDelete:{id:string}
+// }
 
-export type InSyncStackParamList = {
-  InSyncIntro:undefined;
-  InSyncHome:undefined;
-  InSync:undefined; 
-}
+// export type InSyncStackParamList = {
+//   InSyncIntro:undefined;
+//   InSyncHome:undefined;
+//   InSync:undefined; 
+// }
 
 // Root Navigation Stack
 export type RootStackParamList = {
@@ -48,7 +51,8 @@ export type RootStackParamList = {
   AuthStack: NavigatorScreenParams<AuthStackParamList>;
   AppTabs: NavigatorScreenParams<AppTabsParamList>;
   HabitsStack: NavigatorScreenParams<HabitsStackParamList>;
-  HomeScreen: { scrollToDiscover?: boolean };
+  InsyncStack: NavigatorScreenParams<InSyncStackParamList>;
+  HomeScreen: undefined;
   HabitsHome: undefined;
   DayDetail: { date: string };
   TeamUpFlow: undefined;
@@ -68,4 +72,6 @@ export type RootStackParamList = {
   GetEnterCode:undefined;
   EnterCodeScreen: undefined;
   AddTogetherHabit:{ room_id: string };
+  InSyncHome:undefined;
+  EditOrDeleteHabit :{id:string};
 };

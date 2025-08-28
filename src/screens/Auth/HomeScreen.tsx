@@ -18,12 +18,19 @@ import HabitsList from '../Habits/components/HabitsList';
 import { Habit } from '@/types/habit';
 import api from '@/services/api';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { HabitsStackParamList } from '@/types/navigation';
+import {  AppTabsParamList, RootStackParamList } from '@/types/navigation';
 import ProgressInputModal from '../Habits/components/ProgressInputModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuthStore } from '@/store/authStore';
+import Notification from '@/components/Notification';
+import { useNavigation } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 
-export default function HomeScreen({ goToHabits, goToInsync }) {
+
+
+export default function HomeScreen() {
+  const user = useAuthStore((state) => state.user);
+  console.log(user?.display_photo);
   const [posts, setPosts] = useState<any[]>([]);
   const [habits, setHabits] = useState<Habit[]>([]);
   const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
@@ -39,7 +46,8 @@ export default function HomeScreen({ goToHabits, goToInsync }) {
   const progressMapRef = useRef<Record<string, any>>({});
   const togglingHabits = useRef<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
-  const navigation = useRef<NativeStackNavigationProp<HabitsStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const tabNavigation = useNavigation<BottomTabNavigationProp<AppTabsParamList>>();
 
   // ---------------- Fetch Posts ----------------
   useEffect(() => {
@@ -132,7 +140,7 @@ export default function HomeScreen({ goToHabits, goToInsync }) {
 
     try {
       // Check if already submitted
-      const alreadySubmittedRes = await api.get(`/userhabitreportswithfrequency/${habit.id}`, {
+      const alreadySubmittedRes = await api.get(`/habitalreadysubmitted/${habit.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const alreadySubmitted = alreadySubmittedRes.data.already_submitted;
@@ -176,6 +184,10 @@ export default function HomeScreen({ goToHabits, goToInsync }) {
       togglingHabits.current.delete(id);
     }
   };
+  // ---------------- to edit or delete habit ----------------
+  const handleEditOrDelete =(id:string)=>{
+      navigation.navigate('EditOrDeleteHabit',{id})
+  }
 
   // ---------------- Mood Slider ----------------
   const [sliderLeft, setSliderLeft] = useState(0);
@@ -204,7 +216,9 @@ export default function HomeScreen({ goToHabits, goToInsync }) {
   };
 
   return (
+    
     <GradientWrapper>
+      
       {/* Tabs */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: wp(4) }}>
         {['Mood', 'Habits', 'Activity', 'Educate'].map(tab => (
@@ -219,7 +233,7 @@ export default function HomeScreen({ goToHabits, goToInsync }) {
       </View>
 
       <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={16} style={styles.container} showsVerticalScrollIndicator={false} >
-
+<Notification/>
         {/* Mood */}
         <View ref={moodRef} onLayout={(e) => handleLayout('Mood', e)} style={[styles.section, { width: wp(53), height: wp(34) }]}>
           <Text style={[styles.heading, { fontSize: wp(8.5) }]}>How are you{'\n'}feeling{'\n'}today?</Text>
@@ -246,13 +260,21 @@ export default function HomeScreen({ goToHabits, goToInsync }) {
 
         {/* Habits */}
         <View ref={habitsRef} onLayout={(e) => handleLayout('Habits', e)} />
-        <HabitsList title="Today's Habits" habits={habits} onToggle={toggleHabitCompletion} onAllHabitPress={goToHabits} maxItemsToShow={5} />
+
+        <HabitsList 
+        title="Today's Habits"  
+        habits={habits} 
+        onToggle={toggleHabitCompletion} 
+        toEditOrDelete={handleEditOrDelete}
+        onAllHabitPress={()=> tabNavigation.navigate('Habits')} 
+        maxItemsToShow={5} 
+        />
 
         {/* Activities */}
         <View ref={activityRef} onLayout={(e) => handleLayout('Activity', e)} style={[styles.card, { width: wp(89), alignSelf: 'center', padding: 0, height: wp(28), backgroundColor: '#fff' }]}>
           <View style={{ padding: wp(4.5), flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'flex-end' }}>
             <Text style={[styles.cardTitle, { fontSize: wp(8), color: '#3D88A7' }]}>Connections</Text>
-            <TouchableOpacity style={[styles.allHabitsBtn]} onPress={goToInsync}>
+            <TouchableOpacity style={[styles.allHabitsBtn]} onPress={()=>tabNavigation.navigate('InSync')}>
               <Text style={[styles.allHabitsText, { color: '#666666' }]}>Explore Activities</Text>
               <Icon name="chevron-right" size={18} color="#2D2D2D" style={{ marginTop: wp(1) }} />
             </TouchableOpacity>

@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react';
-import { Text, View, Image, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { Text, View, Image, StyleSheet, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import BottomSheetModal from '../../components/BottomSheetModal';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import PrimaryButton from '../../components/PrimaryButton';
@@ -16,11 +16,13 @@ import { Share } from 'react-native';
 
 
 const TeamUpFlowScreen = () => {
+
+  
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [visible, setVisible] = useState(true);
   const [step, setStep] = useState<'teamup' | 'circle' | 'circleToInvite' | 'created' | 'invite'>('teamup');
   const [habitID, setHabitID] = useState('');
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const token = useAuthStore.getState().token;
   const [hasShared, setHasShared] = useState(false);
   const [code, setCode] = useState("");
@@ -95,12 +97,13 @@ const CreateSelfAsMember = async (roomId: string) => {
   // API call to create habit circle
   const createHabitCircle = React.useCallback(async () => {
     try {
-      // setLoading(true);
+      setLoading(true);
       const response = await api.post('/habitrooms', {}, {
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`, // Use the token from the auth store", 
-        }
+        },
+        
       });
 
       if (response.data?.habit_room?.room_id) {
@@ -116,7 +119,7 @@ const CreateSelfAsMember = async (roomId: string) => {
       console.error(error);
       Alert.alert("Error", "Something went wrong while creating the circle");
     } finally {
-      // setLoading(false);`
+      setLoading(false);
     }
   }, [CreateSelfAsMember, token]); // ✅ empty deps → function won't change
 
@@ -129,6 +132,14 @@ const CreateSelfAsMember = async (roomId: string) => {
 
 
   const renderStepContent = () => {
+
+      if (loading) {
+        return (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <ActivityIndicator size="large" color="#104256" />
+          </View>
+        );
+      }
     switch (step) {
       case 'teamup':
         return (

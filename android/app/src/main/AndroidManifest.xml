@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
 
     <application
       android:name=".MainApplication"
@@ -15,6 +19,9 @@
       <meta-data
         android:name="com.google.android.gms.client_id"
         android:value="618676745098-tupjtgn3d7lg07t1flkfnd9fpoh176lp.apps.googleusercontent.com" />
+        <meta-data
+    android:name="com.onesignal.notifications.permission"
+    android:value="ENABLED"/>
 
       <activity
         android:name=".MainActivity"

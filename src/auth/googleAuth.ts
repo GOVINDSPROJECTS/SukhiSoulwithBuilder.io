@@ -43,11 +43,12 @@ if (token && user) {
 
   // ✅ Save user (id, name, email, gender if provided)
   await useAuthStore.getState().setUser({
+    id : user?.id,
     name: user?.name,
     email: user?.email,
     age: null,
     gender: null,
-    display_photo: null,
+    display_photo: user?.display_photo,
     mobile_no: null,
     google_id: null,
     apple_id: null,

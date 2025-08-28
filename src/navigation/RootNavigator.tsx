@@ -43,6 +43,9 @@ import UpdateEmailOtp from '../screens/UpdateEmailOtp'
 import ReportsLogsScreen from '../screens/ReportsLogsScreen'
 import SavedItemsScreen from '../screens/SavedItemsScreen'
 import AddTogetherHabitScreen from '@/screens/Habits/AddTogetherHabitScreen';
+import InSyncHomeScreen from '@/screens/InSync/InSyncHomeScreen';
+import EditOrDeleteHabit from '@/screens/Habits/EditOrDeleteHabit';
+import HabitsHomeScreen from '@/screens/Habits/HabitsHomeScreen';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
@@ -68,6 +71,11 @@ const RootNavigator = () => {
         <Stack.Screen name="ReportsLogsScreen" component={ReportsLogsScreen} />
         <Stack.Screen name="SavedItemsScreen" component={SavedItemsScreen} />
         <Stack.Screen name="AddTogetherHabit" component={AddTogetherHabitScreen} />
+        <Stack.Screen name="InSyncHome" component={InSyncHomeScreen} />
+        <Stack.Screen name="EditOrDeleteHabit" component={EditOrDeleteHabit} />
+        <Stack.Screen name="HabitsHome" component={HabitsHomeScreen} />
+        
+
 
 
         </>

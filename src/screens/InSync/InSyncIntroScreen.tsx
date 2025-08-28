@@ -13,13 +13,17 @@ import BottomSheetModal from '../../components/BottomSheetModal';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { InSyncStackParamList } from '../../types/navigation';
+import { RootStackParamList } from '../../types/navigation';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import AppText from '@/components/AppText';
 import colors from '@/theme/colors';
 
-const InSyncIntroScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<InSyncStackParamList>>();
+
+type Props = {
+  refreshKey?: number;
+};
+const InSyncIntroScreen = ({refreshKey}:Props) => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [showModal, setShowModal] = useState(false);
 
   const handleGetGoing = async () => {

@@ -63,7 +63,7 @@ import TeamUpFlowScreen from '../screens/Habits/TeamUpFlowScreen';
 import { useAuthStore } from '@/store/authStore';
 import GetEnterCodeScreen from '../screens/Habits/GetEnterCodeScreen';
 import EnterCodeScreen from '@/screens/Habits/EnterCodeScreen';
-
+import EditOrDelete from '@/screens/Habits/EditOrDeleteHabit';
 
 export type HabitsStackParamList = {
   HabitsIntro: undefined;
@@ -73,14 +73,16 @@ export type HabitsStackParamList = {
   JoinedHabits: undefined;
   AddHabit: undefined;
   DayDetail: undefined;
-  HabitCircleScreen:{ joinedCode: string }; 
+  HabitCircleScreen: { joinedCode: string };
   FriendDetail: undefined;
   TeamUpFlow: undefined;
-  GetEnterCode:undefined;
-  EnterCodeScreen:undefined;
+  GetEnterCode: undefined;
+  EnterCodeScreen: undefined;
+  EditOrDelete: { id: string }
 };
 
 const Stack = createNativeStackNavigator<HabitsStackParamList>();
+
 
 export default function HabitsNavigator() {
   const { introShown, loadIntroStatus } = useAuthStore();
@@ -99,10 +101,10 @@ export default function HabitsNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {!introShown ? (
-  <Stack.Screen name="HabitsIntro" component={HabitsIntroScreen} />
-) : (
-  <Stack.Screen name="HabitsHome" component={HabitsHomeScreen} />
-)}
+        <Stack.Screen name="HabitsIntro" component={HabitsIntroScreen} />
+      ) : (
+        <Stack.Screen name="HabitsHome" component={HabitsHomeScreen} />
+      )}
 
       <Stack.Screen name="TrackHabit" component={TrackHabitScreen} />
       <Stack.Screen name="JoinedHabits" component={JoinedHabitsScreen} />
@@ -113,6 +115,10 @@ export default function HabitsNavigator() {
       <Stack.Screen name="TeamUpFlow" component={TeamUpFlowScreen} />
       <Stack.Screen name="GetEnterCode" component={GetEnterCodeScreen} />
       <Stack.Screen name="EnterCodeScreen" component={EnterCodeScreen} />
+      <Stack.Screen name="EditOrDelete" component={EditOrDelete} />
+      {/* <Stack.Screen name="HabitsHome" component={HabitsHomeScreen} /> */}
+
+
     </Stack.Navigator>
   );
 }

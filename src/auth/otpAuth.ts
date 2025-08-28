@@ -97,8 +97,8 @@ export const getLoginOtp = async (
     const payload = new FormData();
     payload.append('email', email);
 
-    const response = await axios.post(
-      'http://3.6.142.117/api/auth/request-otp',
+    const response = await api.post(
+      '/auth/request-otp',
       payload,
       {
         headers: { 'Content-Type': 'multipart/form-data' },

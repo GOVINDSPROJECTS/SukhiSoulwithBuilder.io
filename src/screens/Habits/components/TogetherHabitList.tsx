@@ -22,6 +22,7 @@ type Props = {
   habits: Habit[];
   title?: string;
   onToggle?: (id: string  , room_id: string) => void;
+  toEditOrDelete?:(id: string)=> void;
   showAddButton?: boolean;
   onAddHabitPress?: () => void;
   onAllHabitPress?: () => void;
@@ -35,6 +36,7 @@ const TogetherHabitsList = ({
   showAddButton = false,
   onAddHabitPress,
   onAllHabitPress,
+  toEditOrDelete,
   maxItemsToShow,
 }: Props) => {
   const displayedHabits = maxItemsToShow ? habits.slice(0, maxItemsToShow) : habits;
@@ -61,7 +63,11 @@ const TogetherHabitsList = ({
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
         <View style={styles.habitRow}>
-          <Text style={styles.habitText}>{item.title}</Text>
+
+          <Text
+          onPress={()=> toEditOrDelete?.(item.id)} 
+          style={styles.habitText}>{item.title}
+          </Text>
 
           <TouchableOpacity
             onPress={() => onToggle?.(item.id , item.room_id)}

@@ -6,10 +6,19 @@ import Toast from 'react-native-toast-message';
 import { NavigationContainer } from '@react-navigation/native';
 import { loadUserPrefs } from './src/store/userPrefsStore';
 import SwipeTabs from '@/navigation/SwipeTabs';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const App = () => {
   const restoreSession = useAuthStore((state) => state.restoreSession);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+  GoogleSignin.configure({
+    webClientId: '618676745098-xxxx.apps.googleusercontent.com',
+    offlineAccess: true,
+    scopes: ['openid', 'email', 'profile'],
+  });
+}, []);
 
   useEffect(() => {
       loadUserPrefs(); // 👈 load flag on app start

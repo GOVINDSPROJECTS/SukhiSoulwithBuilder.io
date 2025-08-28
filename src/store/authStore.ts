@@ -4,22 +4,23 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { setAuthToken } from '@/services/api';
 
 interface User {
-  name: string | null;
-  age: string | null;
-  gender: string | null;
-  display_photo: string | null;
-  email: string  |undefined;
-  mobile_no: string | null;
-  google_id: string | null;
-  apple_id: string | null;
-  remember_token: string | null;
-  current_team_id: string | null;
-  expo_token: string | null;
-  api_token: string | null;
-  device_token: string | null;
-  profile_status: string | null;
-  is_paid: string | null;
-  created_at: string | null;
+  id:string | null | undefined;
+  name: string | null |  undefined;
+  age: string | null |  undefined;
+  gender: string | null |  undefined;
+  display_photo: string | null |  undefined;
+  email: string | null |  undefined;
+  mobile_no: string | null |  undefined;
+  google_id: string | null |  undefined;
+  apple_id: string | null |  undefined;
+  remember_token: string | null |  undefined;
+  current_team_id: string | null |  undefined;
+  expo_token: string | null |  undefined;
+  api_token: string | null |  undefined;
+  device_token: string | null |  undefined;
+  profile_status: string | null |  undefined;
+  is_paid: string | null |  undefined;
+  created_at: string | null |  undefined;
 }
 interface AuthState {
   token: string | null;

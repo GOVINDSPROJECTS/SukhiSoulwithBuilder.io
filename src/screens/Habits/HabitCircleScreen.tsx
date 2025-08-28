@@ -105,7 +105,7 @@ const fetchRooms = async () => {
         ))}
         <PrimaryButton
                 title="Invite a Friend"
-                onPress={() => navigation.navigate('TeamUpFlow')}
+                onPress={() => navigation.navigate('GetEnterCode')}
                 style={{ width:wp(40),height:wp(11),alignSelf:"flex-end",marginBottom: hp(1),marginTop:wp(8) }}
             />
     </ScrollView>

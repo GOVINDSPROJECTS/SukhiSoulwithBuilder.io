@@ -21,7 +21,11 @@ import ProgressInputModal from './components/ProgressInputModal';
 import { useAuthStore } from '@/store/authStore';
 import RazorpayCheckout from 'react-native-razorpay';
 
-const HabitsHomeScreen = () => {
+
+type Props = {
+  refreshKey?: number;
+};
+const HabitsHomeScreen = ({refreshKey} : Props) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [showModal, setShowModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -30,9 +34,11 @@ const HabitsHomeScreen = () => {
   const [showTogetherHabbit, setShowTogetherHabbit] = useState(false);
   const [habits, setHabits] = useState<Habit[]>([]);
   const progressMapRef = useRef<Record<string, any>>({});
+  const [loading, setLoading] = useState(false);
   const [habitCompletionMap, setHabitCompletionMap] = useState<Record<string, { completed: number; total: number }>>({});
 
   const fetchHabits = async () => {
+    setLoading(true);
     try {
       console.log("📡 Fetching habits + progress reports...");
       const [habitRes, progressRes] = await Promise.all([api.get('/userhabits'), api.get('/userhabitreports')]);
@@ -82,16 +88,19 @@ const HabitsHomeScreen = () => {
     } catch (error) {
       console.error('❌ Error fetching habits or progress reports:', error);
     }
+    finally{
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchHabits();
-  }, []);
+  }, [refreshKey]);
 
   const checkAlreadySubmitted = async (habitId: string): Promise<boolean> => {
     try {
       const token = useAuthStore.getState().token;
-      const response = await api.get(`/userhabitreportswithfrequency/${habitId}`, {
+      const response = await api.get(`/habitalreadysubmitted/${habitId}`, {
         headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
       });
       return response.data.already_submitted === true;
@@ -162,6 +171,10 @@ const HabitsHomeScreen = () => {
     navigation.navigate({ name: 'AddHabit' } as any);
   };
 
+  const handleEditOrDelete =(id:string)=>{
+      navigation.navigate('EditOrDeleteHabit',{id})
+  } 
+
   const createOrder = async (amount: number) => {
     try {
       const response = await api.post('/create-order', { amount });
@@ -190,7 +203,7 @@ const HabitsHomeScreen = () => {
       };
 
       RazorpayCheckout.open(options)
-        .then(async (data) => {
+        .then(async (data: { razorpay_order_id: any; razorpay_payment_id: any; razorpay_signature: any; }) => {
           console.log('Payment Success:', data);
           await api.post('/verify-payment', {
             razorpay_order_id: data.razorpay_order_id,
@@ -204,9 +217,9 @@ const HabitsHomeScreen = () => {
     },});
           setShowPaymentModal(true);
         })
-        .catch((error) => {
+        .catch((error: { description: any; }) => {
           console.log('Payment Failed:', error);
-          alert(`Error: ${error.description}`);
+          Alert.alert(`Error: ${error.description}`);
         });
     } catch (err) {
       console.error(err);
@@ -232,6 +245,8 @@ const HabitsHomeScreen = () => {
           showAddButton
           onAddHabitPress={handleAddHabit}
           maxItemsToShow={50}
+          toEditOrDelete={handleEditOrDelete}
+          loading = {loading}
         />
 
         <AppText variant="h1" style={styles.text}>Building habbits don't have to be hard</AppText>
@@ -280,7 +295,7 @@ const HabitsHomeScreen = () => {
         <InfoCard
           title="Understand Your Habits"
           subtitle="Learn what helps habits last."
-          onPress={() => navigation.navigate('HomeScreen', { scrollToDiscover: true })}
+          onPress={() => navigation.navigate('HomeScreen')}
         />
 
         <View style={styles.card}>
@@ -301,7 +316,7 @@ const HabitsHomeScreen = () => {
             </View>
             <View style={styles.grayBox} />
             <Text style={[styles.desc, { marginVertical: wp(7) }]}>Stick to habits 95% better—together</Text>
-            <PrimaryButton title="Create Habit Circle" onPress={() => navigation.navigate('GetEnterCode')} style={{ width: wp(50), height: wp(11), alignSelf: "center", marginBottom: hp(7) }} />
+            <PrimaryButton title="Create Habit Circle" onPress={() => navigation.navigate('HabitCircle')} style={{ width: wp(50), height: wp(11), alignSelf: "center", marginBottom: hp(7) }} />
           </View>
         </BottomSheetModal>
       </ScrollView>

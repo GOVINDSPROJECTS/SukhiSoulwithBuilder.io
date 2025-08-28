@@ -12,6 +12,8 @@ import AppText from '../../components/AppText';
 import GradientWrapper from '../../components/GradientWrapper';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import colors from '@/theme/colors';
+import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
+
 
 
 
@@ -23,6 +25,15 @@ const OtpVerificationScreen = () => {
   const [counter, setCounter] = useState(30);
   const otpInput = useRef<OTPTextInput>(null);
   const [otpError, setOtpError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const CELL_COUNT = 6;
+const [value, setValue] = useState('');
+const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
+const [props, getCellOnLayoutHandler] = useClearByFocusCell({
+  value,
+  setValue,
+});
 
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -47,6 +58,7 @@ const OtpVerificationScreen = () => {
     }
 
     setOtpError(''); // clear previous error
+    setLoading(true);
 
     try {
       const res = await verifyOtp(email, otp, name, age, sex);
@@ -83,11 +95,14 @@ const OtpVerificationScreen = () => {
     } catch (error: any) {
       setOtpError('OTP verification failed. Please try again.');
     }
+    finally{
+      setLoading(false);
+    }
   };
 
   const handleResendOtp = () => {
     getLoginOtp(email, otpnavigation); // THEN call OTP logic
-      setCounter(30); // restart the countdown
+    setCounter(30); // restart the countdown
   };
 
   return (
@@ -95,61 +110,81 @@ const OtpVerificationScreen = () => {
       style={styles.wrapper}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-    <GradientWrapper >
-      <AppText variant='h1' style={styles.brand}>Sukhi{'\n'}Soul</AppText>
-          {/* <AppText variant='h1'>Soul</AppText> */}
+      <GradientWrapper >
+        <AppText variant='h1' style={styles.brand}>Sukhi{'\n'}Soul</AppText>
+        {/* <AppText variant='h1'>Soul</AppText> */}
 
-          <AppText
-            variant='h2'
-            style={{ marginVertical: hp('4%'), marginBottom: hp('4%') }}
-          >Verification Code</AppText>
+        <AppText
+          variant='h2'
+          style={{ marginVertical: hp('4%'), marginBottom: hp('4%') }}
+        >Verification Code</AppText>
 
-      <View style={styles.card}>
-        <Text style={styles.subHeading}>We have sent the verification code to your email address.</Text>
+        <View style={styles.card}>
+          <Text style={styles.subHeading}>We have sent the verification code to your email address.</Text>
 
-        <View>
-          <Text style={styles.changeEmail}>{email}</Text>
+          <View>
+            <Text style={styles.changeEmail}>{email}</Text>
+          </View>
+
+          <Text style={styles.subHeading}>OTP</Text>
+          {/* <OTPTextInput
+            ref={otpInput}
+            inputCount={6}
+            tintColor="#fff"
+            offTintColor="#555"
+            handleTextChange={setOtp}
+            textInputStyle={styles.otpBox}
+            containerStyle={styles.otpContainer}
+          /> */}
+
+          <CodeField
+  ref={ref}
+  {...props}
+  value={value}
+  onChangeText={setValue}
+  cellCount={CELL_COUNT}
+  rootStyle={styles.codeFieldRoot}
+  keyboardType="number-pad"
+  textContentType="oneTimeCode"
+  renderCell={({ index, symbol, isFocused }) => (
+    <Text
+      key={index}
+      style={[styles.cell, isFocused && styles.focusCell]}
+      onLayout={getCellOnLayoutHandler(index)}>
+      {symbol || (isFocused ? <Cursor /> : null)}
+    </Text>
+  )}
+/>
+
+          {otpError ? (
+            <Text style={{ color: 'red', margin: hp('1%'), marginLeft: wp('1%'), textAlign: 'center', }}>
+              {otpError}
+            </Text>
+          ) : null}
+
+          <PrimaryButton
+            title={loading ? "Loading..." : "Sign Up"}
+            onPress={handleVerify}
+            style={{ width: wp('30%'), alignSelf: 'center', marginTop:hp('1%'), }}
+
+          />
+
+          <TouchableOpacity onPress={handleResendOtp} disabled={counter !== 0}>
+            <Text style={[styles.resendText, counter !== 0 && { color: '#ccc' }]}>
+              {counter > 0 ? `Resend OTP in 00:${counter < 10 ? '0' + counter : counter}` : 'Resend OTP'}
+            </Text>
+          </TouchableOpacity>
+
         </View>
-
-        <Text style={styles.subHeading}>OTP</Text>
-        <OTPTextInput
-          ref={otpInput}
-          inputCount={6}
-          tintColor="#fff"
-          offTintColor="#555"
-          handleTextChange={setOtp}
-          textInputStyle={styles.otpBox}
-          containerStyle={styles.otpContainer}
-        />
-
-        {otpError ? (
-          <Text style={{ color: 'red', marginBottom: hp('1%'), marginLeft: wp('1%'), textAlign:'center', }}>
-            {otpError}
-          </Text>
-        ) : null}
-
-        <PrimaryButton
-          title="Sign Up"
-          onPress={handleVerify}
-          style={{ width: wp('30%'), alignSelf: 'center' }}
-
-        />
-
-        <TouchableOpacity onPress={handleResendOtp} disabled={counter !== 0}>
-          <Text style={styles.resendText}>
-            {counter > 0 ? `Resend OTP in 00:${counter < 10 ? '0' + counter : counter}` : 'Resend OTP'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </GradientWrapper>
-      </KeyboardAvoidingView>
+      </GradientWrapper>
+    </KeyboardAvoidingView>
   );
 };
 
 export default OtpVerificationScreen;
 
 const styles = StyleSheet.create({
-    wrapper: {
+  wrapper: {
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: hp('8%'),
@@ -182,6 +217,8 @@ const styles = StyleSheet.create({
     color: '#999',
     fontSize: wp('3.5%'),
     marginBottom: hp('6%'),
+    flexShrink: 1, // allow shrinking
+
   },
   otpContainer: {
     justifyContent: 'space-between',
@@ -195,7 +232,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     backgroundColor: colors.secondary,
     borderColor: '#666',
-    color:'#fff',
+    color: '#fff',
     fontSize: wp('4%'),
   },
   resendText: {
@@ -204,9 +241,33 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: hp('2%'),
   },
-    brand: {
+  brand: {
     // marginTop: hp('1%'),
     fontSize: wp('10%'),
-    color:colors.primary,
+    color: colors.primary,
+  },
+  codeFieldRoot: {
+    marginTop: hp('2%'),
+    width: '100%',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingHorizontal: wp('2%'),
+  },
+  cell: {
+    width: wp('11%'),
+    height: wp('11%'),
+    lineHeight: wp('11%'),
+    fontSize: wp('5%'),
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: wp('2%'),
+    textAlign: 'center',
+    color: '#000',
+    backgroundColor: '#fff',
+    elevation: 3,
+  },
+  focusCell: {
+    borderColor: colors.primary, // your app's primary color
+    borderWidth: 2,
   },
 });

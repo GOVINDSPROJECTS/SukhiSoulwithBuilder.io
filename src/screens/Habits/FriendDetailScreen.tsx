@@ -39,11 +39,9 @@ const FriendDetailScreen = () => {
   const [rooms, setRooms] = useState<HabitRoom[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [habits, setHabits] = useState<Habit[]>([]);
-  // const [habit_id, setHabitId] = useState<string>('');
     const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
   
   const memberId = useAuthStore.getState().user?.id?.toString() || '';
-    // const progressMapRef = useRef<Record<string, any>>({}); // 👈 Add this at the top (before useEffect)
   
 
 ////////////////////////////////////////////////////////////////////////
@@ -79,12 +77,10 @@ const fetchTogetherHabits = async (room_id: string) => {
 
     // Normalize today's date to same format as tracked_date (DD-MM-YYYY)
     const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" }); 
-    // const todayFormatted = today.replace(/\//g, "-"); // convert to DD-MM-YYYY
 
     // Format habits
     const formattedHabits = rawHabits.map((habit: any) => {
       const habitId = habit.id.toString(); 
-      // setHabitId(habitId); 
       const progress = latestProgressMap[habitId];
       const isToday = progress?.tracked_date === today;
       const completed = progress?.status?.toLowerCase() === "true" && isToday;
@@ -111,24 +107,8 @@ const fetchTogetherHabits = async (room_id: string) => {
  useEffect(() => {
     fetchTogetherHabits(room_id);
   }, []);
-////////////////////////////////////////////////////////////////////////
-// const checkAlreadySubmittedTogether = async (habitId: string) => {
-//   try {
-//     const token = useAuthStore.getState().token;
-//     const response = await api.get(`/togetherhabitalreadysubmitted/${habitId}`, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         Accept: 'application/json',
-//       },
-//     });
-//     const res =response.data.already_submitted;
-//     console.log(res);
-//     return res;
-//   } catch (error) {
-//     console.error('Error checking submission:', error);
-//     // return false; // fallback
-//   }
-// };
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 const checkAlreadySubmittedTogether = async (habitId: string) => {
   try {
     const token = useAuthStore.getState().token;
@@ -346,6 +326,10 @@ if (existingReport && isCurrentlyCompleted) {
     }
   };
 
+  //////////////////  Nudge Reminder //////////////////
+const handleNudgeReminder = () => {
+  Alert.alert('need to write logic to send notification')
+}
 
   useEffect(() => {
     fetchRooms();
@@ -374,7 +358,7 @@ if (existingReport && isCurrentlyCompleted) {
           <Text style={styles.subheading}>Keep each other going</Text>
           <Text style={[styles.subText,{width:wp(40)}]}>A little motivation goes a long way</Text>
 
-          <TouchableOpacity style={[styles.motivationCard, { flexDirection: 'row', alignItems: 'center', marginTop: wp(5) }]} onPress={() => Alert.alert(memberId)}>
+          <TouchableOpacity style={[styles.motivationCard, { flexDirection: 'row', alignItems: 'center', marginTop: wp(5) }]} onPress={handleNudgeReminder} >
                 <View >
                     <Text style={styles.text18}>Nudge to Remind</Text>
                     <Text style={styles.subText}>Remind Mugdha to track today</Text>
@@ -405,17 +389,13 @@ if (existingReport && isCurrentlyCompleted) {
           />
 
           <View style={{ marginTop: wp(0.1) }}>
-            {activity.map((act, index) => (
-              <View key={index} style={[styles.activiyWrapper,{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}]}>
+            {habits.map((habit) => (
+              <View key={habit.id} style={[styles.activiyWrapper,{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}]}>
 
                 <View>
-                  <Text style={[styles.text18, { fontWeight: 'bold' }]}>{act}</Text>
-                  <Text style={styles.subText}>{schedule[index]}</Text>
+                  <Text style={[styles.text18, { fontWeight: 'bold' }]}>{habit.title}</Text>
+                  <Text style={styles.subText}>{habit.habit_frequency}</Text>
                 </View>
-
-                {/* <TouchableOpacity>
-                  <Text style={{ fontSize: wp(3.5), color: '#666666', fontWeight: '500' }}>128{'🔥'}</Text>
-                </TouchableOpacity> */}
 
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                     <Text style={[styles.subText,{marginTop: hp(2.6)}]}>{score}</Text>
@@ -451,18 +431,18 @@ if (existingReport && isCurrentlyCompleted) {
               </View>
 
               <FlatList
-                data={activity}
-                keyExtractor={(item) => item}
+                data={habits}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                   <View style={styles.habitRow}>
-                    <Text style={styles.habitText}>{item}</Text>
+                    <Text style={styles.habitText}>{item.title}</Text>
                     <TouchableOpacity
-                      onPress={() => toggleHabit(item)}
+                      onPress={() => toggleHabit(item.id)}
                     >
                       <View
                         style={[
                           styles.checkbox,
-                          selectedHabits.includes(item) && styles.checkedBox,
+                          selectedHabits.includes(item.title) && styles.checkedBox,
                         ]}
                       />
                     </TouchableOpacity>
