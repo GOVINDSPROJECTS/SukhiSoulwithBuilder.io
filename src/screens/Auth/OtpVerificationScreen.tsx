@@ -57,7 +57,20 @@ const OtpVerificationScreen = () => {
           id: res.user.id,
           name: res.user.name,
           email: res.user.email,
+          age: res.user.age,
           gender: res.user.sex,
+          display_photo: null,
+          mobile_no: null,
+          google_id: null,
+          apple_id: null,
+          remember_token: null,
+          current_team_id: null,
+          expo_token: null,
+          api_token: null,
+          device_token: null,
+          profile_status: null,
+          is_paid: null,
+          created_at: null
         });
 
         navigation.reset({

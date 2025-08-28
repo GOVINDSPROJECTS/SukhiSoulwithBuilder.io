@@ -32,7 +32,6 @@ const ProfileScreen = () => {
 
 
 
-  const username=user ? user.name : 'User Name';
   const actOpen="6 July 2025";
 
   // const name= user ? user.name : 'User Name';
@@ -41,8 +40,8 @@ const ProfileScreen = () => {
   // const [fullName, setFullName] = useState(name);
   const [email, setEmail] = useState(user ? user.email : '');
   const [gender, setGender] = useState(user ? user.gender:'not specified');
-  const [firstName, setFirstName] = useState(username.split(' ')[0]);
-  const [lastName, setLastName] = useState(username.split(' ')[1] || '');
+  const [firstName, setFirstName] = useState(user?.name);
+  // const [lastName, setLastName] = useState(username.split(' ')[1] || '');
 
   // Add handler functions if needed
   const handleSaveAccountInfo = () => {
@@ -53,7 +52,7 @@ const ProfileScreen = () => {
 
   const handleSaveContact = () => {
     // Do something with firstName, lastName
-    console.log({ firstName, lastName });
+    console.log({ firstName });
     setShowUpdateModal(false);
   };
   
@@ -69,6 +68,13 @@ const ProfileScreen = () => {
     }
   }, [user]);
 
+  const handleLogout = () => {
+    logout();
+    // navigation.navigate('AuthStack', { screen: 'Login' });
+  };
+
+  
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Profile Picture */}
@@ -78,8 +84,8 @@ const ProfileScreen = () => {
       />
 
       {/* Name and Created Date */}
-      <Text style={styles.userName}>{username}</Text>
-      <Text style={styles.createdDate}>created on {actOpen}</Text>
+      <Text style={styles.userName}>{user?.name}</Text>
+      {/* <Text style={styles.createdDate}>member since {user?.created_at}</Text> */}
 
       {/* Reports and Logs (Card Style) */}
       <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('ReportsLogsScreen')} >
@@ -110,7 +116,7 @@ const ProfileScreen = () => {
         {/* Log Out Button */}
         <PrimaryButton
               title="Log Out"
-                onPress={logout}
+              onPress={handleLogout}
               style={styles.logoutButton}
         />   
 
@@ -155,7 +161,7 @@ const ProfileScreen = () => {
            
             <View style={{ marginTop:wp(0.5),flexDirection: 'row',justifyContent:'space-evenly',gap:wp(27)}}>
             
-                  <Text style={styles.name}>{firstName} {lastName}</Text>
+                  <Text style={styles.name}>{user?.name}</Text>
                    <TouchableOpacity
                       onPress={()=>setShowUpdateModal(true)}
                     >
@@ -170,7 +176,7 @@ const ProfileScreen = () => {
            
             <View style={{ marginTop:wp(0.5),flexDirection: 'row',justifyContent:'space-evenly',gap:wp(27)}}>
             
-                  <Text style={styles.name}>{email} </Text>
+                  <Text style={styles.name}>{user?.email} </Text>
                    <TouchableOpacity
                       onPress={() => setShowEmailModal(true)}
                     >
@@ -185,7 +191,7 @@ const ProfileScreen = () => {
            
             <View style={{ marginTop:wp(0.5),flexDirection: 'row',justifyContent:'space-evenly',gap:wp(27)}}>
             
-                  <Text style={styles.name}>{gender}</Text>
+                  <Text style={styles.name}>{user?.gender ?? 'Not mentioned'}</Text>
                    <TouchableOpacity
                       onPress={()=>setShowGenderPicker(true)}
                     >
@@ -239,19 +245,19 @@ const ProfileScreen = () => {
         </View>
 
 
-        <Text style={[styles.text18,{marginLeft:wp(3)}]}>First Name</Text>
+        <Text style={[styles.text18,{marginLeft:wp(3)}]}>Full Name</Text>
         <TextInput
-          value={firstName}
+          value={user?.name ?? ''}
           style={styles.inputStyle}
           onChangeText={(text) => setFirstName(text)}
         />
 
-        <Text style={[styles.text18,{marginLeft:wp(3),marginTop:hp(4)}]}>Last Name</Text>
+        {/* <Text style={[styles.text18,{marginLeft:wp(3),marginTop:hp(4)}]}>Last Name</Text>
         <TextInput
           value={lastName}
           style={styles.inputStyle}
           onChangeText={(text) => setLastName(text)}
-        />
+        /> */}
 
         <PrimaryButton
           title="Save"
@@ -316,8 +322,8 @@ const ProfileScreen = () => {
         <PrimaryButton
           title="Get OTP"
           onPress={() => navigation.getParent()?.navigate('UpdateEmailOtp', {
-            email: email.trim(), // trim to avoid trailing space issue
-            name: username,
+            email: user?.email, // trim to avoid trailing space issue
+            name: firstName,
             age: '22',
             sex: gender,
           })}

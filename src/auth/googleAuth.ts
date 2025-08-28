@@ -4,6 +4,7 @@ import { Alert } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
 import { useAuthStore } from '../store/authStore';
+import api from '@/services/api';
 
 type MyGoogleUser = {
   data?: {
@@ -26,8 +27,8 @@ export const handleGoogleSignin = async (
 const payload = new FormData();
 payload.append('id_token', idToken);
 
-const response = await axios.post(
-  'http://3.6.142.117/api/auth/login-google',
+const response = await api.post(
+  '/auth/login-google',
   payload,
   {
     headers: { 'Content-Type': 'multipart/form-data' },
@@ -42,10 +43,22 @@ if (token && user) {
 
   // ✅ Save user (id, name, email, gender if provided)
   await useAuthStore.getState().setUser({
-    id: user.id,              // <-- added
-    name: user.name,
-    email: user.email,
-    gender: user.gender || "", // fallback if API doesn’t send gender
+    name: user?.name,
+    email: user?.email,
+    age: null,
+    gender: null,
+    display_photo: null,
+    mobile_no: null,
+    google_id: null,
+    apple_id: null,
+    remember_token: null,
+    current_team_id: null,
+    expo_token: null,
+    api_token: null,
+    device_token: null,
+    profile_status: null,
+    is_paid: user?.is_paid,
+    created_at:user?.created_at,
   });
 
   // ✅ Navigate to home screen

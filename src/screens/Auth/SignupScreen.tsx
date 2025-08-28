@@ -66,13 +66,15 @@ const SignupScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <GradientWrapper>
-        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+        <ScrollView contentContainerStyle={styles.container} 
+         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled">
           <AppText variant='h1' style={styles.brand}>Sukhi{'\n'}Soul</AppText>
           {/* <AppText variant='h1'>Soul</AppText> */}
 
           <AppText
             variant='h2'
-            style={{ marginTop: hp('5%'), marginBottom: hp('2%') }}
+            style={{ marginTop: hp('5%'), marginBottom: hp('2%'),color:"#2D2D2D" }}
           >Create your account</AppText>
 
           {/* <CustomTextInput placeholder="Name" value={name} onChangeText={setName} type="text" />
@@ -175,7 +177,7 @@ const styles = StyleSheet.create({
     fontSize: wp('3.2%'),
     textAlign: 'center',
     color: '#666',
-    marginTop: hp('2%'),
+    marginTop: hp('1%'),
   },
   link: {
     textDecorationLine: 'underline',

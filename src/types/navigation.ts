@@ -61,8 +61,11 @@ export type RootStackParamList = {
       name?: string;
       age?: string;
       sex?: string;
-  };
+    };
   ReportsLogsScreen:undefined;
   SavedItemsScreen:undefined;
+  NextScreen: { roomId: string }; 
+  GetEnterCode:undefined;
+  EnterCodeScreen: undefined;
   AddTogetherHabit:{ room_id: string };
 };

@@ -48,25 +48,31 @@ const WelcomeScreen = () => {
 const styles = StyleSheet.create({
   caption: {
     // fontSize: wp('4%'),
+    color:"#2D2D2D",
+    fontWeight:'400'
   },
   brand: {
     // marginTop: hp('1%'),
-    fontSize: wp('10%'),
+    fontSize: wp(12),
     color:colors.primary,
+    fontWeight:700,
   },
   description: {
     marginTop: hp('3%'),
     // marginBottom: hp('2%'),
     marginVertical:hp('2%'),
-    maxWidth: wp('80%'),
-    fontSize: wp('5%'),
+    maxWidth: wp(64),
+    fontSize: wp('4.2%'),
+    color:"#2D2D2D",
+    fontWeight:'400'
     // textAlign: 'center',
     // alignSelf: 'center',
+    
   },
   footer: {
     textAlign: 'center',
     marginTop: hp('2%'),
-    fontSize: wp('3.8%'),
+    fontSize: wp('3.2%'),
   },
   card: {
     width: wp('70%'),
@@ -83,7 +89,7 @@ const styles = StyleSheet.create({
   },
   link: {
     color: colors.primary,
-    fontWeight: '600',
+    fontWeight: '500',
     fontSize: wp('4%'),
   },
 });

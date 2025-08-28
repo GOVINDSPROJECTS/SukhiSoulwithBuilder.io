@@ -167,6 +167,35 @@ const CreateSelfAsMember = async (roomId: string) => {
             </View>
           </View>
         );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       case 'circle':
         return (
           <View>

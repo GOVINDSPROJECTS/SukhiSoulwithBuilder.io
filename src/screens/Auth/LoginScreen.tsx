@@ -183,9 +183,11 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: wp('6%'),
-    color: '#000',
-    marginBottom: hp('2%'),
-    marginTop:hp('3%'), 
+    color: '#2D2D2D',
+    fontWeight:500,
+    padding:wp(5),
+    // marginBottom: hp('2%'),
+    marginTop:hp('2%'), 
   },
   input: {
     backgroundColor: '#222',
@@ -193,6 +195,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: wp('4%'),
     marginBottom: hp('2%'),
+
+    // iOS shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.3,      
+    shadowRadius: 4,         
+
+    // Android shadow
+    elevation: 10,
   },
   button: {
     backgroundColor: '#fff',

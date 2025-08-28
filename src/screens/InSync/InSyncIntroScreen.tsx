@@ -25,7 +25,7 @@ const InSyncIntroScreen = () => {
   const handleGetGoing = async () => {
     await AsyncStorage.setItem('@insync_intro_seen', 'true');
     setShowModal(false);
-    navigation.replace('InSyncHome');
+    navigation.navigate('InSyncHome');
     
   };
 
