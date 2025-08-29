@@ -179,34 +179,6 @@ const CreateSelfAsMember = async (roomId: string) => {
           </View>
         );
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       case 'circle':
         return (
           <View>
@@ -343,7 +315,7 @@ const CreateSelfAsMember = async (roomId: string) => {
   };
 
   return (
-    <BottomSheetModal visible={visible} onClose={() => navigation.navigate('HabitsHome' as any)}>
+    <BottomSheetModal visible={visible} onClose={() => navigation.navigate('HabitCircle')}>
       <View
         style={{
           width: wp(13),

@@ -55,29 +55,30 @@ export const getOtp = async (
 //////////////////////////////////////////////////////////////////////////////////////////
 export const verifyOtp = async (
   email: string,
-  otp: string,
+  value: string,
   name?: string,
   age?: string,
   sex?: string
 ) => {
   const formData = new FormData();
   formData.append('email', email);
-  formData.append('otp', otp);
+  formData.append('otp', value);
 
   if (name) formData.append('name', name);
   if (age) formData.append('age', age);
   if (sex) formData.append('sex', sex);
 
-  const response = await axios.post(
-    'http://3.6.142.117/api/auth/verify-otp',
+  const response = await api.post(
+    '/auth/verify-otp',
     formData,
     {
       headers: {
         'Content-Type': 'multipart/form-data',
+        
       },
     }
   );
-
+console.log('Verify OTP Response:', response.data);
   return response.data;
 };
 //////////////////////////////////////////////////////////////////////////////////////////////

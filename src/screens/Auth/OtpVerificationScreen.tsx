@@ -21,19 +21,19 @@ type AuthNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'
 
 const OtpVerificationScreen = () => {
 
-  const [otp, setOtp] = useState('');
+  // const [otp, setOtp] = useState('');
   const [counter, setCounter] = useState(30);
   const otpInput = useRef<OTPTextInput>(null);
   const [otpError, setOtpError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const CELL_COUNT = 6;
-const [value, setValue] = useState('');
-const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
-const [props, getCellOnLayoutHandler] = useClearByFocusCell({
-  value,
-  setValue,
-});
+  const [value, setValue] = useState('');
+  const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
+  const [props, getCellOnLayoutHandler] = useClearByFocusCell({
+    value,
+    setValue,
+  });
 
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -52,7 +52,7 @@ const [props, getCellOnLayoutHandler] = useClearByFocusCell({
   }, [counter]);
 
   const handleVerify = async () => {
-    if (!otp || otp.length !== 6) {
+    if (!value  || value .length !== 6) {
       setOtpError('Please enter a valid 6-digit OTP');
       return;
     }
@@ -61,7 +61,8 @@ const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     setLoading(true);
 
     try {
-      const res = await verifyOtp(email, otp, name, age, sex);
+      const res = await verifyOtp(email, value, name, age, sex);
+      console.log(res);
 
       if (res?.token && res?.user) {
         await setToken(res.token);
@@ -71,18 +72,18 @@ const [props, getCellOnLayoutHandler] = useClearByFocusCell({
           email: res.user.email,
           age: res.user.age,
           gender: res.user.sex,
-          display_photo: null,
-          mobile_no: null,
-          google_id: null,
-          apple_id: null,
-          remember_token: null,
-          current_team_id: null,
-          expo_token: null,
-          api_token: null,
-          device_token: null,
-          profile_status: null,
-          is_paid: null,
-          created_at: null
+          display_photo: '',
+          mobile_no: undefined,
+          google_id: undefined,
+          apple_id: undefined,
+          remember_token: undefined,
+          current_team_id: undefined,
+          expo_token: undefined,
+          api_token: undefined,
+          device_token: undefined,
+          profile_status: undefined,
+          is_paid: undefined,
+          created_at: undefined
         });
 
         navigation.reset({
@@ -90,12 +91,15 @@ const [props, getCellOnLayoutHandler] = useClearByFocusCell({
           routes: [{ name: 'AppTabs' }],
         });
       } else {
+       
         setOtpError('OTP verification failed. Please try again.');
       }
     } catch (error: any) {
-      setOtpError('OTP verification failed. Please try again.');
-    }
-    finally{
+  console.error('OTP verification failed:', error?.response || error?.message || error);
+  setOtpError('OTP verification failed. Please try again.');
+}
+
+    finally {
       setLoading(false);
     }
   };
@@ -138,23 +142,24 @@ const [props, getCellOnLayoutHandler] = useClearByFocusCell({
           /> */}
 
           <CodeField
-  ref={ref}
-  {...props}
-  value={value}
-  onChangeText={setValue}
-  cellCount={CELL_COUNT}
-  rootStyle={styles.codeFieldRoot}
-  keyboardType="number-pad"
-  textContentType="oneTimeCode"
-  renderCell={({ index, symbol, isFocused }) => (
-    <Text
-      key={index}
-      style={[styles.cell, isFocused && styles.focusCell]}
-      onLayout={getCellOnLayoutHandler(index)}>
-      {symbol || (isFocused ? <Cursor /> : null)}
-    </Text>
-  )}
-/>
+            ref={ref}
+            {...props}
+            value={value}
+            onChangeText={setValue}
+            cellCount={CELL_COUNT}
+            rootStyle={styles.codeFieldRoot}
+            autoFocus={true}
+            keyboardType="number-pad"
+            textContentType="oneTimeCode"
+            renderCell={({ index, symbol, isFocused }) => (
+              <Text
+                key={index}
+                style={[styles.cell, isFocused && styles.focusCell]}
+                onLayout={getCellOnLayoutHandler(index)}>
+                {symbol || (isFocused ? <Cursor /> : null)}
+              </Text>
+            )}
+          />
 
           {otpError ? (
             <Text style={{ color: 'red', margin: hp('1%'), marginLeft: wp('1%'), textAlign: 'center', }}>
@@ -165,7 +170,7 @@ const [props, getCellOnLayoutHandler] = useClearByFocusCell({
           <PrimaryButton
             title={loading ? "Loading..." : "Sign Up"}
             onPress={handleVerify}
-            style={{ width: wp('30%'), alignSelf: 'center', marginTop:hp('1%'), }}
+            style={{ width: wp('30%'), alignSelf: 'center', marginTop: hp('1%'), }}
 
           />
 

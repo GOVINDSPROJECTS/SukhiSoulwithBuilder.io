@@ -14,7 +14,7 @@ const App = () => {
 
   useEffect(() => {
   GoogleSignin.configure({
-    webClientId: '618676745098-xxxx.apps.googleusercontent.com',
+    webClientId: '618676745098-tupjtgn3d7lg07t1flkfnd9fpoh176lp.apps.googleusercontent.com',
     offlineAccess: true,
     scopes: ['openid', 'email', 'profile'],
   });

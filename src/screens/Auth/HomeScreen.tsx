@@ -25,6 +25,8 @@ import { useAuthStore } from '@/store/authStore';
 import Notification from '@/components/Notification';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 
 
@@ -50,10 +52,13 @@ export default function HomeScreen() {
     const tabNavigation = useNavigation<BottomTabNavigationProp<AppTabsParamList>>();
 
   // ---------------- Fetch Posts ----------------
-  useEffect(() => {
+useFocusEffect(
+  useCallback(() => {
     fetchPosts();
     fetchHabits();
-  }, []);
+  }, [])
+);
+
 
   const fetchPosts = async () => {
     try {
@@ -86,10 +91,20 @@ export default function HomeScreen() {
 
   // ---------------- Fetch Habits ----------------
   const fetchHabits = async () => {
+
+     const token = await AsyncStorage.getItem('token');
+    if (!token) {
+      Alert.alert('Token missing');
+      return;
+    }
     try {
       const [habitRes, progressRes] = await Promise.all([
-        api.get('/userhabits'),
-        api.get('/userhabitreports'),
+        api.get('/userhabits' ,{ headers: {
+        Authorization: `Bearer ${token}`,
+      }}),
+        api.get('/userhabitreports',{ headers: {
+        Authorization: `Bearer ${token}`,
+      }}),
       ]);
       const rawHabits = habitRes.data.habits;
       const progressReports = progressRes.data.habitreport || [];

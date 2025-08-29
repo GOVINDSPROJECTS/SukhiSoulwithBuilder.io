@@ -3,24 +3,26 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { setAuthToken } from '@/services/api';
 
+
+type PartialUser = Partial<User>;
 interface User {
-  id:string | null | undefined;
-  name: string | null |  undefined;
-  age: string | null |  undefined;
-  gender: string | null |  undefined;
-  display_photo: string | null |  undefined;
-  email: string | null |  undefined;
-  mobile_no: string | null |  undefined;
-  google_id: string | null |  undefined;
-  apple_id: string | null |  undefined;
-  remember_token: string | null |  undefined;
-  current_team_id: string | null |  undefined;
-  expo_token: string | null |  undefined;
-  api_token: string | null |  undefined;
-  device_token: string | null |  undefined;
-  profile_status: string | null |  undefined;
-  is_paid: string | null |  undefined;
-  created_at: string | null |  undefined;
+  id:string 
+  name: string ;
+  age?: string ;
+  gender?: string ;
+  display_photo: string ;
+  email?: string ;
+  mobile_no?: string ;
+  google_id?: string ;
+  apple_id?: string ;
+  remember_token?: string ;
+  current_team_id?: string ;
+  expo_token?: string ;
+  api_token?: string ;
+  device_token?: string ;
+  profile_status?: string ;
+  is_paid?: string ;
+  created_at?: string ;
 }
 interface AuthState {
   token: string | null;
@@ -37,7 +39,7 @@ interface AuthState {
   loadIntroStatus: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set , get) => ({
   token: null,
   user: null,
   habit: null,
@@ -66,10 +68,23 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ token });
   },
 
-  setUser: (user) => {
-    AsyncStorage.setItem('user', JSON.stringify(user));
-    set({ user });
-  },
+  // setUser: (user) => {
+  //   AsyncStorage.setItem('user', JSON.stringify(user));
+  //   set({ user });
+  // },
+  setUser: (user: User | PartialUser) => {
+  const currentUser = get().user ?? {};
+
+  const updatedUser = { ...currentUser, ...user };
+
+  if (!updatedUser.id) {
+    console.warn('User ID is missing. Aborting update.');
+    return;
+  }
+
+  AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+  set({ user: updatedUser as User }); // ✅ Type cast, now that we’re sure
+},
 
   // ✅ Login combines both token + user setting
   login: (token, user) => {

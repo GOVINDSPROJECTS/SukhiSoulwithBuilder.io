@@ -13,6 +13,9 @@ import CustomOptionPickerModal from '@/components/CustomOptionPickerModal';
 import Feather from 'react-native-vector-icons/Feather';
 import api from '../services/api';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
+
 
 const ProfileScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -28,67 +31,81 @@ const ProfileScreen = () => {
   const [fullName, setFullName] = useState(user?.name ?? '');
   const [gender, setGender] = useState(user?.gender ?? '');
   const [age, setAge] = useState(user?.age?.toString() ?? '');
+  const token = useAuthStore(state => state.token);
 
   const handleChoosePhoto = () => {
-  launchImageLibrary(
-    { mediaType: 'photo', quality: 0.7 },
-    async (response) => {
-      if (response.didCancel) return;
-      if (response.errorCode) {
-        Alert.alert('Error', 'Failed to pick image');
-        return;
-      }
-
-      const asset = response.assets?.[0];
-      if (!asset) return;
-
-      const token = useAuthStore.getState().token;
-      const formData = new FormData();
-      let mime = 'image/jpeg';
-if (asset.uri.endsWith('.png')) mime = 'image/png';
-
-formData.append('display_photo', {
-  uri: asset.uri,
-  type: mime,
-  name: asset.fileName || `profile_${Date.now()}.${mime.split('/')[1]}`,
-} as any);
-
-
-      try {
-        const res = await api.post('/update-profile-picture', formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-          timeout: 10000,
-        });
-        if (res.data.success) {
-          setUser({ ...user, display_photo: res.data.photo_url });
-          console.log(res.data.photo_url);
-          Alert.alert('Success', 'Profile photo updated');
+    launchImageLibrary(
+      { mediaType: 'photo', quality: 0.7 },
+      async (response) => {
+        if (response.didCancel) return;
+        if (response.errorCode) {
+          Alert.alert('Error', 'Failed to pick image');
+          return;
         }
-      } catch (err) {
-        console.error(err);
-        Alert.alert('Error', 'Upload failed');
+
+        const asset = response.assets?.[0];
+        if (!asset || !asset.uri) return;
+
+        const token = useAuthStore.getState().token;
+        const formData = new FormData();
+        let mime = 'image/jpeg';
+
+        if (asset.uri.endsWith('.png')) mime = 'image/png';
+
+        formData.append('display_photo', {
+          uri: asset.uri,
+          type: mime,
+          name: asset.fileName || `profile_${Date.now()}.${mime.split('/')[1]}`,
+        } as any);
+
+
+
+        try {
+          const res = await api.post('/update-profile-picture', formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'multipart/form-data',
+            },
+            timeout: 10000,
+          });
+          console.log('User from store:', user);
+
+          if (res.data.success && user?.id) {
+            setUser({
+              ...user,
+              display_photo: res.data.photo_url,
+            });
+            console.log(res.data.photo_url);
+            Alert.alert('Success', 'Profile photo updated');
+          } else {
+            Alert.alert('Error', 'User data is missing');
+          }
+
+        } catch (err) {
+          console.error(err);
+          Alert.alert('Error', 'Upload failed');
+        }
       }
-    }
-  );
-};
+    );
+  };
 
   // API handler for profile update
   const handleUpdateProfile = async (updates: { name?: string; gender?: string; age?: string }) => {
     try {
-      const token = useAuthStore.getState().token;
       const res = await api.put('/update-profile', updates, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (res.data.success) {
-        setUser({ ...user, ...updates });
+      if (res.data.success && user?.id) {
+        setUser({
+          ...user,
+          ...updates,
+        });
         Alert.alert('Success', 'Profile updated successfully');
       } else {
         Alert.alert('Error', res.data.message || 'Failed to update');
       }
+
     } catch (err) {
       console.error('Update error:', err);
       Alert.alert('Error', 'Unable to update profile');
@@ -114,28 +131,33 @@ formData.append('display_photo', {
     logout();
   };
 
-  useEffect(() => {
-    if (!user) {
-      fetchUserInfo();
-    }
-  }, [user]);
+useFocusEffect(
+  useCallback(() => {
+    fetchUserInfo();
+  }, [])
+);
+
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Profile Picture */}
       <TouchableOpacity onPress={handleChoosePhoto}>
-  <Image
-    //source={{ uri: user.display_photo  ?? require('../assets/default_avatar.jpg')}}
-    source={{uri:"http://3.6.142.117/profile_pictures/1756323726_68af5f8e88689.jpg"}}
-    source={{uri:user.display_photo}}
-    style={styles.profileImage}
-  />
-  <View style={styles.editIconWrapper}>
-    <Feather name="camera" size={20} color="#fff" />
-  </View>
-</TouchableOpacity>
+        <Image
+          source={{
+            uri: user?.display_photo
+              ? user.display_photo
+              : 'http://3.6.142.117/profile_pictures/1756323726_68af5f8e88689.jpg',
+          }}
+          style={styles.profileImage}
+        />
+
+        <View style={styles.editIconWrapper}>
+          <Feather name="camera" size={20} color="#fff" />
+        </View>
+      </TouchableOpacity>
 
       {/* Name */}
-      <Text style={styles.userName}>{user.name}</Text>
+      <Text style={styles.userName}>{user?.name}</Text>
 
       {/* Reports and Logs */}
       <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('ReportsLogsScreen')}>
@@ -230,19 +252,19 @@ formData.append('display_photo', {
 
       {/* Gender Picker */}
       <CustomOptionPickerModal
-  visible={showGenderPicker}
-  options={['Male', 'Female']}
-  onClose={() => {
-    handleSaveSex(); // call the function
-    setShowGenderPicker(false);
-  }}
-  onSelect={(val) => {
-    setGender(val);
-    handleUpdateProfile({ gender: val });
-    setShowGenderPicker(false);
-  }}
-  selected={gender}
-/>
+        visible={showGenderPicker}
+        options={['Male', 'Female']}
+        onClose={() => {
+          handleSaveSex(); // call the function
+          setShowGenderPicker(false);
+        }}
+        onSelect={(val) => {
+          setGender(val);
+          handleUpdateProfile({ gender: val });
+          setShowGenderPicker(false);
+        }}
+        selected={gender}
+      />
 
     </ScrollView>
   );
@@ -307,13 +329,13 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   editIconWrapper: {
-  position: 'absolute',
-  bottom: 0,
-  right: wp(32),
-  backgroundColor: '#000',
-  padding: 6,
-  borderRadius: 20,
-}
+    position: 'absolute',
+    bottom: 0,
+    right: wp(32),
+    backgroundColor: '#000',
+    padding: 6,
+    borderRadius: 20,
+  }
 
 });
 

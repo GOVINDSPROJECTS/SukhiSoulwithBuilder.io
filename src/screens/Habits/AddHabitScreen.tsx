@@ -18,12 +18,12 @@ import CalendarPickerModal from '@/components/CalendarPickerModal';
 import CustomOptionPickerModal from '@/components/CustomOptionPickerModal';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { HabitsStackParamList } from '../../types/navigation';
 import api from '@/services/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PrimaryButton from '@/components/PrimaryButton';
 import { useAuthStore } from '@/store/authStore';
 import SubscriptionPaymentModal from '../../components/SubscriptionPaymentModal';
+import { HabitsStackParamList } from '@/navigation/HabitsStack';
 
 
 const AddHabitScreen = () => {

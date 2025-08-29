@@ -20,12 +20,12 @@ import { Habit } from '@/types/habit';
 import ProgressInputModal from './components/ProgressInputModal';
 import { useAuthStore } from '@/store/authStore';
 import RazorpayCheckout from 'react-native-razorpay';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 
-type Props = {
-  refreshKey?: number;
-};
-const HabitsHomeScreen = ({refreshKey} : Props) => {
+const HabitsHomeScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [showModal, setShowModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -38,10 +38,28 @@ const HabitsHomeScreen = ({refreshKey} : Props) => {
   const [habitCompletionMap, setHabitCompletionMap] = useState<Record<string, { completed: number; total: number }>>({});
 
   const fetchHabits = async () => {
+
+     const token = await AsyncStorage.getItem('token');
+    if (!token) {
+      Alert.alert('Token missing');
+      return;
+    }
+
     setLoading(true);
     try {
       console.log("📡 Fetching habits + progress reports...");
-      const [habitRes, progressRes] = await Promise.all([api.get('/userhabits'), api.get('/userhabitreports')]);
+      const [habitRes, progressRes] = await Promise.all(
+        [api.get('/userhabits',{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }), 
+        api.get('/userhabitreports',{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      ]);
       console.log("✅ Habits API:", habitRes.data);
       console.log("✅ Reports API:", progressRes.data);
 
@@ -93,9 +111,12 @@ const HabitsHomeScreen = ({refreshKey} : Props) => {
     }
   };
 
-  useEffect(() => {
+useFocusEffect(
+  useCallback(() => {
     fetchHabits();
-  }, [refreshKey]);
+  }, [])
+);
+
 
   const checkAlreadySubmitted = async (habitId: string): Promise<boolean> => {
     try {
@@ -246,7 +267,7 @@ const HabitsHomeScreen = ({refreshKey} : Props) => {
           onAddHabitPress={handleAddHabit}
           maxItemsToShow={50}
           toEditOrDelete={handleEditOrDelete}
-          loading = {loading}
+          // loading = {loading}
         />
 
         <AppText variant="h1" style={styles.text}>Building habbits don't have to be hard</AppText>

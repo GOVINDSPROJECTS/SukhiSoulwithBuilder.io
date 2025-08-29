@@ -3,7 +3,7 @@
 // // src/screens/HabitCircleScreen.tsx
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
@@ -77,11 +77,16 @@ const fetchRooms = async () => {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+    <View style={{ flex: 1 }}>
+
+    <ScrollView style={styles.container}
+     contentContainerStyle={{ paddingBottom: hp(10) }}> 
         
         <AppText variant='h1'>Habit Circle</AppText>
         <Text style={[styles.subTitle,{width:wp(74)}]}>Check in, track habits together, and keep
             each other going</Text>
+
         
         {rooms.map((item , index ) => (
             <View key={item.room_id} style={styles.friendsCard}>
@@ -89,7 +94,7 @@ const fetchRooms = async () => {
                 key={item.room_id}
                 onPress={()=>handleOnPress(item)}
                 >
-                <Text style={styles.name}>{item.room_name}</Text>
+                <Text style={styles.name}>{item.room_name ?? item.room_id}</Text>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
                   <Text style={styles.status}>{habbitsNum[index]} habits tracked</Text>
@@ -103,12 +108,19 @@ const fetchRooms = async () => {
                 </TouchableOpacity> 
             </View>
         ))}
-        <PrimaryButton
-                title="Invite a Friend"
-                onPress={() => navigation.navigate('GetEnterCode')}
-                style={{ width:wp(40),height:wp(11),alignSelf:"flex-end",marginBottom: hp(1),marginTop:wp(8) }}
-            />
-    </ScrollView>
+         </ScrollView>
+
+
+            <PrimaryButton
+        title="Invite a Friend"
+        onPress={() => navigation.navigate('TeamUpFlow')}
+        style={styles.floatingButton}
+      />
+        
+   
+
+    </View>
+  </SafeAreaView>
   );
 };
 
@@ -176,6 +188,20 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#666666'
   },
+  floatingButton: {
+  position: 'absolute',
+  bottom: hp(3),
+  right: wp(5),
+  width: wp(40),
+  height: wp(11),
+  borderRadius: wp(2),
+  elevation: 5, // shadow for Android
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.2,
+  shadowRadius: 4,
+},
+
 });
 
 //  src/screens/HabitRoomsScreen.tsx
