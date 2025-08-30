@@ -27,6 +27,8 @@ import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import UpdateChecker from '@/components/UpdateChecker';
+import Feedback from '@/components/Feedback';
 
 
 
@@ -233,7 +235,8 @@ useFocusEffect(
   return (
     
     <GradientWrapper>
-      
+      {/* <UpdateChecker/> */}
+      {/* <Feedback/> */}
       {/* Tabs */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: wp(4) }}>
         {['Mood', 'Habits', 'Activity', 'Educate'].map(tab => (

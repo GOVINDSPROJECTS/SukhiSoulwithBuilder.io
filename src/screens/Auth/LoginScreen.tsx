@@ -257,6 +257,7 @@ import CustomTextInput from '../../components/CustomTextInput';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import colors from '@/theme/colors';
 import Modal from 'react-native-modal'; // ✅ react-native-modal
+import UpdateChecker from '@/components/UpdateChecker';
 
 type AuthNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
 
@@ -273,6 +274,7 @@ const LoginScreen = () => {
 
   return (
     <GradientWrapper>
+      <UpdateChecker/>
       <View style={styles.container}>
         <View style={styles.card}>
           <AppText variant='h1' style={styles.brand}>Sukhi{'\n'}Soul</AppText>
