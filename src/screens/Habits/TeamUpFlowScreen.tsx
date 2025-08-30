@@ -315,7 +315,7 @@ const CreateSelfAsMember = async (roomId: string) => {
   };
 
   return (
-    <BottomSheetModal visible={visible} onClose={() => navigation.navigate('HabitCircle')}>
+    <BottomSheetModal visible={visible} onClose={() => navigation.goBack()}>
       <View
         style={{
           width: wp(13),

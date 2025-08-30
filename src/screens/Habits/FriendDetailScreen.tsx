@@ -2,8 +2,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 // src/screens/FriendDetailScreen.tsx
 
-import { RouteProp, useRoute } from '@react-navigation/native';
-import React, { useEffect, useRef, useState } from 'react';
+import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text,Image, TouchableOpacity, StyleSheet,FlatList, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -26,6 +26,11 @@ type HabitRoom = {
   create_user_id?: number;
 };
 
+type RoomMembers = {
+  id: number;
+  room_id: number;
+  user_id: number;
+};
 
 type FriendDetailRouteProp = RouteProp<RootStackParamList, 'FriendDetail'>;
 
@@ -39,10 +44,9 @@ const FriendDetailScreen = () => {
   const [rooms, setRooms] = useState<HabitRoom[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [habits, setHabits] = useState<Habit[]>([]);
-    const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
-  
+  const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
   const memberId = useAuthStore.getState().user?.id?.toString() || '';
-  
+  const [othrmember, setmember] = useState<string>('');
 
 ////////////////////////////////////////////////////////////////////////
 const fetchTogetherHabits = async (room_id: string) => {
@@ -96,8 +100,8 @@ const fetchTogetherHabits = async (room_id: string) => {
       };
     });
 
-    console.log("Together Habits:", formattedHabits);
     setHabits(formattedHabits);
+    getmembers();
 
   } catch (error: any) {
     console.error("Error fetching together habits:", error?.response?.data || error);
@@ -107,6 +111,7 @@ const fetchTogetherHabits = async (room_id: string) => {
  useEffect(() => {
     fetchTogetherHabits(room_id);
   }, []);
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 const checkAlreadySubmittedTogether = async (habitId: string) => {
@@ -141,7 +146,6 @@ const toggleTogetherHabitCompletion = async (
     togglingTogetherHabits.current.delete(id);
     return;
   }
-
   const fetchTogetherHabits = async () => {
     try {
       const [habitRes, progressRes] = await Promise.all([
@@ -271,8 +275,6 @@ if (existingReport && isCurrentlyCompleted) {
     navigation.navigate('AddTogetherHabit', { room_id: room_id }); // 🔁 Navigates to AddHabitScreen
   };
 
-  const activity = ["Running", "Beating Madhura", "Sketching", "Movie"];
-  const schedule=["Daily", "Every Hour", "Weekly","Monthly"];
   const score=125;
 
   //For Existing Habits
@@ -327,14 +329,87 @@ if (existingReport && isCurrentlyCompleted) {
   };
 
   //////////////////  Nudge Reminder //////////////////
-const handleNudgeReminder = () => {
-  Alert.alert('need to write logic to send notification')
-}
+const handleNudgeReminder = async () => {
+  try {
+    const formData = new FormData();
+    formData.append('member_recieving', othrmember);  // make sure othrmember is a string
+    formData.append('room_id', room_id.toString());   // ensure it's string if it's a number
+    formData.append('status', 'sent');
+    formData.append('member_sending', memberId.toString());
+    formData.append('date_n_time', 'lele lala');
+
+    const res = await api.post('/togetherhabitnudgereminders', formData, {
+      headers: { 
+        'Content-Type': 'multipart/form-data', 
+        Authorization: `Bearer ${token}` 
+      },
+    });
+
+    Alert.alert('Success', res.data.message || 'Nudge sent successfully!');
+  } catch (error: any) {
+    console.log('Error sending nudge:', error.response?.data || error.message);
+    Alert.alert(error.response?.data?.message || 'Failed to send nudge.');
+  }
+};
+
+
+const handleCheerFriend = async () => {
+  try {
+    const formData = new FormData();
+    formData.append('member_recieving', othrmember);  // make sure othrmember is a string
+    formData.append('room_id', room_id.toString());   // ensure it's string if it's a number
+    formData.append('status', 'sent');
+    formData.append('member_sending', memberId.toString());
+    formData.append('date_n_time', 'lele lala');
+
+    const res = await api.post('/togetherhabitcheerreminders', formData, {
+      headers: { 
+        'Content-Type': 'multipart/form-data', 
+        Authorization: `Bearer ${token}` 
+      },
+    });
+
+    Alert.alert('Success', res.data.message || 'Cheer request sent successfully!');
+  } catch (error: any) {
+    console.log('Error sending nudge:', error.response?.data || error.message);
+    Alert.alert(error.response?.data?.message || 'Failed to send cheer request.');
+  }
+};
+
+
+const getmembers = async () => { 
+  try {
+    const response = await api.get('/gethabitroommembers/' + room_id);
+
+    // Find the first member who is not the given memberId
+    const member = response.data.habitroommembers.find(
+      (m: { user_id: { toString: () => string; }; }) => m.user_id.toString() !== memberId
+    );
+
+    // Set that member's ID
+    setmember(member?.user_id.toString());
+
+    // Debug alert
+    // Alert.alert('member id', member?.user_id.toString() || 'No member found');
+    console.log(room_id)
+    console.log('othermember:',member?.user_id.toString());
+  } catch (error) {
+    console.log('Error fetching members:', error);
+  }
+};
+
 
   useEffect(() => {
     fetchRooms();
     fetchTogetherHabits(room_id);
   }, []);
+
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     fetchRooms();
+  //   fetchTogetherHabits(room_id);
+  //   }, [])
+  // );
 
  
 
@@ -367,7 +442,7 @@ const handleNudgeReminder = () => {
                       <Feather name="bell" color="#000" size={24} />
                   </View>
            </TouchableOpacity>
-          <TouchableOpacity style={[styles.motivationCard, { flexDirection: 'row', alignItems: 'center', marginTop: wp(5) }]}>
+          <TouchableOpacity style={[styles.motivationCard, { flexDirection: 'row', alignItems: 'center', marginTop: wp(5) }] } onPress={handleCheerFriend} >
                 <View>
                     <Text style={styles.text18}>Cheer your Friend</Text>
                     <Text style={styles.subText}>You’ve got this, let’s complete the challenge</Text>

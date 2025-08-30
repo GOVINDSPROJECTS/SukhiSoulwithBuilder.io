@@ -74,20 +74,20 @@ export default function InSyncStack() {
   const [loading, setLoading] = useState(true);
   const [introShown, setIntroShown] = useState(false);
 
-  useEffect(() => {
-    const loadIntroStatus = async () => {
-      try {
-        const seen = await AsyncStorage.getItem('@insync_intro_seen');
-        setIntroShown(seen === 'true');
-      } catch (error) {
-        console.warn('Error reading intro status:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const loadIntroStatus = async () => {
+  //     try {
+  //       const seen = await AsyncStorage.getItem('@insync_intro_seen');
+  //       setIntroShown(seen === 'true');
+  //     } catch (error) {
+  //       console.warn('Error reading intro status:', error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    loadIntroStatus();
-  }, []);
+  //   loadIntroStatus();
+  // }, []);
 
   if (loading) {
     return (
@@ -102,11 +102,13 @@ export default function InSyncStack() {
   screenOptions={{ headerShown: false }}
   initialRouteName={introShown ? 'InSyncHome' : 'InSyncIntro'}
 >
-      {!introShown ? (
+      {/* {!introShown ? (
         <Stack.Screen name="InSyncIntro" component={InSyncIntroScreen} />
       ) : (
         <Stack.Screen name="InSyncHome" component={InSyncHomeScreen} />
-      )}
+      )} */}
+              <Stack.Screen name="InSyncIntro" component={InSyncIntroScreen} />
+
       {/* Uncomment below when ready */}
       {/* <Stack.Screen name="InSyncInvite" component={InSyncInviteScreen} /> */}
       {/* <Stack.Screen name="AddActivities" component={AddActivitiesScreen} /> */}
