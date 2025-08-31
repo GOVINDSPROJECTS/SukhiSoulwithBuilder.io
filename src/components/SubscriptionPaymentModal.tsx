@@ -14,6 +14,7 @@ import PrimaryButton from '@/components/PrimaryButton';
 import { useAuthStore } from '@/store/authStore';
 import BottomSheetModal from './BottomSheetModal';
 import RazorpayCheckout from 'react-native-razorpay';
+import colors from '@/theme/colors';
 
 const SubscriptionPaymentModal = () => {
     const [showPaymentModal, setShowPaymentModal] = useState(true);
@@ -62,15 +63,15 @@ const SubscriptionPaymentModal = () => {
             const orderData = await createOrder(amount);
 
             const options = {
-                description: 'Personal Habit Trainer',
-                image: 'https://yourlogo.com/logo.png',
+                description: 'Subscription for habit plan',
+                image: 'https://www.sukhisoul.com/Sukhisoul%20logo%201.svg',
                 currency: orderData.currency,
                 key: orderData.key,
                 amount: orderData.amount,
                 order_id: orderData.order_id,
                 name: 'Sukhisoul Wellness Hub',
-                prefill: { email: user?.email, contact: user?.mobile_no ?? '9999999999', name: user?.name },
-                theme: { color: '#F37254' },
+                prefill: { email: user?.email, name: user?.name },
+                theme: { color: colors.primary },
             };
 
             RazorpayCheckout.open(options)

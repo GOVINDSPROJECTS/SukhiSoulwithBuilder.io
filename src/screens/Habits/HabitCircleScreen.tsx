@@ -65,26 +65,54 @@ const fetchRooms = async () => {
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      hasSubscription();
-    try {
-     if (rooms?.length > 0) {
-    const found = rooms.some(item => item.create_user_id?.toString() === memberId);
-    if (found){
-      setAlreadyInRoom(prev => prev + 1);
+//   useFocusEffect(
+//     useCallback(() => {
+//       hasSubscription();
+//     try {
+//      if (rooms?.length > 0) {
+//       console.log(rooms.length);
+//     const found = rooms.some(item => item.create_user_id?.toString() === memberId);
+//     if (found){
+//       setAlreadyInRoom(prev => prev + 1);
+//     }
+//   } else {
+//     setAlreadyInRoom(0);
+//   }
+//     } catch (error) {
+//       Alert.alert('Error', 'Something went wrong while checking subscription status.');
+//     }
+//     fetchRooms();
+//     console.log(alreadyInRoom);
+//   }, []
+// )
+//   );
+
+
+useFocusEffect(
+  useCallback(() => {
+  hasSubscription();
+  try {
+    if (rooms?.length > 0) {
+      console.log(rooms.length);
+
+      const count = rooms.filter(
+        item => item.create_user_id?.toString() === memberId
+      ).length;
+
+      setAlreadyInRoom(count);
+    } else {
+      setAlreadyInRoom(0);
     }
-  } else {
-    setAlreadyInRoom(0);
+  } catch (error) {
+    Alert.alert('Error', 'Something went wrong while checking subscription status.');
   }
-    } catch (error) {
-      Alert.alert('Error', 'Something went wrong while checking subscription status.');
-    }
-    fetchRooms();
-    console.log(alreadyInRoom);
-  }, []
-)
-  );
+  console.log(alreadyInRoom);
+}, [rooms, memberId]));
+
+// fetch rooms only once when screen loads
+useEffect(() => {
+  fetchRooms();
+}, []);
 
     const hasSubscription = async () => {
         try {

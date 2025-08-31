@@ -30,13 +30,20 @@ const TeamUpFlowScreen = () => {
 
 
   const handleCreateCircleUsingCode = () => {
-    if (isAlreadyInRoom >= 1 && !isSubscribed) {
+    try {
+       console.log(isAlreadyInRoom , isSubscribed );
+      if (isAlreadyInRoom >= 1 && !isSubscribed) {
+     
       setStep('subscribe');
       return;
     }
     else{
       createHabitCircle();
       setStep('circle');
+    }
+      
+    } catch (error) {
+      console.error(error);
     }
   }
 
