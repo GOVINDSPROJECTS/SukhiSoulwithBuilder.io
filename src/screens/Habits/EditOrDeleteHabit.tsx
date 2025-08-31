@@ -17,11 +17,11 @@ import { useAuthStore } from '@/store/authStore';
 import SubscriptionPaymentModal from '../../components/SubscriptionPaymentModal';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { HabitsStackParamList } from '@/navigation/HabitsStack';
-import { RootStackParamList } from '@/types/navigation';
+import { AppTabsParamList, RootStackParamList } from '@/types/navigation';
 
 const EditOrDeleteHabit = () => {
   const { params } = useRoute<RouteProp<HabitsStackParamList, 'EditOrDelete'>>();
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<AppTabsParamList>>();
   const user = useAuthStore((state) => state.user);
   const { id } = params;
 
@@ -114,7 +114,7 @@ const EditOrDeleteHabit = () => {
       });
 
       Alert.alert('Success', 'Habit updated!');
-      navigation.navigate('HabitsHome');
+      navigation.navigate('Habits');
 
     } catch (err) {
       console.error('Update failed', err);
