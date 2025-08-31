@@ -4,7 +4,8 @@ import {
   Text,
   StyleSheet,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native';
 
 import GradientWrapper from '../../components/GradientWrapper';
@@ -27,9 +28,10 @@ const InSyncIntroScreen = ({refreshKey}:Props) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleGetGoing = async () => {
-    await AsyncStorage.setItem('@insync_intro_seen', 'true');
+    // await AsyncStorage.setItem('@insync_intro_seen', 'true');
     setShowModal(false);
-    navigation.navigate('InSyncHome');
+    // navigation.navigate('InSyncHome');
+    Alert.alert('This feature is coming soon! Stay tuned for updates.');
     
   };
 

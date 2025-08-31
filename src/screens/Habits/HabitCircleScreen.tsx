@@ -2,9 +2,9 @@
 // /* eslint-disable react-native/no-inline-styles */
 // // src/screens/HabitCircleScreen.tsx
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, SafeAreaView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import PrimaryButton from '../../components/PrimaryButton';
@@ -15,6 +15,8 @@ import AppText from '@/components/AppText';
 
 // const friends = ['Dumb D. Madhura', 'Portega D. Piyush', 'Mugdha Mehindarkar'];
 const habbitsNum = [1,0,3];
+const memberId = useAuthStore.getState().user?.id?.toString() || '';
+// eslint-disable-next-line react-hooks/rules-of-hooks
 
 
 type HabitRoom = {
@@ -31,7 +33,9 @@ const HabitCircleScreen = () => {
     const token = useAuthStore.getState().token;
       const [rooms, setRooms] = useState<HabitRoom[]>([]);
         const [loading, setLoading] = useState<boolean>(true);
-
+  const [alreadyInRoom, setAlreadyInRoom] = useState<number>(0);
+    const [subscribed, isSubscribed] = useState(false);
+  
         
 const fetchRooms = async () => {
     try {
@@ -61,11 +65,44 @@ const fetchRooms = async () => {
     }
   };
 
-  useEffect(() => {
+  useFocusEffect(
+    useCallback(() => {
+      hasSubscription();
+    try {
+     if (rooms?.length > 0) {
+    const found = rooms.some(item => item.create_user_id?.toString() === memberId);
+    if (found){
+      setAlreadyInRoom(prev => prev + 1);
+    }
+  } else {
+    setAlreadyInRoom(0);
+  }
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong while checking subscription status.');
+    }
     fetchRooms();
-  }, []);
-  
+    console.log(alreadyInRoom);
+  }, []
+)
+  );
 
+    const hasSubscription = async () => {
+        try {
+          const res = await api.get('/activesubscriptions',
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+        
+            (res.data.success===true) ?
+             isSubscribed(res.data.subscription.is_active) : 
+             isSubscribed(false);
+        
+        } catch (error) {
+          console.error('Error fetching active subscriptions:', error);
+        }
+    } 
 
   const handleOnPress = (item: { room_id: any; room_name?: string; create_user_id?: number | undefined; status?: string | undefined; }) => {
     if (item.status === 'pending') {
@@ -89,7 +126,9 @@ const fetchRooms = async () => {
 
         
         {rooms.map((item , index ) => (
+
             <View key={item.room_id} style={styles.friendsCard}>
+              
                 <TouchableOpacity
                 key={item.room_id}
                 onPress={()=>handleOnPress(item)}
@@ -113,7 +152,7 @@ const fetchRooms = async () => {
 
             <PrimaryButton
         title="Invite a Friend"
-        onPress={() => navigation.navigate('TeamUpFlow')}
+        onPress={() => navigation.navigate('TeamUpFlow',{isSubscribed: subscribed , isAlreadyInRoom: alreadyInRoom})}
         style={styles.floatingButton}
       />
         

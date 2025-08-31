@@ -55,7 +55,7 @@ export type RootStackParamList = {
   HomeScreen: undefined;
   HabitsHome: undefined;
   DayDetail: { date: string };
-  TeamUpFlow: undefined;
+  TeamUpFlow: {isSubscribed: boolean , isAlreadyInRoom: number};
   HabitCircle: undefined;
   FriendDetail: { room_id : string };
   AddHabitScreen: undefined;

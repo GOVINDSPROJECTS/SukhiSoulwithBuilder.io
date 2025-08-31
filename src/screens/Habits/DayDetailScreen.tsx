@@ -1,16 +1,16 @@
-import React, { useState ,useEffect, useRef} from 'react';
+import React, { useState ,useEffect, useRef, useCallback} from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '@/types/navigation';
 import AppText from '@/components/AppText';
 import WeeklyTracker from './components/WeeklyTracker';
-import GradientWrapper from '@/components/GradientWrapper';
 import colors from '@/theme/colors';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import HabitsList from './components/HabitsList';
 import GrowthChart from './components/GrowthChart';
 import api from '@/services/api';
-import { useIsFocused } from '@react-navigation/native';
+import { useAuthStore } from '@/store/authStore';
+import SubscriptionPaymentModal from '@/components/SubscriptionPaymentModal';
 
 
 const TABS = ['Today', 'Week', 'Month'];
@@ -33,9 +33,8 @@ type GrowthChartData = {
 const DayDetailScreen = () => {
   const route = useRoute<DayDetailScreenRouteProp>();
   const { date } = route.params;
-
-  
-  const isFocused = useIsFocused();
+  const token = useAuthStore.getState().token;
+  const [activePlan, setActivePlan] = useState(false);
   
   // if (!isFocused) return null; // Don't render until focused
   const [activeTab, setActiveTab] = useState('Today');
@@ -190,9 +189,17 @@ const DayDetailScreen = () => {
     }
   };
 
-  useEffect(() => {
-    fetchHabitsGraph();
-  }, []);
+  // useEffect(() => {
+  //   fetchHabitsGraph();
+  //   hasSubscription();
+  // }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+       fetchHabitsGraph();
+    hasSubscription();
+    }, [])
+  );
 
   // ✅ Handle Date Press
   const handleDatePress = async (newDate: string) => {
@@ -229,6 +236,25 @@ const DayDetailScreen = () => {
       console.error('❌ Error handling date press:', err);
     }
   };
+
+  const hasSubscription = async () => {
+      try {
+        const res = await api.get('/activesubscriptions',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+      
+          (res.data.subscription.is_active) ?
+           setActivePlan(res.data.subscription.is_active) : 
+           setActivePlan(false);
+      
+      } catch (error) {
+        console.error('Error fetching active subscriptions:', error);
+      }
+  } 
+
 
   // ✅ Tab Views
   const renderTodayView = () => {
@@ -274,7 +300,8 @@ const DayDetailScreen = () => {
   };
 
   const renderWeekView = () => (
-    <>
+    (activePlan ? 
+      <>
       <WeeklyTracker
         title="Know yourself to grow better"
         habitCompletionMap={habitCompletionMap}
@@ -292,6 +319,9 @@ const DayDetailScreen = () => {
         reports={growthChartData?.reports || {}}
       />
     </>
+    :
+    <SubscriptionPaymentModal/>
+    )
   );
 
   const renderMonthView = () => (

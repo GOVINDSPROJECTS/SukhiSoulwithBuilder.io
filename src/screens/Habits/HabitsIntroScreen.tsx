@@ -13,20 +13,20 @@ import BottomSheetModal from '../../components/BottomSheetModal';
 import { useNavigation } from '@react-navigation/native';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { HabitsStackParamList } from '../../types/navigation';
+import { AppTabsParamList } from '../../types/navigation';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useAuthStore } from '@/store/authStore';
 
 
 const HabitsIntroScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<HabitsStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<AppTabsParamList>>();
   const [showModal, setShowModal] = useState(false);
 
   const setIntroShown = useAuthStore((state) => state.setIntroShown);
 
   const handleGetGoing = async () => {
     setIntroShown(true);
-    navigation.navigate('HabitsHome');
+     navigation.navigate('Habits');
   };
 
 

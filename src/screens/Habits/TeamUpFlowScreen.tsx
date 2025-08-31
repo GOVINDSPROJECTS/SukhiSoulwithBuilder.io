@@ -4,23 +4,24 @@ import { Text, View, Image, StyleSheet, TextInput, TouchableOpacity, Alert, Acti
 import BottomSheetModal from '../../components/BottomSheetModal';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import PrimaryButton from '../../components/PrimaryButton';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-// import axios from 'axios'; // <-- use axios for API calls
 import api from '@/services/api';
 import { useAuthStore } from '@/store/authStore';
 import { Share } from 'react-native';
+import SubscriptionPaymentModal from '@/components/SubscriptionPaymentModal';
 
 
 const TeamUpFlowScreen = () => {
 
-  
+  const route = useRoute();
+  const { isSubscribed , isAlreadyInRoom } = (route.params as { isSubscribed: boolean , isAlreadyInRoom:number }) || { isSubscribed: false , isAlreadyInRoom:false };
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [visible, setVisible] = useState(true);
-  const [step, setStep] = useState<'teamup' | 'circle' | 'circleToInvite' | 'created' | 'invite'>('teamup');
+  const [step, setStep] = useState<'teamup' | 'circle' | 'circleToInvite' | 'created' | 'invite' | 'subscribe'>('teamup');
   const [habitID, setHabitID] = useState('');
   const [loading, setLoading] = useState(false);
   const token = useAuthStore.getState().token;
@@ -29,7 +30,14 @@ const TeamUpFlowScreen = () => {
 
 
   const handleCreateCircleUsingCode = () => {
-    setStep('circle');
+    if (isAlreadyInRoom >= 1 && !isSubscribed) {
+      setStep('subscribe');
+      return;
+    }
+    else{
+      createHabitCircle();
+      setStep('circle');
+    }
   }
 
   const handleCreateCircleWithCode = () => {
@@ -95,10 +103,10 @@ const CreateSelfAsMember = async (roomId: string) => {
 };
 
   // API call to create habit circle
-  const createHabitCircle = React.useCallback(async () => {
+  const createHabitCircle = async () => {
     try {
       setLoading(true);
-      const response = await api.post('/habitrooms', {}, {
+      const response = await api.post('/habitrooms',{
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`, // Use the token from the auth store", 
@@ -121,14 +129,14 @@ const CreateSelfAsMember = async (roomId: string) => {
     } finally {
       setLoading(false);
     }
-  }, [CreateSelfAsMember, token]); // ✅ empty deps → function won't change
+  } ; // ✅ empty deps → function won't change
 
 
-  React.useEffect(() => {
-    if (step === "circle" && !habitID) {
-      createHabitCircle();
-    }
-  }, [step, habitID, createHabitCircle]);
+  // React.useEffect(() => {
+  //   if (step === "circle" && !habitID) {
+  //     createHabitCircle();
+  //   }
+  // }, [step, habitID, createHabitCircle]);
 
 
   const renderStepContent = () => {
@@ -311,6 +319,11 @@ const CreateSelfAsMember = async (roomId: string) => {
             </TouchableOpacity>
           </View>
         );
+
+        case 'subscribe':
+          return(
+            <SubscriptionPaymentModal/>
+          )
     }
   };
 
