@@ -148,7 +148,7 @@ const EditOrDeleteHabit = () => {
             Alert.alert('Success', 'Habit deleted successfully.');
 
             // Navigate back or to home and refresh
-            navigation.navigate('HabitsHome');
+            navigation.navigate('Habits');
             // Or: navigation.goBack();
 
           } catch (error) {
