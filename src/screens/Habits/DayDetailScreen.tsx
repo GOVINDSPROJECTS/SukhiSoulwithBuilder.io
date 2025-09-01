@@ -382,14 +382,7 @@ const DayDetailScreen = () => {
   );
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#ffffff',
-        paddingHorizontal: 20,
-        paddingVertical: 40,
-      }}
-    >
+    <View style={styles.root}>
       <View style={styles.tabBar}>
         {TABS.map(tab => (
           <TouchableOpacity
@@ -426,6 +419,12 @@ const DayDetailScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 20,
+    paddingVertical: 40,
+  },
   scrollContainer: { paddingBottom: hp('5%'), paddingTop: hp('2%') },
   tabBar: {
     flexDirection: 'row',
