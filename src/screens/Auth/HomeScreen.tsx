@@ -236,14 +236,14 @@ useFocusEffect(
       {/* <UpdateChecker/> */}
       {/* <Feedback/> */}
       {/* Tabs */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: wp(4) }}>
+      <View style={styles.tabsRow}>
         {['Mood', 'Habits', 'Activity', 'Educate'].map(tab => (
           <TouchableOpacity key={tab} onPress={() => {
             const y = sectionPositions.current[tab];
             if (y !== undefined && scrollViewRef.current) scrollViewRef.current.scrollTo({ y, animated: true });
             setActiveTab(tab);
-          }} style={{ paddingHorizontal: wp(3), paddingVertical: wp(1), borderRadius: wp(4), marginHorizontal: wp(1.2), backgroundColor: activeTab === tab ? '#245C73' : 'transparent' }}>
-            <Text style={{ color: activeTab === tab ? '#fff' : '#1B3C3E', fontSize: wp(3.5), fontWeight: '500' }}>{tab}</Text>
+          }} style={[styles.tabButton, activeTab === tab && styles.tabButtonActive]}>
+            <Text style={[styles.tabText, activeTab === tab && styles.tabTextActive]}>{tab}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -256,16 +256,16 @@ useFocusEffect(
         </View>
 
         {/* Mood Slider Card */} 
-        <View style={[styles.moodCardSlider, { width: wp(89), height: wp(34), alignSelf: 'center' }]}>
-          <Text style={[styles.moodCardTitle, { fontSize: wp(5), fontWeight: '600', color: '#2d4c5a', marginBottom: wp(2.5) }]}>
+        <View style={[styles.moodCardSlider, styles.moodCardSliderDims]}>
+          <Text style={styles.moodCardHeader}>
             Take a moment to check in
           </Text> {/* Labels Row */} 
-          <View style={{ flexDirection: 'row', width: wp(68), alignSelf: 'center', justifyContent: 'space-between', marginBottom: wp(0) }}>
+          <View style={styles.labelsRow}>
             <Text style={styles.sliderLabel}>Dukhi</Text>
             <Text style={styles.sliderLabel}>Sukhi</Text>
           </View>
-          <View style={[styles.sliderTrack, { backgroundColor: 'transparent', height: 32, width: wp(68), alignSelf: 'center', marginTop: 0 }]} onLayout={e => setSliderLeft(e.nativeEvent.layout.x)} >
-            <LinearGradient colors={['#4594A5', '#FCF7B4']} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={{ position: 'absolute', width: wp(68), height: wp(4), borderRadius: wp(2), left: wp(0), top: wp(2), }} />
+          <View style={[styles.sliderTrack, styles.sliderTrackDims]} onLayout={e => setSliderLeft(e.nativeEvent.layout.x)} >
+            <LinearGradient colors={['#4594A5', '#FCF7B4']} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={styles.gradientBar} />
           <View style={[styles.sliderThumb, { left: moodValue * (270 - 28), top: wp(0.5) },]} {...panResponder.panHandlers} /> 
           </View> 
           <Text style={styles.sliderHint}>
@@ -287,12 +287,12 @@ useFocusEffect(
         />
 
         {/* Activities */}
-        <View ref={activityRef} onLayout={(e) => handleLayout('Activity', e)} style={[styles.card, { width: wp(89), alignSelf: 'center', padding: 0, height: wp(28), backgroundColor: '#fff' }]}>
-          <View style={{ padding: wp(4.5), flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'flex-end' }}>
-            <Text style={[styles.cardTitle, { fontSize: wp(8), color: '#3D88A7' }]}>Connections</Text>
-            <TouchableOpacity style={[styles.allHabitsBtn]} onPress={()=>tabNavigation.navigate('InSync')}>
-              <Text style={[styles.allHabitsText, { color: '#666666' }]}>Explore Activities</Text>
-              <Icon name="chevron-right" size={18} color="#2D2D2D" style={{ marginTop: wp(1) }} />
+        <View ref={activityRef} onLayout={(e) => handleLayout('Activity', e)} style={[styles.card, styles.activityCard]}>
+          <View style={styles.activityInnerRow}>
+            <Text style={styles.activityTitle}>Connections</Text>
+            <TouchableOpacity style={styles.allHabitsBtn} onPress={()=>tabNavigation.navigate('InSync')}>
+              <Text style={styles.allHabitsText}>Explore Activities</Text>
+              <Icon name="chevron-right" size={18} color="#2D2D2D" style={styles.chevronIcon} />
             </TouchableOpacity>
           </View>
         </View>
@@ -322,11 +322,11 @@ useFocusEffect(
                 </View>
               )}
 
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: wp(2.5), paddingHorizontal: wp(2.5) }}>
-                <Text style={{ color: '#252525', fontSize: wp(3), marginLeft: wp(4.5) }}>{item.caption}</Text>
-                <View style={{ flexDirection: 'row' }}>
-                  <TouchableOpacity style={{ marginRight: wp(4) }}><Icon name="heart" size={22} color="#222" /></TouchableOpacity>
-                  <TouchableOpacity style={{ marginRight: 16 }}><Icon name="bookmark" size={22} color="#222" /></TouchableOpacity>
+              <View style={styles.postFooterRow}>
+                <Text style={styles.postCaption}>{item.caption}</Text>
+                <View style={styles.postIconsRow}>
+                  <TouchableOpacity style={styles.iconRight}><Icon name="heart" size={22} color="#222" /></TouchableOpacity>
+                  <TouchableOpacity style={styles.iconRightSm}><Icon name="bookmark" size={22} color="#222" /></TouchableOpacity>
                 </View>
               </View>
             </View>
@@ -355,6 +355,25 @@ const styles = StyleSheet.create({
   heading: { fontWeight: '600', marginBottom: wp(2.5), color: '#2D2D2D' },
   moodCardSlider: { backgroundColor: '#FFFFFFCC', borderRadius: wp(6), padding: wp(4.5), marginBottom: wp(6), alignItems: 'center', shadowColor: '#b0c4d4', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 8, elevation: 2 },
   moodCardTitle: { fontSize: wp(5), fontWeight: '600', color: '#2d4c5a', marginBottom: wp(2.5) },
+  moodCardHeader: { fontSize: wp(5), fontWeight: '600', color: '#2d4c5a', marginBottom: wp(2.5) },
+  tabsRow: { flexDirection: 'row', justifyContent: 'center', marginVertical: wp(4) },
+  tabButton: { paddingHorizontal: wp(3), paddingVertical: wp(1), borderRadius: wp(4), marginHorizontal: wp(1.2), backgroundColor: 'transparent' },
+  tabButtonActive: { backgroundColor: '#245C73' },
+  tabText: { fontSize: wp(3.5), fontWeight: '500', color: '#1B3C3E' },
+  tabTextActive: { color: '#fff' },
+  moodCardSliderDims: { width: wp(89), height: wp(34), alignSelf: 'center' },
+  labelsRow: { flexDirection: 'row', width: wp(68), alignSelf: 'center', justifyContent: 'space-between', marginBottom: wp(0) },
+  sliderTrackDims: { backgroundColor: 'transparent', height: 32, width: wp(68), alignSelf: 'center', marginTop: 0 },
+  gradientBar: { position: 'absolute', width: wp(68), height: wp(4), borderRadius: wp(2), left: wp(0), top: wp(2) },
+  activityCard: { width: wp(89), alignSelf: 'center', padding: 0, height: wp(28), backgroundColor: '#fff' },
+  activityInnerRow: { padding: wp(4.5), flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'flex-end' },
+  activityTitle: { fontSize: wp(8), color: '#3D88A7' },
+  chevronIcon: { marginTop: wp(1) },
+  postFooterRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: wp(2.5), paddingHorizontal: wp(2.5) },
+  postCaption: { color: '#252525', fontSize: wp(3), marginLeft: wp(4.5) },
+  postIconsRow: { flexDirection: 'row' },
+  iconRight: { marginRight: wp(4) },
+  iconRightSm: { marginRight: 16 },
   sliderLabel: { fontSize: wp(3), color: '#2d4c5a', width: wp(12), textAlign: 'center', fontWeight: '500' },
   sliderTrack: { flex: 1, height: wp(8), justifyContent: 'center', alignItems: 'center', marginHorizontal: 6, position: 'relative' },
   sliderThumb: { position: 'absolute', width: wp(6), height: wp(6), borderRadius: wp(3.2), backgroundColor: '#DCEFf2', borderWidth: wp(0.5), borderColor: '#fff', top: -4, shadowColor: '#b0c4d4', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.12, shadowRadius: 4, elevation: 2 },
