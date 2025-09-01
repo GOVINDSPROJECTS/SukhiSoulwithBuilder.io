@@ -136,7 +136,7 @@ const GrowthChart: React.FC<GrowthChartProps> = ({
 
           <Picker
             selectedValue={selectedWeek}
-            style={[styles.picker, { width: 150 }]}
+            style={[styles.picker, styles.pickerWide]}
             onValueChange={(itemValue) => setSelectedWeek(itemValue)}
           >
             {weekRanges.map((range) => (
