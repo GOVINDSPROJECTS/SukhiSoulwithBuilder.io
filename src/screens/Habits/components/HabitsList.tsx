@@ -7,13 +7,15 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  ActivityIndicator ,
+  ActivityIndicator,
 } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import { useState, useRef } from 'react';
-
 
 type Habit = {
   id: string;
@@ -26,14 +28,13 @@ type Props = {
   habits: Habit[];
   title?: string;
   onToggle?: (id: string) => void;
-  toEditOrDelete?:(id: string)=> void;
+  toEditOrDelete?: (id: string) => void;
   showAddButton?: boolean;
   onAddHabitPress?: () => void;
   onAllHabitPress?: () => void;
   maxItemsToShow?: number;
-  isCompleted ?:boolean;
-  loading?: boolean;      // Add this prop
-
+  isCompleted?: boolean;
+  loading?: boolean; // Add this prop
 };
 
 const HabitsList = ({
@@ -49,90 +50,95 @@ const HabitsList = ({
 
   _isCompleted,
 }: Props) => {
-  const displayedHabits = maxItemsToShow ? habits.slice(0, maxItemsToShow) : habits;
+  const displayedHabits = maxItemsToShow
+    ? habits.slice(0, maxItemsToShow)
+    : habits;
 
-const [showConfetti, setShowConfetti] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
-const handleToggleHabit = (id: string) => {
-  onToggle?.(id);
-  setShowConfetti(true);
-};
+  const handleToggleHabit = (id: string) => {
+    onToggle?.(id);
+    setShowConfetti(true);
+  };
 
-if (loading) {
-  return (
-    <View style={[styles.wrapper, styles.loadingWrap]}>
-      <ActivityIndicator size="large" color={colors.primary} />
-    </View>
-  );
-}
+  if (loading) {
+    return (
+      <View style={[styles.wrapper, styles.loadingWrap]}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
   return (
     <View style={styles.wrapper}>
-  {title && (
-    <AppText
-      variant="h1"
-      style={styles.titleText}
-    >
-      {title}
-    </AppText>
-  )}
-
-  {displayedHabits.length === 0 ? (
-    <View style={styles.emptyStateContainer}>
-      <Text style={styles.emptyStateText}>Build your first habit</Text>
-    </View>
-  ) : (
-    <FlatList
-      scrollEnabled={false}
-      data={displayedHabits}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <View style={styles.habitRow}>
-
-          <TouchableOpacity
-            onPress={()=> toEditOrDelete?.(item.id)} 
-            style={styles.habitText}><Text>{item.title}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={ () => handleToggleHabit(item.id)}
-            style={styles.habitCircle}
-            activeOpacity={0.7}
-          >
-            {item.completed && <View style={styles.habitCircleDot} />}
-          </TouchableOpacity>
-        </View>
+      {title && (
+        <AppText variant="h1" style={styles.titleText}>
+          {title}
+        </AppText>
       )}
-      ItemSeparatorComponent={Separator}
-    />
-  )}
 
-  {showAddButton ? (
-    <TouchableOpacity style={styles.addButton} onPress={onAddHabitPress}>
-      <Text style={styles.plusIcon}>{'+'}</Text>
-    </TouchableOpacity>
-  ):
-  <TouchableOpacity>
-    <View style={styles.rowEnd}>
-        <Text style={styles.allHabitsText} onPress={onAllHabitPress}>All habits</Text>
-        <AntDesign name="right" color="#2D2D2D" size={14} style={styles.chevronIcon}/>
+      {displayedHabits.length === 0 ? (
+        <View style={styles.emptyStateContainer}>
+          <Text style={styles.emptyStateText}>Build your first habit</Text>
+        </View>
+      ) : (
+        <FlatList
+          scrollEnabled={false}
+          data={displayedHabits}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.habitRow}>
+              <TouchableOpacity
+                onPress={() => toEditOrDelete?.(item.id)}
+                style={styles.habitText}
+              >
+                <Text>{item.title}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => handleToggleHabit(item.id)}
+                style={styles.habitCircle}
+                activeOpacity={0.7}
+              >
+                {item.completed && <View style={styles.habitCircleDot} />}
+              </TouchableOpacity>
+            </View>
+          )}
+          ItemSeparatorComponent={Separator}
+        />
+      )}
+
+      {showAddButton ? (
+        <TouchableOpacity style={styles.addButton} onPress={onAddHabitPress}>
+          <Text style={styles.plusIcon}>{'+'}</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity>
+          <View style={styles.rowEnd}>
+            <Text style={styles.allHabitsText} onPress={onAllHabitPress}>
+              All habits
+            </Text>
+            <AntDesign
+              name="right"
+              color="#2D2D2D"
+              size={14}
+              style={styles.chevronIcon}
+            />
+          </View>
+        </TouchableOpacity>
+      )}
+
+      {showConfetti && (
+        <ConfettiCannon
+          count={50}
+          origin={{ x: wp(45), y: hp(0) }}
+          explosionSpeed={300}
+          fallSpeed={3000}
+          fadeOut
+          autoStart
+          onAnimationEnd={() => setShowConfetti(false)}
+        />
+      )}
     </View>
-
-  </TouchableOpacity>
-  }
-
-  {showConfetti && (
-  <ConfettiCannon
-    count={50}
-    origin={{ x: wp(45), y: hp(0) }}
-    explosionSpeed={300}
-    fallSpeed={3000}
-    fadeOut
-    autoStart
-    onAnimationEnd={() => setShowConfetti(false)}
-  />
-)}
-</View>
-
   );
 };
 
@@ -153,8 +159,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    alignSelf:"center",
-
+    alignSelf: 'center',
   },
   habitRow: {
     flexDirection: 'row',
@@ -167,7 +172,7 @@ const styles = StyleSheet.create({
     width: wp('5.5%'),
     height: wp('5.5%'),
     borderRadius: wp('2.75%'),
-    backgroundColor:'#DCEEF2',
+    backgroundColor: '#DCEEF2',
     justifyContent: 'center',
     alignItems: 'center', // change to center
     // marginRight: wp('4%'), // remove this line
@@ -181,7 +186,7 @@ const styles = StyleSheet.create({
   },
   habitText: {
     fontSize: wp('5%'),
-    fontWeight:700,
+    fontWeight: 700,
     color: '#2D2D2D',
     flex: 1, // add this
   },
@@ -211,28 +216,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp('1%'),
   },
   emptyStateContainer: {
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginTop: hp('1'),
-},
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: hp('1'),
+  },
 
-emptyStateText: {
-  fontSize: wp(3.6),
-  color: '#888',
-  fontStyle: 'italic',
-  textAlign: 'right',
-  marginTop: hp('2%'),
-},
-rowEnd: { flexDirection: 'row', alignSelf: 'flex-end' },
-chevronIcon: { marginTop: hp(0.4) },
-loadingWrap: { justifyContent: 'center', alignItems: 'center', height: hp('20%') },
-titleText: { color: colors.primary, marginBottom: hp('2.5%') },
-allHabitsText: {
+  emptyStateText: {
+    fontSize: wp(3.6),
+    color: '#888',
+    fontStyle: 'italic',
+    textAlign: 'right',
+    marginTop: hp('2%'),
+  },
+  rowEnd: { flexDirection: 'row', alignSelf: 'flex-end' },
+  chevronIcon: { marginTop: hp(0.4) },
+  loadingWrap: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: hp('20%'),
+  },
+  titleText: { color: colors.primary, marginBottom: hp('2.5%') },
+  allHabitsText: {
     color: '#666666',
     fontWeight: '500',
     fontSize: wp(4),
     marginRight: 2,
     marginTop: 2,
-},
-
+  },
 });

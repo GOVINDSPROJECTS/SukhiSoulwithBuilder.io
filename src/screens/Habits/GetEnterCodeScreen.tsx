@@ -12,11 +12,6 @@
 // import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 // import { RootStackParamList } from '../../types/navigation';
 
-
-
-
-
-
 // const GetEnterCodeScreen = () => {
 //   const [showGetCodeModal, setshowGetCodeModal] = useState(true);
 
@@ -77,7 +72,6 @@
 //           </View>
 //         </TouchableOpacity>
 //       </View>
-
 
 //       <BottomSheetModal visible={showGetCodeModal} onClose={() => setshowGetCodeModal(false)}>
 //          <View>
@@ -233,7 +227,6 @@
 //     marginBottom: wp(1),
 //   },
 
-
 // });
 
 import React, { useState } from 'react';
@@ -247,16 +240,18 @@ import {
   Share,
   ActivityIndicator,
   Image,
-  
 } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import GradientWrapper from '../../components/GradientWrapper';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Clipboard from '@react-native-clipboard/clipboard';
 import BottomSheetModal from '../../components/BottomSheetModal';
 import PrimaryButton from '../../components/PrimaryButton';
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 
@@ -272,7 +267,12 @@ const ui = StyleSheet.create({
   },
   flex1: { flex: 1 },
   descMargin: { marginVertical: wp(10) },
-  shareIdButton: { width: wp(40), height: wp(11), alignSelf: 'center', marginBottom: hp(6) },
+  shareIdButton: {
+    width: wp(40),
+    height: wp(11),
+    alignSelf: 'center',
+    marginBottom: hp(6),
+  },
 });
 
 const GetEnterCodeScreen: React.FC = () => {
@@ -280,16 +280,8 @@ const GetEnterCodeScreen: React.FC = () => {
   const [habitCode, _setHabitCode] = useState<string>('123456');
   const [_loading, _setLoading] = useState(false);
 
-
-
-
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
-
-
-
-
-
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handleCopyCode = () => {
     if (!habitCode) return;
@@ -317,12 +309,14 @@ const GetEnterCodeScreen: React.FC = () => {
         {/* Get Code */}
         <TouchableOpacity
           style={[styles.optionBox, { marginTop: hp(11) }]}
-          onPress={()=>setShowGetCodeModal(true)}
+          onPress={() => setShowGetCodeModal(true)}
           disabled={loading}
         >
           <View>
             <Text style={styles.optionTitle}>Get Code</Text>
-            <Text style={styles.optionSubtitle}>Share this code with your partner</Text>
+            <Text style={styles.optionSubtitle}>
+              Share this code with your partner
+            </Text>
           </View>
 
           <View style={styles.iconBox}>
@@ -334,22 +328,16 @@ const GetEnterCodeScreen: React.FC = () => {
           </View>
         </TouchableOpacity>
 
-
-
-
-
-
-
-          
-        
         {/* Enter Code (wire to your Enter screen when ready) */}
-        <TouchableOpacity 
-          style={styles.optionBox} 
-          onPress={() => navigation.navigate("EnterCodeScreen")}
+        <TouchableOpacity
+          style={styles.optionBox}
+          onPress={() => navigation.navigate('EnterCodeScreen')}
         >
           <View>
             <Text style={styles.optionTitle}>Enter code</Text>
-            <Text style={styles.optionSubtitle}>Already have a code? Write it here</Text>
+            <Text style={styles.optionSubtitle}>
+              Already have a code? Write it here
+            </Text>
           </View>
           <View style={styles.iconBox}>
             <Feather name="edit" size={24} color="#000" />
@@ -374,15 +362,20 @@ const GetEnterCodeScreen: React.FC = () => {
               selectTextOnFocus={false}
             />
             <TouchableOpacity onPress={handleCopyCode}>
-              <Ionicons name="copy-outline" size={wp(6)} color="#000" style={styles.copyIcon} />
+              <Ionicons
+                name="copy-outline"
+                size={wp(6)}
+                color="#000"
+                style={styles.copyIcon}
+              />
             </TouchableOpacity>
           </View>
 
           <View style={styles.grayBox}>
             <Image
-                source={require('../../assets/images/Rectangle35.png')}
-                style={styles.image}
-                resizeMode="cover"
+              source={require('../../assets/images/Rectangle35.png')}
+              style={styles.image}
+              resizeMode="cover"
             />
           </View>
           <Text style={[styles.desc, ui.descMargin]}>
@@ -461,11 +454,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: '#171717',
     marginTop: hp(3),
-
   },
   input: {
     backgroundColor: '#FFFFFF',
-    marginTop:hp(2.5),
+    marginTop: hp(2.5),
     borderWidth: wp(0.2),
     borderColor: '#000000',
     height: wp(12),
@@ -474,12 +466,12 @@ const styles = StyleSheet.create({
     marginBottom: wp(20),
     color: '#000000',
     fontSize: wp(3.5),
-      shadowColor: '#000',
+    shadowColor: '#000',
     shadowOffset: {
       width: 5,
       height: 5,
     },
-    shadowOpacity:5,
+    shadowOpacity: 5,
     shadowRadius: 5,
   },
   inputContainer: {
@@ -489,11 +481,11 @@ const styles = StyleSheet.create({
   },
   copyIcon: {
     marginLeft: wp(2),
-    marginBottom:hp(8),
+    marginBottom: hp(8),
   },
   grayBox: {
-    marginLeft:wp(6),
-    marginRight:wp(6),
+    marginLeft: wp(6),
+    marginRight: wp(6),
     width: wp(88),
     height: wp(62),
     // backgroundColor: '#686868',
@@ -506,12 +498,12 @@ const styles = StyleSheet.create({
       width: 5,
       height: 5,
     },
-    shadowOpacity:5,
+    shadowOpacity: 5,
     shadowRadius: 5,
     borderRadius: wp(2.5),
     marginVertical: 12,
   },
-   desc: {
+  desc: {
     // marginVertical: wp(10),
     textAlign: 'center',
     fontSize: wp(3.5),

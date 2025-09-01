@@ -62,7 +62,7 @@ const findMatchingWeek = (availableWeeks: string[], selectedWeek: string) => {
 
   // crude match: pick the first available week where start/end is within 1–2 days diff
   return (
-    availableWeeks.find((w) => {
+    availableWeeks.find(w => {
       const [repStart] = w.split(' - ');
       const repStartNum = parseInt(repStart.split(' ')[0], 10);
       return Math.abs(repStartNum - selStartNum) <= 1; // ✅ tolerant match
@@ -78,7 +78,15 @@ const GrowthChart: React.FC<GrowthChartProps> = ({
   const weekRanges = getWeekRanges();
   const [selectedHabit, setSelectedHabit] = useState<string>('All');
   const [selectedWeek, setSelectedWeek] = useState<string>(weekRanges[0]);
-  const [labels] = useState<string[]>(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']);
+  const [labels] = useState<string[]>([
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+    'Sun',
+  ]);
   const [dataPoints, setDataPoints] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
 
   useEffect(() => {
@@ -89,11 +97,14 @@ const GrowthChart: React.FC<GrowthChartProps> = ({
 
     if (selectedHabit === 'All') {
       let combined = [0, 0, 0, 0, 0, 0, 0];
-      habits.forEach((habit) => {
+      habits.forEach(habit => {
         const weekKeys = Object.keys(reports[habit] || {});
         const matchedWeek = findMatchingWeek(weekKeys, selectedWeek);
         const weekData = reports[habit]?.[matchedWeek];
-        console.log(`🔍 Habit ${habit} → Selected "${selectedWeek}" → Matched "${matchedWeek}" →`, weekData);
+        console.log(
+          `🔍 Habit ${habit} → Selected "${selectedWeek}" → Matched "${matchedWeek}" →`,
+          weekData,
+        );
         combined = combined.map((val, idx) => val + (weekData?.[idx] || 0));
       });
       console.log('✅ Combined dataPoints:', combined);
@@ -102,7 +113,10 @@ const GrowthChart: React.FC<GrowthChartProps> = ({
       const weekKeys = Object.keys(reports[selectedHabit] || {});
       const matchedWeek = findMatchingWeek(weekKeys, selectedWeek);
       const weekData = reports[selectedHabit]?.[matchedWeek];
-      console.log(`🔍 Week dataPoints for ${selectedHabit} (Selected "${selectedWeek}" → Matched "${matchedWeek}") :`, weekData);
+      console.log(
+        `🔍 Week dataPoints for ${selectedHabit} (Selected "${selectedWeek}" → Matched "${matchedWeek}") :`,
+        weekData,
+      );
       setDataPoints(weekData || [0, 0, 0, 0, 0, 0, 0]);
     }
   }, [selectedHabit, selectedWeek, habits, reports]);
@@ -126,10 +140,10 @@ const GrowthChart: React.FC<GrowthChartProps> = ({
           <Picker
             selectedValue={selectedHabit}
             style={styles.picker}
-            onValueChange={(itemValue) => setSelectedHabit(itemValue)}
+            onValueChange={itemValue => setSelectedHabit(itemValue)}
           >
             <Picker.Item label="All" value="All" />
-            {habits.map((habit) => (
+            {habits.map(habit => (
               <Picker.Item key={habit} label={habit} value={habit} />
             ))}
           </Picker>
@@ -137,9 +151,9 @@ const GrowthChart: React.FC<GrowthChartProps> = ({
           <Picker
             selectedValue={selectedWeek}
             style={[styles.picker, styles.pickerWide]}
-            onValueChange={(itemValue) => setSelectedWeek(itemValue)}
+            onValueChange={itemValue => setSelectedWeek(itemValue)}
           >
-            {weekRanges.map((range) => (
+            {weekRanges.map(range => (
               <Picker.Item key={range} label={range} value={range} />
             ))}
           </Picker>
@@ -155,9 +169,9 @@ const GrowthChart: React.FC<GrowthChartProps> = ({
         bezier
         withDots
         withShadow
-        fromZero={true}       // ✅ Y-axis starts at zero
-        yAxisInterval={1}     // ✅ step size
-        yLabelsOffset={12}    // ✅ spacing for Y labels
+        fromZero={true} // ✅ Y-axis starts at zero
+        yAxisInterval={1} // ✅ step size
+        yLabelsOffset={12} // ✅ spacing for Y labels
         verticalLabelRotation={0}
         style={styles.chart}
       />

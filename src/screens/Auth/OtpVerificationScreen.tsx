@@ -133,10 +133,7 @@ const OtpVerificationScreen = () => {
         </AppText>
         {/* <AppText variant='h1'>Soul</AppText> */}
 
-        <AppText
-          variant="h2"
-          style={styles.verificationTitle}
-        >
+        <AppText variant="h2" style={styles.verificationTitle}>
           Verification Code
         </AppText>
 
@@ -181,11 +178,7 @@ const OtpVerificationScreen = () => {
             )}
           />
 
-          {otpError ? (
-            <Text style={styles.otpError}>
-              {otpError}
-            </Text>
-          ) : null}
+          {otpError ? <Text style={styles.otpError}>{otpError}</Text> : null}
 
           <PrimaryButton
             title={loading ? 'Loading...' : 'Sign Up'}
@@ -195,7 +188,10 @@ const OtpVerificationScreen = () => {
 
           <TouchableOpacity onPress={handleResendOtp} disabled={counter !== 0}>
             <Text
-              style={[styles.resendText, counter !== 0 && styles.resendDisabled]}
+              style={[
+                styles.resendText,
+                counter !== 0 && styles.resendDisabled,
+              ]}
             >
               {counter > 0
                 ? `Resend OTP in 00:${counter < 10 ? '0' + counter : counter}`

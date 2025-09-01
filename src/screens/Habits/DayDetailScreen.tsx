@@ -198,7 +198,10 @@ const DayDetailScreen = () => {
           report.status === 'true' || report.status === true ? 1 : 0;
       });
 
-      console.log('✅ Final GrowthChartData:', { habits: habitTitles, reports });
+      console.log('✅ Final GrowthChartData:', {
+        habits: habitTitles,
+        reports,
+      });
       setGrowthChartData({ habits: habitTitles, reports });
     } catch (error) {
       console.error('❌ Error fetching habits graph:', error);

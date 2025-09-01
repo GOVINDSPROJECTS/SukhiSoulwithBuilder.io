@@ -403,9 +403,7 @@ export default function HomeScreen() {
           style={styles.section}
         >
           <Text style={[styles.heading, { fontSize: wp(12) }]}>Discover</Text>
-          <Text style={styles.discoverSubtitle}>
-            Mindful Reads
-          </Text>
+          <Text style={styles.discoverSubtitle}>Mindful Reads</Text>
 
           {posts.map(item => (
             <View key={item.id} style={styles.postCardWrap}>
@@ -424,9 +422,7 @@ export default function HomeScreen() {
                 />
               ) : (
                 <View style={styles.textPostCard}>
-                  <Text style={styles.textPostTitle}>
-                    {item.caption}
-                  </Text>
+                  <Text style={styles.textPostTitle}>{item.caption}</Text>
                 </View>
               )}
 

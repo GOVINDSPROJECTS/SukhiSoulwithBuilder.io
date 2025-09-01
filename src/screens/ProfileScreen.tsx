@@ -1,8 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+  Alert,
+} from 'react-native';
 import { useAuthStore } from '../store/authStore';
 import { fetchUserInfo } from '../services/auth';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PrimaryButton from '../components/PrimaryButton';
 import BottomSheetModal from '../components/BottomSheetModal';
@@ -17,13 +29,12 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 import DeviceInfo from 'react-native-device-info';
 
-
-
 const ProfileScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const user = useAuthStore((state) => state.user);
-  const logout = useAuthStore((state) => state.logout);
-  const setUser = useAuthStore((state) => state.setUser);
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const user = useAuthStore(state => state.user);
+  const logout = useAuthStore(state => state.logout);
+  const setUser = useAuthStore(state => state.setUser);
 
   const [showModal, setShowModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -36,66 +47,64 @@ const ProfileScreen = () => {
   const token = useAuthStore(state => state.token);
 
   const appName = DeviceInfo.getApplicationName();
-  const appVersion = DeviceInfo.getVersion();       
+  const appVersion = DeviceInfo.getVersion();
 
   const handleChoosePhoto = () => {
-    launchImageLibrary(
-      { mediaType: 'photo', quality: 0.7 },
-      async (response) => {
-        if (response.didCancel) return;
-        if (response.errorCode) {
-          Alert.alert('Error', 'Failed to pick image');
-          return;
-        }
-
-        const asset = response.assets?.[0];
-        if (!asset || !asset.uri) return;
-
-        const uploadToken = useAuthStore.getState().token;
-        const formData = new FormData();
-        let mime = 'image/jpeg';
-
-        if (asset.uri.endsWith('.png')) mime = 'image/png';
-
-        formData.append('display_photo', {
-          uri: asset.uri,
-          type: mime,
-          name: asset.fileName || `profile_${Date.now()}.${mime.split('/')[1]}`,
-        } as any);
-
-
-
-        try {
-          const res = await api.post('/update-profile-picture', formData, {
-            headers: {
-              Authorization: `Bearer ${uploadToken}`,
-              'Content-Type': 'multipart/form-data',
-            },
-            timeout: 10000,
-          });
-          console.log('User from store:', user);
-
-          if (res.data.success && user?.id) {
-            setUser({
-              ...user,
-              display_photo: res.data.photo_url,
-            });
-            console.log(res.data.photo_url);
-            Alert.alert('Success', 'Profile photo updated');
-          } else {
-            Alert.alert('Error', 'User data is missing');
-          }
-
-        } catch (err) {
-          console.error(err);
-          Alert.alert('Error', 'Upload failed');
-        }
+    launchImageLibrary({ mediaType: 'photo', quality: 0.7 }, async response => {
+      if (response.didCancel) return;
+      if (response.errorCode) {
+        Alert.alert('Error', 'Failed to pick image');
+        return;
       }
-    );
+
+      const asset = response.assets?.[0];
+      if (!asset || !asset.uri) return;
+
+      const uploadToken = useAuthStore.getState().token;
+      const formData = new FormData();
+      let mime = 'image/jpeg';
+
+      if (asset.uri.endsWith('.png')) mime = 'image/png';
+
+      formData.append('display_photo', {
+        uri: asset.uri,
+        type: mime,
+        name: asset.fileName || `profile_${Date.now()}.${mime.split('/')[1]}`,
+      } as any);
+
+      try {
+        const res = await api.post('/update-profile-picture', formData, {
+          headers: {
+            Authorization: `Bearer ${uploadToken}`,
+            'Content-Type': 'multipart/form-data',
+          },
+          timeout: 10000,
+        });
+        console.log('User from store:', user);
+
+        if (res.data.success && user?.id) {
+          setUser({
+            ...user,
+            display_photo: res.data.photo_url,
+          });
+          console.log(res.data.photo_url);
+          Alert.alert('Success', 'Profile photo updated');
+        } else {
+          Alert.alert('Error', 'User data is missing');
+        }
+      } catch (err) {
+        console.error(err);
+        Alert.alert('Error', 'Upload failed');
+      }
+    });
   };
 
   // API handler for profile update
-  const handleUpdateProfile = async (updates: { name?: string; gender?: string; age?: string }) => {
+  const handleUpdateProfile = async (updates: {
+    name?: string;
+    gender?: string;
+    age?: string;
+  }) => {
     try {
       const res = await api.put('/update-profile', updates, {
         headers: { Authorization: `Bearer ${token}` },
@@ -110,7 +119,6 @@ const ProfileScreen = () => {
       } else {
         Alert.alert('Error', res.data.message || 'Failed to update');
       }
-
     } catch (err) {
       console.error('Update error:', err);
       Alert.alert('Error', 'Unable to update profile');
@@ -136,12 +144,11 @@ const ProfileScreen = () => {
     logout();
   };
 
-useFocusEffect(
-  useCallback(() => {
-    fetchUserInfo();
-  }, [])
-);
-
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserInfo();
+    }, []),
+  );
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -165,21 +172,32 @@ useFocusEffect(
       <Text style={styles.userName}>{user?.name}</Text>
 
       {/* Reports and Logs */}
-      <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('ReportsLogsScreen')}>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => navigation.navigate('ReportsLogsScreen')}
+      >
         <View>
           <Text style={styles.cardTitle}>Reports and Logs</Text>
-          <Text style={styles.cardSubtitle}>Check your logged data and statistics</Text>
+          <Text style={styles.cardSubtitle}>
+            Check your logged data and statistics
+          </Text>
         </View>
         <Icon name="chevron-forward" size={20} color="#888" />
       </TouchableOpacity>
 
       <View style={styles.container}>
-        <TouchableOpacity style={styles.optionRow} onPress={() => navigation.navigate('SavedItemsScreen')}>
+        <TouchableOpacity
+          style={styles.optionRow}
+          onPress={() => navigation.navigate('SavedItemsScreen')}
+        >
           <Text style={styles.optionText}>Saved Items</Text>
           <Icon name="chevron-forward" size={20} color="#888" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.optionRow} onPress={() => setShowModal(true)}>
+        <TouchableOpacity
+          style={styles.optionRow}
+          onPress={() => setShowModal(true)}
+        >
           <Text style={styles.optionText}>Account and Security</Text>
           <Icon name="chevron-forward" size={20} color="#888" />
         </TouchableOpacity>
@@ -190,8 +208,14 @@ useFocusEffect(
         </TouchableOpacity>
 
         {/* Log Out Button */}
-        <PrimaryButton title="Log Out" onPress={handleLogout} style={styles.logoutButton} />
-        <Text style={styles.appVersion}>{appName} {appVersion}</Text>
+        <PrimaryButton
+          title="Log Out"
+          onPress={handleLogout}
+          style={styles.logoutButton}
+        />
+        <Text style={styles.appVersion}>
+          {appName} {appVersion}
+        </Text>
       </View>
 
       {/* Account Modal */}
@@ -242,17 +266,40 @@ useFocusEffect(
       </BottomSheetModal>
 
       {/* Name Edit Modal */}
-      <BottomSheetModal visible={showUpdateModal} onClose={() => setShowUpdateModal(false)}>
+      <BottomSheetModal
+        visible={showUpdateModal}
+        onClose={() => setShowUpdateModal(false)}
+      >
         <Text style={[styles.text18, styles.fieldLabelSpacing]}>Full Name</Text>
-        <TextInput value={fullName} onChangeText={setFullName} style={styles.inputStyle} />
-        <PrimaryButton title="Save" onPress={handleSaveContact} style={styles.modalPrimaryButton} />
+        <TextInput
+          value={fullName}
+          onChangeText={setFullName}
+          style={styles.inputStyle}
+        />
+        <PrimaryButton
+          title="Save"
+          onPress={handleSaveContact}
+          style={styles.modalPrimaryButton}
+        />
       </BottomSheetModal>
 
       {/* Age Edit Modal */}
-      <BottomSheetModal visible={showAgeModal} onClose={() => setShowAgeModal(false)}>
+      <BottomSheetModal
+        visible={showAgeModal}
+        onClose={() => setShowAgeModal(false)}
+      >
         <Text style={[styles.text18, styles.fieldLabelSpacing]}>Age</Text>
-        <TextInput value={age} onChangeText={setAge} style={styles.inputStyle} keyboardType="numeric" />
-        <PrimaryButton title="Save" onPress={handleSaveAge} style={styles.modalPrimaryButton} />
+        <TextInput
+          value={age}
+          onChangeText={setAge}
+          style={styles.inputStyle}
+          keyboardType="numeric"
+        />
+        <PrimaryButton
+          title="Save"
+          onPress={handleSaveAge}
+          style={styles.modalPrimaryButton}
+        />
       </BottomSheetModal>
 
       {/* Gender Picker */}
@@ -263,14 +310,13 @@ useFocusEffect(
           handleSaveSex(); // call the function
           setShowGenderPicker(false);
         }}
-        onSelect={(val) => {
+        onSelect={val => {
           setGender(val);
           handleUpdateProfile({ gender: val });
           setShowGenderPicker(false);
         }}
         selected={gender}
       />
-
     </ScrollView>
   );
 };
@@ -295,8 +341,20 @@ const styles = StyleSheet.create({
   },
   name: { fontSize: wp(4), width: wp(45), fontWeight: '500', color: '#2D2D2D' },
   lightTxt: { fontSize: wp(3.2), fontWeight: '400', color: '#666' },
-  container: { alignItems: 'center', padding: 24, backgroundColor: '#fff', flexGrow: 1 },
-  profileImage: { width: wp(37), height: wp(37), borderRadius: wp(20), marginTop: wp(6), marginBottom: hp(1), backgroundColor: '#666' },
+  container: {
+    alignItems: 'center',
+    padding: 24,
+    backgroundColor: '#fff',
+    flexGrow: 1,
+  },
+  profileImage: {
+    width: wp(37),
+    height: wp(37),
+    borderRadius: wp(20),
+    marginTop: wp(6),
+    marginBottom: hp(1),
+    backgroundColor: '#666',
+  },
   userName: { fontSize: wp(8), fontWeight: '700', color: '#2D2D2D' },
   card: {
     backgroundColor: '#fff',
@@ -314,17 +372,55 @@ const styles = StyleSheet.create({
   },
   cardTitle: { fontSize: 16, fontWeight: '500', color: '#222' },
   cardSubtitle: { fontSize: 12, color: '#888', marginTop: 4 },
-  optionRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', paddingVertical: wp(4) },
+  optionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    paddingVertical: wp(4),
+  },
   optionText: { fontSize: wp(4.5), fontWeight: '500', color: '#2D2D2D' },
-  logoutButton: { paddingVertical: wp(3), paddingHorizontal: wp(10), borderRadius: wp(2.5), marginTop: hp(5) },
-  appVersion: { fontSize: wp(4.0), color: '#666', marginTop: hp(2), fontWeight: '400' },
-  sheetHandle: { width: wp(13), height: 5, backgroundColor: '#000', marginTop: 2, marginBottom: hp(2), borderRadius: 12, alignSelf: 'center' },
+  logoutButton: {
+    paddingVertical: wp(3),
+    paddingHorizontal: wp(10),
+    borderRadius: wp(2.5),
+    marginTop: hp(5),
+  },
+  appVersion: {
+    fontSize: wp(4.0),
+    color: '#666',
+    marginTop: hp(2),
+    fontWeight: '400',
+  },
+  sheetHandle: {
+    width: wp(13),
+    height: 5,
+    backgroundColor: '#000',
+    marginTop: 2,
+    marginBottom: hp(2),
+    borderRadius: 12,
+    alignSelf: 'center',
+  },
   modalContentTop: { marginTop: hp(3) },
-  accountTitle: { fontSize: wp(6), fontWeight: '700', marginBottom: hp(3), textAlign: 'center' },
-  rowBetweenMT05: { flexDirection: 'row', justifyContent: 'space-between', marginTop: wp(0.5) },
+  accountTitle: {
+    fontSize: wp(6),
+    fontWeight: '700',
+    marginBottom: hp(3),
+    textAlign: 'center',
+  },
+  rowBetweenMT05: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: wp(0.5),
+  },
   cardDisabled: { opacity: 0.5 },
   fieldLabelSpacing: { marginLeft: wp(3), marginTop: hp(3) },
-  modalPrimaryButton: { width: wp(40), height: wp(11), alignSelf: 'center', marginTop: hp(20) },
+  modalPrimaryButton: {
+    width: wp(40),
+    height: wp(11),
+    alignSelf: 'center',
+    marginTop: hp(20),
+  },
   inputStyle: {
     borderWidth: 1,
     borderColor: '#ccc',
@@ -347,8 +443,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     padding: 6,
     borderRadius: 20,
-  }
-
+  },
 });
 
 export default ProfileScreen;

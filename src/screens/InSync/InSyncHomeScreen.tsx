@@ -9,7 +9,10 @@ import {
 
 const InSyncHomeScreen = () => {
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}
+    >
       {/* Header */}
       <Text style={styles.header}>InSync</Text>
       <Text style={styles.subHeader}>Create conversations that last</Text>
@@ -58,7 +61,7 @@ const InSyncHomeScreen = () => {
           title: 'Understand Your Relations',
           subtitle: 'Learn what helps conversations last',
         },
-      ].map(({title, subtitle}, idx) => (
+      ].map(({ title, subtitle }, idx) => (
         <TouchableOpacity key={idx} style={styles.reflectionCard}>
           <View style={styles.reflectionTextWrapper}>
             <Text style={styles.reflectionTitle}>{title}</Text>
@@ -207,8 +210,6 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
 });
-
-
 
 // // App.tsx — React Native (TypeScript) single-screen UI matching the provided design
 // import AppText from "@/components/AppText";

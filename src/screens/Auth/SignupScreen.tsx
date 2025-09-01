@@ -85,10 +85,7 @@ const SignupScreen = () => {
           </AppText>
           {/* <AppText variant='h1'>Soul</AppText> */}
 
-          <AppText
-            variant="h2"
-            style={styles.createAccountTitle}
-          >
+          <AppText variant="h2" style={styles.createAccountTitle}>
             Create your account
           </AppText>
 
