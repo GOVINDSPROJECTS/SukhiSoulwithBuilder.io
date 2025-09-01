@@ -51,7 +51,7 @@ const ProfileScreen = () => {
         const asset = response.assets?.[0];
         if (!asset || !asset.uri) return;
 
-        const token = useAuthStore.getState().token;
+        const uploadToken = useAuthStore.getState().token;
         const formData = new FormData();
         let mime = 'image/jpeg';
 
@@ -68,7 +68,7 @@ const ProfileScreen = () => {
         try {
           const res = await api.post('/update-profile-picture', formData, {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${uploadToken}`,
               'Content-Type': 'multipart/form-data',
             },
             timeout: 10000,
@@ -196,14 +196,14 @@ useFocusEffect(
 
       {/* Account Modal */}
       <BottomSheetModal visible={showModal} onClose={() => setShowModal(false)}>
-        <View style={{ width: wp(13), height: 5, backgroundColor: '#000', marginTop: 2, marginBottom: hp(2), borderRadius: 12, alignSelf: 'center' }} />
-        <View style={{ marginTop: hp(3) }}>
-          <Text style={{ fontSize: wp(6), fontWeight: '700', marginBottom: hp(3), textAlign: 'center' }}>Account and Security</Text>
+        <View style={styles.sheetHandle} />
+        <View style={styles.modalContentTop}>
+          <Text style={styles.accountTitle}>Account and Security</Text>
 
           {/* Full Name */}
           <View style={styles.Card}>
             <Text style={styles.lightTxt}>Full Name</Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: wp(0.5) }}>
+            <View style={styles.rowBetweenMT05}>
               <Text style={styles.name}>{user?.name}</Text>
               <TouchableOpacity onPress={() => setShowUpdateModal(true)}>
                 <Feather name="edit" size={wp(5.5)} />
@@ -212,7 +212,7 @@ useFocusEffect(
           </View>
 
           {/* Email - disabled */}
-          <View style={[styles.Card, { opacity: 0.5 }]}>
+          <View style={styles.cardDisabled}>
             <Text style={styles.lightTxt}>Email Address</Text>
             <Text style={styles.name}>{user?.email}</Text>
           </View>
@@ -220,7 +220,7 @@ useFocusEffect(
           {/* Sex */}
           <View style={styles.Card}>
             <Text style={styles.lightTxt}>Sex</Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: wp(0.5) }}>
+            <View style={styles.rowBetweenMT05}>
               <Text style={styles.name}>{user?.gender ?? 'Not mentioned'}</Text>
               <TouchableOpacity onPress={() => setShowGenderPicker(true)}>
                 <Feather name="edit" size={wp(5.5)} />
@@ -231,7 +231,7 @@ useFocusEffect(
           {/* Age */}
           <View style={styles.Card}>
             <Text style={styles.lightTxt}>Age</Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: wp(0.5) }}>
+            <View style={styles.rowBetweenMT05}>
               <Text style={styles.name}>{user?.age ?? 'Not mentioned'}</Text>
               <TouchableOpacity onPress={() => setShowAgeModal(true)}>
                 <Feather name="edit" size={wp(5.5)} />
@@ -243,16 +243,16 @@ useFocusEffect(
 
       {/* Name Edit Modal */}
       <BottomSheetModal visible={showUpdateModal} onClose={() => setShowUpdateModal(false)}>
-        <Text style={[styles.text18, { marginLeft: wp(3), marginTop: hp(3) }]}>Full Name</Text>
+        <Text style={[styles.text18, styles.fieldLabelSpacing]}>Full Name</Text>
         <TextInput value={fullName} onChangeText={setFullName} style={styles.inputStyle} />
-        <PrimaryButton title="Save" onPress={handleSaveContact} style={{ width: wp(40), height: wp(11), alignSelf: 'center', marginTop: hp(20) }} />
+        <PrimaryButton title="Save" onPress={handleSaveContact} style={styles.modalPrimaryButton} />
       </BottomSheetModal>
 
       {/* Age Edit Modal */}
       <BottomSheetModal visible={showAgeModal} onClose={() => setShowAgeModal(false)}>
-        <Text style={[styles.text18, { marginLeft: wp(3), marginTop: hp(3) }]}>Age</Text>
+        <Text style={[styles.text18, styles.fieldLabelSpacing]}>Age</Text>
         <TextInput value={age} onChangeText={setAge} style={styles.inputStyle} keyboardType="numeric" />
-        <PrimaryButton title="Save" onPress={handleSaveAge} style={{ width: wp(40), height: wp(11), alignSelf: 'center', marginTop: hp(20) }} />
+        <PrimaryButton title="Save" onPress={handleSaveAge} style={styles.modalPrimaryButton} />
       </BottomSheetModal>
 
       {/* Gender Picker */}
@@ -318,6 +318,13 @@ const styles = StyleSheet.create({
   optionText: { fontSize: wp(4.5), fontWeight: '500', color: '#2D2D2D' },
   logoutButton: { paddingVertical: wp(3), paddingHorizontal: wp(10), borderRadius: wp(2.5), marginTop: hp(5) },
   appVersion: { fontSize: wp(4.0), color: '#666', marginTop: hp(2), fontWeight: '400' },
+  sheetHandle: { width: wp(13), height: 5, backgroundColor: '#000', marginTop: 2, marginBottom: hp(2), borderRadius: 12, alignSelf: 'center' },
+  modalContentTop: { marginTop: hp(3) },
+  accountTitle: { fontSize: wp(6), fontWeight: '700', marginBottom: hp(3), textAlign: 'center' },
+  rowBetweenMT05: { flexDirection: 'row', justifyContent: 'space-between', marginTop: wp(0.5) },
+  cardDisabled: { ...StyleSheet.flatten([ ({} as any) ]), ...({} as any) },
+  fieldLabelSpacing: { marginLeft: wp(3), marginTop: hp(3) },
+  modalPrimaryButton: { width: wp(40), height: wp(11), alignSelf: 'center', marginTop: hp(20) },
   inputStyle: {
     borderWidth: 1,
     borderColor: '#ccc',
