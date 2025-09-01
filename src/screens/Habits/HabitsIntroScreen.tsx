@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   View,
@@ -16,6 +15,28 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppTabsParamList } from '../../types/navigation';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useAuthStore } from '@/store/authStore';
+
+const uiIntro = StyleSheet.create({
+  titleBox: { width: 270, height: 106, alignSelf: 'flex-start' },
+  titleLarge: { fontSize: 48 },
+  subtitleSmall: { fontSize: 16 },
+  descriptionBox: { width: 274, height: 46, alignContent: 'center' },
+  actionsBox: { width: 196, height: 72, alignItems: 'center' },
+  modalHandleThin: {
+    width: wp(13),
+    height: 2,
+    backgroundColor: '#000000',
+    marginTop: 2,
+    marginBottom: hp(2),
+    borderRadius: 12,
+    alignSelf: 'center',
+  },
+  closeIcon: { fontSize: wp(3.5) },
+  separator: { width: wp(90), height: 1, backgroundColor: '#000000', marginTop: 2, marginBottom: 10, alignSelf: 'center' },
+  tipItem: { marginBottom: hp(2.5), width: wp(75), height: hp(8), alignContent: 'center' },
+  tipTextIndent: { marginLeft: wp(2) },
+  getGoingBtn: { width: wp(45), height: wp(11), alignSelf: 'center', marginBottom: hp(10) },
+});
 
 
 const HabitsIntroScreen = () => {
@@ -41,9 +62,9 @@ const HabitsIntroScreen = () => {
     <GradientWrapper>
       <View style={styles.container}>
 
-        <View style={[{ width: 270, height: 106},{alignSelf:'flex-start'}]}>
-          <Text style={[styles.title,{fontSize:48}]}>Momentum</Text>
-          <Text style={[styles.subtitle,{fontSize:16}]}>A habit formation tool that keeps {'\n'}you going</Text>
+        <View style={uiIntro.titleBox}>
+          <Text style={[styles.title, uiIntro.titleLarge]}>Momentum</Text>
+          <Text style={[styles.subtitle, uiIntro.subtitleSmall]}>A habit formation tool that keeps {'\n'}you going</Text>
         </View>
 
 
@@ -62,7 +83,7 @@ const HabitsIntroScreen = () => {
 
 
 
-        <Text style={[styles.description,{ width:274, height: 46 },{alignContent:'center'}]}>
+        <Text style={[styles.description, uiIntro.descriptionBox]}>
           Repeat it daily — until it becomes as natural as brushing your teeth.
         </Text>
 
@@ -70,7 +91,7 @@ const HabitsIntroScreen = () => {
 
 
 
-        <View style={[{ width: 196, height: 72},{alignItems:'center'}]} >
+        <View style={uiIntro.actionsBox} >
           <TouchableOpacity onPress={() => setShowModal(true)}>
             <Text style={styles.howLink}>How can I do that?</Text>
           </TouchableOpacity>
@@ -92,21 +113,11 @@ const HabitsIntroScreen = () => {
 
       {/* BottomSheetModal */}
       <BottomSheetModal visible={showModal} onClose={() => setShowModal(false)}>
-         <View
-          style={{
-            width: wp(13),
-            height: 2,
-            backgroundColor: '#000000',
-            marginTop: 2,
-            marginBottom: hp(2),
-            borderRadius:12,
-            alignSelf: 'center',
-          }}
-        />
+         <View style={uiIntro.modalHandleThin} />
 
         <TouchableOpacity style={styles.closeTips}  onPress={() => setShowModal(false)}>
             {/* <Icon name="x" size={16} color="#000000" /> */}
-            <Text style={[{fontSize:wp(3.5)}]}>✕</Text>
+            <Text style={uiIntro.closeIcon}>✕</Text>
         </TouchableOpacity>
 
 
@@ -114,16 +125,7 @@ const HabitsIntroScreen = () => {
 
         <Text style={styles.modalTitle}>How can I do that?</Text>
         
-        <View
-          style={{
-            width: wp(90),
-            height: 1,
-            backgroundColor: '#000000',
-            marginTop: 2,
-            marginBottom: 10,
-            alignSelf: 'center',
-          }}
-        />
+        <View style={uiIntro.separator} />
 
         <View style={styles.tipGroup}>
           {[
@@ -133,9 +135,9 @@ const HabitsIntroScreen = () => {
             ['Track your progress visually', 'Mark each day you do it. Seeing a streak builds motivation.'],
             ['Reward yourself right after', 'Celebrate right after—your brain remembers what feels good.'],
           ].map(([title, desc], i) => (
-            <View key={i} style={[{ marginBottom: hp(2.5) },{width:wp(75),height:hp(8)},{alignContent:"center"}]}>
+            <View key={i} style={uiIntro.tipItem}>
               <Text style={styles.tipTitle}>• {title}</Text>
-              <Text style={[styles.tipText,{marginLeft:wp(2)}]}>{desc}</Text>
+              <Text style={[styles.tipText, uiIntro.tipTextIndent]}>{desc}</Text>
             </View>
           ))}
         </View>
@@ -143,7 +145,7 @@ const HabitsIntroScreen = () => {
         <PrimaryButton
           title="Let's get going"
           onPress={handleGetGoing}
-          style={{ width:wp(45),height:wp(11),alignSelf:"center",marginBottom:hp(10)}}
+          style={uiIntro.getGoingBtn}
         />
       </BottomSheetModal>
     </GradientWrapper>
