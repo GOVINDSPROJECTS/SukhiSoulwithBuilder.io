@@ -1,9 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import PrimaryButton from '../../../components/PrimaryButton';
-import BottomSheetModal from '../../../components/BottomSheetModal';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
   title: string;
