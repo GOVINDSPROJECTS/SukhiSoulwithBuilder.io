@@ -304,7 +304,7 @@ const LoginScreen = () => {
         animationIn="slideInUp"
         animationOut="slideOutDown"
         backdropTransitionOutTiming={0}
-        style={{ margin: 0, justifyContent: 'flex-end' }} // <-- Full width, no side margins
+        style={styles.modalRoot}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalHandle} />
