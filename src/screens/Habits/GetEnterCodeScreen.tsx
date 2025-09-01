@@ -276,48 +276,6 @@ const GetEnterCodeScreen: React.FC = () => {
 
 
 
-const handleCreateHabitCircle = async () => {
-  try {
-    setLoading(true);
-    const response = await fetch('http://3.6.142.117/api/habitrooms', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json', // <--- force JSON
-      },
-      body: JSON.stringify({}), // if API expects a body
-    });
-
-    // always get raw response first
-    const text = await response.text();
-    console.log('Raw API response:', text);
-
-    let data: any;
-    try {
-      data = JSON.parse(text); // attempt to parse JSON
-    } catch (e) {
-      throw new Error('Response is not valid JSON: ' + text);
-    }
-
-    if (!response.ok) {
-      throw new Error(data?.message || 'Failed to create habit circle.');
-    }
-
-    const code = String(data?.habit_room?.room_id ?? '');
-    if (!code) {
-      throw new Error('Missing room_id in response.');
-    }
-
-    setHabitCode(code);
-    setShowGetCodeModal(true);
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    console.error('Network Error:', message);
-    Alert.alert('Error', message);
-  } finally {
-    setLoading(false);
-  }
-};
 
   const handleCopyCode = () => {
     if (!habitCode) return;
