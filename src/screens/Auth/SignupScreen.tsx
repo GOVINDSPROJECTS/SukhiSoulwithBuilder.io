@@ -7,8 +7,6 @@ import { AuthStackParamList, RootStackParamList } from 'src/types/navigation';
 import SocialLoginButton from '../../components/SocialLoginButton';
 import GradientWrapper from '../../components/GradientWrapper';
 import AppText from '../../components/AppText';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { handleGoogleSignin } from '../../auth/googleAuth';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { getOtp } from '../../auth/otpAuth';
@@ -194,4 +192,3 @@ const styles = StyleSheet.create({
     color:colors.primary,
   },
 });
-
