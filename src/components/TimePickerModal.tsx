@@ -65,7 +65,7 @@ const TimePickerModal = ({ visible, onClose, onTimeSelect, initialTime = '12:00 
       <View style={styles.overlay}>
         {/* Background Tap Area */}
         <TouchableWithoutFeedback onPress={onClose}>
-          <View style={{ flex: 1 }} />
+          <View style={styles.flexFill} />
         </TouchableWithoutFeedback>
 
         {/* Foreground Modal Content */}
@@ -76,7 +76,7 @@ const TimePickerModal = ({ visible, onClose, onTimeSelect, initialTime = '12:00 
               <ScrollView
                 key={idx}
                 style={styles.scrollColumn}
-                contentContainerStyle={{ alignItems: 'center' }}
+                contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
               >
                 {list.map((val) => (
@@ -144,6 +144,8 @@ const styles = StyleSheet.create({
     height: hp('20%'),
     width: wp('20%'),
   },
+  scrollContent: { alignItems: 'center' },
+  flexFill: { flex: 1 },
   option: {
     paddingVertical: hp('1%'),
   },
