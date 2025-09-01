@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import RootNavigator from './src/navigation/RootNavigator';
 import { useAuthStore } from './src/store/authStore';
 import Toast from 'react-native-toast-message';
 import { NavigationContainer } from '@react-navigation/native';
 import { loadUserPrefs } from './src/store/userPrefsStore';
-import SwipeTabs from '@/navigation/SwipeTabs';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const App = () => {
@@ -40,7 +40,6 @@ const App = () => {
   return (
     <>
     <NavigationContainer>
-      {/* <SwipeTabs/> */}
       <RootNavigator />
       <Toast />
       </NavigationContainer>
