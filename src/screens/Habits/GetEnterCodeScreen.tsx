@@ -378,7 +378,7 @@ const GetEnterCodeScreen: React.FC = () => {
 
           <View style={styles.inputContainer}>
             <TextInput
-              style={[styles.input, { flex: 1 }]}
+              style={[styles.input, ui.flex1]}
               value={habitCode}
               editable={false}
               selectTextOnFocus={false}
