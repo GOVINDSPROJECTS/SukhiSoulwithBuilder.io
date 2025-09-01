@@ -1,6 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
-import OTPTextInput from 'react-native-otp-textinput';
 import PrimaryButton from '../../components/PrimaryButton';
 import { getLoginOtp, verifyOtp } from '../../auth/otpAuth';
 import { useNavigation, useRoute } from '@react-navigation/native';
