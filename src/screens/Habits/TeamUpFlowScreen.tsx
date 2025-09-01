@@ -85,7 +85,6 @@ const TeamUpFlowScreen = () => {
   }, [hasShared]);
 
 
-// eslint-disable-next-line react-hooks/exhaustive-deps
 const CreateSelfAsMember = async (roomId: string) => {
   try {
     const payload = new FormData();
