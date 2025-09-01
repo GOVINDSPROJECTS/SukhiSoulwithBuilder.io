@@ -194,7 +194,7 @@ const SubscriptionPaymentModal = () => {
         <View style={styles.dragHandle} />
         <Image source={require('../assets/icons/correct.png')} style={styles.image} />
         <View style={styles.centerSelf}>
-          <Text style={[styles.coachModalTitle, { alignSelf: 'center', width: wp(40) }]}>Payment Received</Text>
+          <Text style={[styles.coachModalTitle, styles.w40]}>Payment Received</Text>
           <Text style={[styles.text18, { marginTop: hp(5) }]}>Thank you for upgrading to Premium! </Text>
           <Text style={[styles.text18, { width: wp(75), marginTop: hp(10) }]}>We’ve received your payment, and now you can use all the premium features.</Text>
           <Text style={[styles.text18, { width: wp(75), marginBottom: hp(12) }]}>We’re excited to support your habit journey!</Text>
