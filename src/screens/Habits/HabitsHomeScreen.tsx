@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { View, StyleSheet, ScrollView, Image, Alert, TouchableOpacity, Text } from 'react-native';
 import WeeklyTracker from './components/WeeklyTracker';
 import HabitsList from './components/HabitsList';
@@ -12,7 +12,6 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import colors from '@/theme/colors';
-import BuildHabitTogetherCard from './components/BuildHabitTogetherCard';
 import PrimaryButton from '../../components/PrimaryButton';
 import BottomSheetModal from '../../components/BottomSheetModal';
 import api from '@/services/api';
@@ -34,7 +33,7 @@ const HabitsHomeScreen = () => {
   const [showTogetherHabbit, setShowTogetherHabbit] = useState(false);
   const [habits, setHabits] = useState<Habit[]>([]);
   const progressMapRef = useRef<Record<string, any>>({});
-  const [loading, setLoading] = useState(false);
+  const [_loading, setLoading] = useState(false);
   const [habitCompletionMap, setHabitCompletionMap] = useState<Record<string, { completed: number; total: number }>>({});
 
   const fetchHabits = async () => {
