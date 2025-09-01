@@ -23,7 +23,7 @@ const OtpVerificationScreen = () => {
 
   // const [otp, setOtp] = useState('');
   const [counter, setCounter] = useState(30);
-  const otpInput = useRef<OTPTextInput>(null);
+  // const otpInput = useRef<OTPTextInput>(null);
   const [otpError, setOtpError] = useState('');
   const [loading, setLoading] = useState(false);
 
