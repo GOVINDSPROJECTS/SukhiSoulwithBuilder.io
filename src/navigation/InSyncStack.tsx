@@ -57,7 +57,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import InSyncIntroScreen from '../screens/InSync/InSyncIntroScreen';
 // import InSyncInviteScreen from '../screens/InSync/InSyncInviteScreen';
 // import AddActivitiesScreen from '../screens/InSync/AddActivitiesScreen';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View, StyleSheet } from 'react-native';
 
 export type InSyncStackParamList = {
   InSyncIntro: undefined;
