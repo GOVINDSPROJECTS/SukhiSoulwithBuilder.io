@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
-import { View, Text, PermissionsAndroid, Platform, Alert } from "react-native";
-import { OneSignal, LogLevel } from "react-native-onesignal";
+import React, { useEffect } from "react";
+import { PermissionsAndroid, Platform, Alert } from "react-native";
+import { OneSignal } from "react-native-onesignal";
 import api from "@/services/api";
 import { useAuthStore } from "@/store/authStore";
 
@@ -54,11 +55,15 @@ const Notification = () => {
           );
       }
     });
-  }, []);
 
-  return (
-<></>
-  );
+    return () => {
+      try {
+        subscriptionObserver.remove();
+      } catch {}
+    };
+  }, [token]);
+
+  return null;
 };
 
 export default Notification;
