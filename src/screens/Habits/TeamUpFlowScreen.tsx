@@ -1,8 +1,20 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react';
-import { Text, View, Image, StyleSheet, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import {
+  Text,
+  View,
+  Image,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import BottomSheetModal from '../../components/BottomSheetModal';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import PrimaryButton from '../../components/PrimaryButton';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -14,42 +26,42 @@ import { useAuthStore } from '@/store/authStore';
 import { Share } from 'react-native';
 import SubscriptionPaymentModal from '@/components/SubscriptionPaymentModal';
 
-
 const TeamUpFlowScreen = () => {
-
   const route = useRoute();
-  const { isSubscribed , isAlreadyInRoom } = (route.params as { isSubscribed: boolean , isAlreadyInRoom:number }) || { isSubscribed: false , isAlreadyInRoom:false };
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { isSubscribed, isAlreadyInRoom } = (route.params as {
+    isSubscribed: boolean;
+    isAlreadyInRoom: number;
+  }) || { isSubscribed: false, isAlreadyInRoom: false };
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [visible, setVisible] = useState(true);
-  const [step, setStep] = useState<'teamup' | 'circle' | 'circleToInvite' | 'created' | 'invite' | 'subscribe'>('teamup');
+  const [step, setStep] = useState<
+    'teamup' | 'circle' | 'circleToInvite' | 'created' | 'invite' | 'subscribe'
+  >('teamup');
   const [habitID, setHabitID] = useState('');
   const [loading, setLoading] = useState(false);
   const token = useAuthStore.getState().token;
   const [hasShared, setHasShared] = useState(false);
-  const [code, setCode] = useState("");
-
+  const [code, setCode] = useState('');
 
   const handleCreateCircleUsingCode = () => {
     try {
-       console.log(isAlreadyInRoom , isSubscribed );
+      console.log(isAlreadyInRoom, isSubscribed);
       if (isAlreadyInRoom >= 1 && !isSubscribed) {
-     
-      setStep('subscribe');
-      return;
-    }
-    else{
-      createHabitCircle();
-      setStep('circle');
-    }
-      
+        setStep('subscribe');
+        return;
+      } else {
+        createHabitCircle();
+        setStep('circle');
+      }
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const handleCreateCircleWithCode = () => {
     setStep('circleToInvite');
-  }
+  };
 
   const handleShare = async () => {
     try {
@@ -62,82 +74,74 @@ const TeamUpFlowScreen = () => {
 
         // Reopen with "created" step after small delay
         setTimeout(() => {
-          setStep("created");
+          setStep('created');
           setVisible(true);
         }, 300);
       }
     } catch (error) {
       console.error(error);
-      Alert.alert("Error", "Unable to share Habit Circle ID");
+      Alert.alert('Error', 'Unable to share Habit Circle ID');
     }
   };
-
 
   React.useEffect(() => {
     if (hasShared) {
       // wait a tick before moving to created step
       const timer = setTimeout(() => {
-        setStep("created");
+        setStep('created');
         setHasShared(false);
       }, 300);
       return () => clearTimeout(timer);
     }
   }, [hasShared]);
 
+  const CreateSelfAsMember = async (roomId: string) => {
+    try {
+      const payload = new FormData();
+      payload.append('room_id', roomId);
 
-// eslint-disable-next-line react-hooks/exhaustive-deps
-const CreateSelfAsMember = async (roomId: string) => {
-  try {
-    const payload = new FormData();
-    payload.append('room_id', roomId);
-
-    await api.post(
-      'habitroommembers',
-      payload,
-      {
-        headers: { 'Content-Type': 'multipart/form-data' ,
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`, // Use the token from the auth store", 
+      await api.post('habitroommembers', payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`, // Use the token from the auth store",
         },
-        
-      }
-    );
-
-  } catch (error: any) {
-    console.error('Error Joining Room:', error);
-    Alert.alert('Error1111', error?.response?.data?.message || 'Failed to join room.');
-  }
-};
+      });
+    } catch (error: any) {
+      console.error('Error Joining Room:', error);
+      Alert.alert(
+        'Error1111',
+        error?.response?.data?.message || 'Failed to join room.',
+      );
+    }
+  };
 
   // API call to create habit circle
   const createHabitCircle = async () => {
     try {
       setLoading(true);
-      const response = await api.post('/habitrooms',{
+      const response = await api.post('/habitrooms', {
         headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`, // Use the token from the auth store", 
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`, // Use the token from the auth store",
         },
-        
       });
 
       if (response.data?.habit_room?.room_id) {
         // setHabitID(response.data.habit_room.room_id.toString());
         const roomId = response.data.habit_room.room_id.toString();
-      setHabitID(roomId); // still store in state if needed later
+        setHabitID(roomId); // still store in state if needed later
         await CreateSelfAsMember(roomId); // pass directly here
       } else {
-        Alert.alert("Error", "Failed to create Habit Circle");
+        Alert.alert('Error', 'Failed to create Habit Circle');
       }
-      
     } catch (error) {
       console.error(error);
-      Alert.alert("Error", "Something went wrong while creating the circle");
+      Alert.alert('Error', 'Something went wrong while creating the circle');
     } finally {
       setLoading(false);
     }
-  } ; // ✅ empty deps → function won't change
-
+  }; // ✅ empty deps → function won't change
 
   // React.useEffect(() => {
   //   if (step === "circle" && !habitID) {
@@ -145,20 +149,19 @@ const CreateSelfAsMember = async (roomId: string) => {
   //   }
   // }, [step, habitID, createHabitCircle]);
 
-
   const renderStepContent = () => {
-
-      if (loading) {
-        return (
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <ActivityIndicator size="large" color="#104256" />
-          </View>
-        );
-      }
+    if (loading) {
+      return (
+        <View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
+          <ActivityIndicator size="large" color="#104256" />
+        </View>
+      );
+    }
     switch (step) {
       case 'teamup':
         return (
-
           <View style={styles.container}>
             {/* Profile Avatar */}
 
@@ -168,25 +171,38 @@ const CreateSelfAsMember = async (roomId: string) => {
               <Text style={styles.titleHighlight}> Buddy</Text>
 
               {/* Get Code */}
-              <TouchableOpacity style={styles.optionBox} onPress={handleCreateCircleUsingCode}>
+              <TouchableOpacity
+                style={styles.optionBox}
+                onPress={handleCreateCircleUsingCode}
+              >
                 <Text style={styles.optionText}>
-                  Get Code{"\n"}
-                  <Text style={styles.subText}>Share this code with your partner</Text>
+                  Get Code{'\n'}
+                  <Text style={styles.subText}>
+                    Share this code with your partner
+                  </Text>
                 </Text>
                 <Image
-                  source={{ uri: "https://cdn-icons-png.flaticon.com/512/1828/1828817.png" }}
+                  source={{
+                    uri: 'https://cdn-icons-png.flaticon.com/512/1828/1828817.png',
+                  }}
                   style={styles.icon}
                 />
               </TouchableOpacity>
 
-
-              <TouchableOpacity style={styles.optionBox} onPress={handleCreateCircleWithCode}>
+              <TouchableOpacity
+                style={styles.optionBox}
+                onPress={handleCreateCircleWithCode}
+              >
                 <Text style={styles.optionText}>
-                  Enter Code{"\n"}
-                  <Text style={styles.subText}>Already have a code? Write it here</Text>
+                  Enter Code{'\n'}
+                  <Text style={styles.subText}>
+                    Already have a code? Write it here
+                  </Text>
                 </Text>
                 <Image
-                  source={{ uri: "https://cdn-icons-png.flaticon.com/512/84/84380.png" }}
+                  source={{
+                    uri: 'https://cdn-icons-png.flaticon.com/512/84/84380.png',
+                  }}
                   style={styles.icon}
                 />
               </TouchableOpacity>
@@ -210,7 +226,7 @@ const CreateSelfAsMember = async (roomId: string) => {
               <TouchableOpacity
                 onPress={() => {
                   Clipboard.setString(habitID);
-                  Alert.alert("Copied", "Habit Circle ID copied!");
+                  Alert.alert('Copied', 'Habit Circle ID copied!');
                 }}
                 style={styles.copyButton}
               >
@@ -237,39 +253,43 @@ const CreateSelfAsMember = async (roomId: string) => {
         );
 
       case 'circleToInvite':
-
-
         const handlAcceptInvite = async () => {
           try {
             const payload = new FormData();
             payload.append('room_id', code);
 
-            const response = await api.post(
-              'habitroommembers',
-              payload,
-              {
-                headers: { 'Content-Type': 'multipart/form-data' },
-              }
-            );
+            const response = await api.post('habitroommembers', payload, {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            });
 
-            if (response?.data?.message?.includes('Member added to room successfully')) {
+            if (
+              response?.data?.message?.includes(
+                'Member added to room successfully',
+              )
+            ) {
               // ✅ Navigate to OTP Screen with required data
               navigation.navigate('HabitCircle');
             } else {
-              Alert.alert('Error', response.data?.message || 'Something went wrong.');
+              Alert.alert(
+                'Error',
+                response.data?.message || 'Something went wrong.',
+              );
             }
           } catch (error: any) {
             console.error('Error Joining Room:', error);
-            Alert.alert('Error', error?.response?.data?.message || 'Failed to send OTP.');
+            Alert.alert(
+              'Error',
+              error?.response?.data?.message || 'Failed to send OTP.',
+            );
           }
-
-        }
+        };
 
         return (
           <View style={{ paddingHorizontal: wp(6), paddingVertical: hp(2) }}>
             <Text style={styles.title}>Enter Shared Code</Text>
             <Text style={styles.subtitle}>
-              Your partner sent you an invite code. Paste it below to get connected.
+              Your partner sent you an invite code. Paste it below to get
+              connected.
             </Text>
 
             <TextInput
@@ -277,7 +297,7 @@ const CreateSelfAsMember = async (roomId: string) => {
                 styles.inputinvite,
                 {
                   borderWidth: 1,
-                  borderColor: "#ddd",
+                  borderColor: '#ddd',
                   borderRadius: 10,
                   padding: wp(3),
                   marginBottom: hp(2),
@@ -307,9 +327,24 @@ const CreateSelfAsMember = async (roomId: string) => {
               style={styles.image}
             />
 
-            <View style={{ width: wp(55), alignSelf: 'center', marginBottom: hp(40) }}>
-              <Text style={[styles.heading, { alignSelf: 'center', textAlign: 'center' }]}>Invite Sent</Text>
-              <Text style={[{ alignSelf: 'center', }]}>We’ll notify you when they join</Text>
+            <View
+              style={{
+                width: wp(55),
+                alignSelf: 'center',
+                marginBottom: hp(40),
+              }}
+            >
+              <Text
+                style={[
+                  styles.heading,
+                  { alignSelf: 'center', textAlign: 'center' },
+                ]}
+              >
+                Invite Sent
+              </Text>
+              <Text style={[{ alignSelf: 'center' }]}>
+                We’ll notify you when they join
+              </Text>
             </View>
 
             <PrimaryButton
@@ -318,19 +353,29 @@ const CreateSelfAsMember = async (roomId: string) => {
                 setVisible(false);
                 navigation.replace('HabitCircle');
               }}
-              style={{ width: wp(26), height: wp(11), alignSelf: "center", marginBottom: hp(1) }}
+              style={{
+                width: wp(26),
+                height: wp(11),
+                alignSelf: 'center',
+                marginBottom: hp(1),
+              }}
             />
 
             <TouchableOpacity>
-              <Text style={[styles.desc, { alignSelf: 'center', marginBottom: hp(45) }]}>Cancel Invite</Text>
+              <Text
+                style={[
+                  styles.desc,
+                  { alignSelf: 'center', marginBottom: hp(45) },
+                ]}
+              >
+                Cancel Invite
+              </Text>
             </TouchableOpacity>
           </View>
         );
 
-        case 'subscribe':
-          return(
-            <SubscriptionPaymentModal/>
-          )
+      case 'subscribe':
+        return <SubscriptionPaymentModal />;
     }
   };
 
@@ -361,7 +406,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: '#171717',
     marginTop: 20,
-
   },
   subHeading: {
     fontSize: wp(3.5),
@@ -377,7 +421,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     marginBottom: wp(1),
   },
-
 
   input: {
     flex: 1,
@@ -414,7 +457,7 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
 
-  //Correct.png Icon 
+  //Correct.png Icon
   container: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -451,71 +494,70 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp(2), // space so icon doesn’t stick to border
   },
 
-
   avatarContainer: {
-    position: "absolute",
-    top: hp("5%"),
+    position: 'absolute',
+    top: hp('5%'),
   },
   avatarCircle: {
-    width: wp("15%"),
-    height: wp("15%"),
-    borderRadius: wp("7.5%"),
-    backgroundColor: "#0088cc",
-    justifyContent: "center",
-    alignItems: "center",
+    width: wp('15%'),
+    height: wp('15%'),
+    borderRadius: wp('7.5%'),
+    backgroundColor: '#0088cc',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   avatarText: {
-    color: "#fff",
-    fontSize: wp("6%"),
-    fontWeight: "bold",
+    color: '#fff',
+    fontSize: wp('6%'),
+    fontWeight: 'bold',
   },
   card: {
-    backgroundColor: "#fff",
-    width: wp("85%"),
-    padding: wp("6%"),
+    backgroundColor: '#fff',
+    width: wp('85%'),
+    padding: wp('6%'),
     borderRadius: 15,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 6,
-    marginTop: hp("12%"),
+    marginTop: hp('12%'),
   },
   title: {
-    fontSize: wp("6%"),
-    fontWeight: "600",
-    color: "#222",
+    fontSize: wp('6%'),
+    fontWeight: '600',
+    color: '#222',
   },
   titleHighlight: {
-    fontSize: wp("6.5%"),
-    fontWeight: "700",
-    color: "#0077cc",
-    marginBottom: hp("3%"),
+    fontSize: wp('6.5%'),
+    fontWeight: '700',
+    color: '#0077cc',
+    marginBottom: hp('3%'),
   },
   optionBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     borderWidth: 1,
-    borderColor: "#ddd",
-    padding: wp("4%"),
+    borderColor: '#ddd',
+    padding: wp('4%'),
     borderRadius: 10,
-    marginBottom: hp("2%"),
-    backgroundColor: "#fff",
+    marginBottom: hp('2%'),
+    backgroundColor: '#fff',
   },
   optionText: {
-    fontSize: wp("4%"),
-    color: "#222",
+    fontSize: wp('4%'),
+    color: '#222',
   },
   subText: {
-    fontSize: wp("3.2%"),
-    color: "#777",
+    fontSize: wp('3.2%'),
+    color: '#777',
   },
 
   icon: {
-    width: wp("6%"),
-    height: wp("6%"),
-    marginLeft: wp("2%"),
+    width: wp('6%'),
+    height: wp('6%'),
+    marginLeft: wp('2%'),
   },
 
   //   title: {
@@ -525,44 +567,44 @@ const styles = StyleSheet.create({
   //   marginBottom: hp("1.5%"),
   // },
   subtitle: {
-    fontSize: wp("4%"),
-    textAlign: "center",
-    color: "#555",
-    marginBottom: hp("3%"),
+    fontSize: wp('4%'),
+    textAlign: 'center',
+    color: '#555',
+    marginBottom: hp('3%'),
   },
   inputinvite: {
-    width: "100%",
+    width: '100%',
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: '#ddd',
     borderRadius: 10,
-    paddingVertical: hp("1.5%"),
-    paddingHorizontal: wp("4%"),
-    fontSize: wp("4%"),
-    marginBottom: hp("3%"),
+    paddingVertical: hp('1.5%'),
+    paddingHorizontal: wp('4%'),
+    fontSize: wp('4%'),
+    marginBottom: hp('3%'),
   },
   button: {
-    width: "100%",
-    backgroundColor: "#175873",
-    paddingVertical: hp("2%"),
+    width: '100%',
+    backgroundColor: '#175873',
+    paddingVertical: hp('2%'),
     borderRadius: 12,
-    alignItems: "center",
-    marginBottom: hp("2%"),
+    alignItems: 'center',
+    marginBottom: hp('2%'),
   },
   buttonText: {
-    color: "#fff",
-    fontSize: wp("4.5%"),
-    fontWeight: "600",
+    color: '#fff',
+    fontSize: wp('4.5%'),
+    fontWeight: '600',
   },
   footer: {
-    fontSize: wp("3.5%"),
-    textAlign: "center",
-    color: "#666",
+    fontSize: wp('3.5%'),
+    textAlign: 'center',
+    color: '#666',
   },
   containerinvite: {
     flexGrow: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: wp("8%"),
-    backgroundColor: "#fff",
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: wp('8%'),
+    backgroundColor: '#fff',
   },
 });

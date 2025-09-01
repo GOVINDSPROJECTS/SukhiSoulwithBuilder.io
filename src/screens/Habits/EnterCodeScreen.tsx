@@ -40,13 +40,7 @@ const EnterCodeScreen = () => {
 
           navigation.navigate('HabitCircleScreen', { joinedCode: code });
         }}
-        style={{
-          width: wp(40),
-          height: wp(11),
-          alignSelf: 'center',
-          marginTop: hp(8),
-          marginBottom: hp(5),
-        }}
+        style={styles.joinCircleButton}
       />
     </View>
   );
@@ -103,5 +97,12 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: wp('4.5%'),
     fontWeight: '600',
+  },
+  joinCircleButton: {
+    width: wp(40),
+    height: wp(11),
+    alignSelf: 'center',
+    marginTop: hp(8),
+    marginBottom: hp(5),
   },
 });

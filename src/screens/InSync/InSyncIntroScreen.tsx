@@ -1,30 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Alert
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 import GradientWrapper from '../../components/GradientWrapper';
 import PrimaryButton from '../../components/PrimaryButton';
 import BottomSheetModal from '../../components/BottomSheetModal';
-import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types/navigation';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import AppText from '@/components/AppText';
 import colors from '@/theme/colors';
 
-
-type Props = {
-  refreshKey?: number;
-};
-const InSyncIntroScreen = ({refreshKey}:Props) => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+const InSyncIntroScreen = () => {
   const [showModal, setShowModal] = useState(false);
 
   const handleGetGoing = async () => {
@@ -32,14 +19,17 @@ const InSyncIntroScreen = ({refreshKey}:Props) => {
     setShowModal(false);
     // navigation.navigate('InSyncHome');
     Alert.alert('This feature is coming soon! Stay tuned for updates.');
-    
   };
 
   return (
     <GradientWrapper>
       <View style={styles.container}>
-        <AppText variant = 'h1' style={styles.brand} >InSync</AppText>
-        <AppText variant='h2' style={styles.subtitle}>A tool to connect, understand and grow together</AppText>
+        <AppText variant="h1" style={styles.brand}>
+          InSync
+        </AppText>
+        <AppText variant="h2" style={styles.subtitle}>
+          A tool to connect, understand and grow together
+        </AppText>
 
         <View style={styles.imageContainer}>
           {/* Replace with real image */}
@@ -61,26 +51,33 @@ const InSyncIntroScreen = ({refreshKey}:Props) => {
         />
       </View>
 
-      
-        {/* 🧠 BottomSheetModal with tips */}
+      {/* 🧠 BottomSheetModal with tips */}
       <BottomSheetModal visible={showModal} onClose={() => setShowModal(false)}>
- 
- <View style={styles.modalHandle} />
+        <View style={styles.modalHandle} />
         <Text style={styles.modalTitle}>How can I do that?</Text>
-        <View
-  style={{
-    borderBottomColor: 'black',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    marginVertical:wp(5)
-  }}
-/>
+        <View style={styles.separator} />
         <View style={styles.tipGroup}>
           {[
-            ['Create tasks together', 'Plan small, meaningful actions as a team which will build trust, routine, and shared joy.'],
-            ['Take understanding tests', 'Discover how each of you thinks, feels, and reacts. Its the first step toward deeper empathy.'],
-            ['Ask what they truly need', 'Check in regularly—sometimes clarity starts with simply asking, "What would help you feel more understood today?"'],
-            ['Journal your thoughts daily', 'Writing helps you reflect, cool off, and see things from a calmer, clearer perspective.'],
-            ['Get support when needed', 'Therapy is not weakness—its teamwork. If something feels too heavy, reaching out can lighten the load for both of you.'],
+            [
+              'Create tasks together',
+              'Plan small, meaningful actions as a team which will build trust, routine, and shared joy.',
+            ],
+            [
+              'Take understanding tests',
+              'Discover how each of you thinks, feels, and reacts. Its the first step toward deeper empathy.',
+            ],
+            [
+              'Ask what they truly need',
+              'Check in regularly—sometimes clarity starts with simply asking, "What would help you feel more understood today?"',
+            ],
+            [
+              'Journal your thoughts daily',
+              'Writing helps you reflect, cool off, and see things from a calmer, clearer perspective.',
+            ],
+            [
+              'Get support when needed',
+              'Therapy is not weakness—its teamwork. If something feels too heavy, reaching out can lighten the load for both of you.',
+            ],
           ].map(([title, desc], i) => (
             <View key={i} style={{ marginBottom: hp(2.5) }}>
               <Text style={styles.tipTitle}>• {title}</Text>
@@ -92,7 +89,7 @@ const InSyncIntroScreen = ({refreshKey}:Props) => {
         <PrimaryButton
           title="Let's get going"
           onPress={handleGetGoing}
-          style={{ marginTop: hp(2) }}
+          style={styles.ctaButton}
         />
       </BottomSheetModal>
     </GradientWrapper>
@@ -107,12 +104,12 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
-    paddingTop:wp(30),
+    paddingTop: wp(30),
   },
-    brand: {
+  brand: {
     marginTop: hp(3),
     // fontSize: wp('10%'),
-    color:colors.primary,
+    color: colors.primary,
   },
   subtitle: {
     fontSize: wp(4),
@@ -126,7 +123,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: '#ccc',
     marginBottom: hp(2),
-    marginHorizontal:"auto"
+    marginHorizontal: 'auto',
   },
   imagePlaceholder: {
     flex: 1,
@@ -137,14 +134,14 @@ const styles = StyleSheet.create({
     color: '#333',
     textAlign: 'center',
     marginBottom: hp(10),
-    textAlignVertical:'center'
+    textAlignVertical: 'center',
   },
   howLink: {
     fontSize: wp(3.5),
     color: '#333',
     textDecorationLine: 'underline',
     marginBottom: hp(3),
-    marginHorizontal:'auto'
+    marginHorizontal: 'auto',
   },
   button: {
     width: wp(60),
@@ -153,11 +150,11 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: wp(6),
     fontWeight: '600',
-    color: '#003a52',  
+    color: '#003a52',
   },
   tipGroup: {
     paddingBottom: hp(3),
-    paddingHorizontal:wp(2),
+    paddingHorizontal: wp(2),
   },
   tipTitle: {
     fontSize: wp(4.2),
@@ -169,12 +166,18 @@ const styles = StyleSheet.create({
     fontSize: wp(3.6),
     color: '#444',
   },
+  separator: {
+    borderBottomColor: 'black',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    marginVertical: wp(5),
+  },
+  ctaButton: { marginTop: hp(2) },
   modalHandle: {
-  width: wp('15%'),        // ~60px on most devices
-  height: hp('0.6%'),      // ~5px
-  borderRadius: wp('5%'),
-  backgroundColor: '#666666',
-  alignSelf: 'center',
-  marginBottom: hp('2%'),
-},
+    width: wp('15%'), // ~60px on most devices
+    height: hp('0.6%'), // ~5px
+    borderRadius: wp('5%'),
+    backgroundColor: '#666666',
+    alignSelf: 'center',
+    marginBottom: hp('2%'),
+  },
 });

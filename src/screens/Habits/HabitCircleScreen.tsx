@@ -3,21 +3,42 @@
 // // src/screens/HabitCircleScreen.tsx
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert, SafeAreaView } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  SafeAreaView,
+} from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import PrimaryButton from '../../components/PrimaryButton';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import api from '@/services/api';
 import { useAuthStore } from '@/store/authStore';
 import AppText from '@/components/AppText';
 
-// const friends = ['Dumb D. Madhura', 'Portega D. Piyush', 'Mugdha Mehindarkar'];
-const habbitsNum = [1,0,3];
-const memberId = useAuthStore.getState().user?.id?.toString() || '';
-// eslint-disable-next-line react-hooks/rules-of-hooks
+const ui = StyleSheet.create({
+  safeRoot: { flex: 1, backgroundColor: '#FFFFFF' },
+  flex1: { flex: 1 },
+  scrollContent: { paddingBottom: hp(10) },
+  subTitleWide: { width: wp(74) },
+  rowCenter: { flexDirection: 'row', alignItems: 'center' },
+  mt5px: { marginTop: 5 },
+  wSpacer: { width: wp(15) },
+  flexEnd: { flex: 1, alignItems: 'flex-end' },
+  chevron: { fontSize: wp(5), color: '#2D2D2D' },
+});
 
+// const friends = ['Dumb D. Madhura', 'Portega D. Piyush', 'Mugdha Mehindarkar'];
+const habbitsNum = [1, 0, 3];
+const memberId = useAuthStore.getState().user?.id?.toString() || '';
 
 type HabitRoom = {
   room_id: number;
@@ -25,188 +46,199 @@ type HabitRoom = {
   create_user_id?: number;
   status?: string;
 };
-  
 
 const HabitCircleScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-    const token = useAuthStore.getState().token;
-      const [rooms, setRooms] = useState<HabitRoom[]>([]);
-        const [loading, setLoading] = useState<boolean>(true);
+  const token = useAuthStore.getState().token;
+  const [rooms, setRooms] = useState<HabitRoom[]>([]);
+  const [_loading, setLoading] = useState<boolean>(true);
   const [alreadyInRoom, setAlreadyInRoom] = useState<number>(0);
-    const [subscribed, isSubscribed] = useState(false);
-  
-        
-const fetchRooms = async () => {
+  const [subscribed, isSubscribed] = useState(false);
+
+  const fetchRooms = async () => {
     try {
-      const res = await api.get('/habitrooms',
-        {
+      const res = await api.get('/habitrooms', {
         headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`, // Use the token from the auth store", 
-        }
-      }
-      );
+          Accept: 'application/json',
+          Authorization: `Bearer ${token}`, // Use the token from the auth store",
+        },
+      });
 
       // ✅ Safe handling of message
       const message =
         res.data?.message?.toString?.() || 'No message from server';
-      console.log("API Message:", message);
+      console.log('API Message:', message);
 
       // ✅ Use habitrooms instead of habitroommembers
       setRooms(Array.isArray(res.data?.habitrooms) ? res.data.habitrooms : []);
     } catch (error: any) {
       console.error('Error fetching rooms:', error?.response?.data || error);
       const errMsg =
-        error?.response?.data?.message?.toString?.() || 'Failed to fetch rooms.';
+        error?.response?.data?.message?.toString?.() ||
+        'Failed to fetch rooms.';
       Alert.alert('Error', errMsg);
     } finally {
       setLoading(false);
     }
   };
 
-//   useFocusEffect(
-//     useCallback(() => {
-//       hasSubscription();
-//     try {
-//      if (rooms?.length > 0) {
-//       console.log(rooms.length);
-//     const found = rooms.some(item => item.create_user_id?.toString() === memberId);
-//     if (found){
-//       setAlreadyInRoom(prev => prev + 1);
-//     }
-//   } else {
-//     setAlreadyInRoom(0);
-//   }
-//     } catch (error) {
-//       Alert.alert('Error', 'Something went wrong while checking subscription status.');
-//     }
-//     fetchRooms();
-//     console.log(alreadyInRoom);
-//   }, []
-// )
-//   );
+  //   useFocusEffect(
+  //     useCallback(() => {
+  //       hasSubscription();
+  //     try {
+  //      if (rooms?.length > 0) {
+  //       console.log(rooms.length);
+  //     const found = rooms.some(item => item.create_user_id?.toString() === memberId);
+  //     if (found){
+  //       setAlreadyInRoom(prev => prev + 1);
+  //     }
+  //   } else {
+  //     setAlreadyInRoom(0);
+  //   }
+  //     } catch (error) {
+  //       Alert.alert('Error', 'Something went wrong while checking subscription status.');
+  //     }
+  //     fetchRooms();
+  //     console.log(alreadyInRoom);
+  //   }, []
+  // )
+  //   );
 
+  useFocusEffect(
+    useCallback(() => {
+      hasSubscription();
+      try {
+        if (rooms?.length > 0) {
+          console.log(rooms.length);
 
-useFocusEffect(
-  useCallback(() => {
-  hasSubscription();
-  try {
-    if (rooms?.length > 0) {
-      console.log(rooms.length);
+          const count = rooms.filter(
+            item => item.create_user_id?.toString() === memberId,
+          ).length;
 
-      const count = rooms.filter(
-        item => item.create_user_id?.toString() === memberId
-      ).length;
-
-      setAlreadyInRoom(count);
-    } else {
-      setAlreadyInRoom(0);
-    }
-  } catch (error) {
-    Alert.alert('Error', 'Something went wrong while checking subscription status.');
-  }
-  console.log(alreadyInRoom);
-}, [rooms, memberId]));
-
-// fetch rooms only once when screen loads
-useEffect(() => {
-  fetchRooms();
-}, []);
-
-    const hasSubscription = async () => {
-        try {
-          const res = await api.get('/activesubscriptions',
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-        
-            (res.data.success===true) ?
-             isSubscribed(res.data.subscription.is_active) : 
-             isSubscribed(false);
-        
-        } catch (error) {
-          console.error('Error fetching active subscriptions:', error);
+          setAlreadyInRoom(count);
+        } else {
+          setAlreadyInRoom(0);
         }
-    } 
+      } catch (error) {
+        Alert.alert(
+          'Error',
+          'Something went wrong while checking subscription status.',
+        );
+      }
+      console.log(alreadyInRoom);
+    }, [rooms, memberId]),
+  );
 
-  const handleOnPress = (item: { room_id: any; room_name?: string; create_user_id?: number | undefined; status?: string | undefined; }) => {
+  // fetch rooms only once when screen loads
+  useEffect(() => {
+    fetchRooms();
+  }, []);
+
+  const hasSubscription = async () => {
+    try {
+      const res = await api.get('/activesubscriptions', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      res.data.success === true
+        ? isSubscribed(res.data.subscription.is_active)
+        : isSubscribed(false);
+    } catch (error) {
+      console.error('Error fetching active subscriptions:', error);
+    }
+  };
+
+  const handleOnPress = (item: {
+    room_id: any;
+    room_name?: string;
+    create_user_id?: number | undefined;
+    status?: string | undefined;
+  }) => {
     if (item.status === 'pending') {
       Alert.alert('Info', 'Waiting for your Buddy to join the room.');
+    } else {
+      navigation.navigate('FriendDetail', { room_id: item.room_id.toString() });
     }
-      else{
-        navigation.navigate('FriendDetail', { room_id: item.room_id.toString() })
-      }
-  }
+  };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={ui.safeRoot}>
+      <View style={ui.flex1}>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={ui.scrollContent}
+        >
+          <AppText variant="h1">Habit Circle</AppText>
+          <Text style={[styles.subTitle, ui.subTitleWide]}>
+            Check in, track habits together, and keep each other going
+          </Text>
 
-    <ScrollView style={styles.container}
-     contentContainerStyle={{ paddingBottom: hp(10) }}> 
-        
-        <AppText variant='h1'>Habit Circle</AppText>
-        <Text style={[styles.subTitle,{width:wp(74)}]}>Check in, track habits together, and keep
-            each other going</Text>
-
-        
-        {rooms.map((item , index ) => (
-
+          {rooms.map((item, index) => (
             <View key={item.room_id} style={styles.friendsCard}>
-              
-                <TouchableOpacity
+              <TouchableOpacity
                 key={item.room_id}
-                onPress={()=>handleOnPress(item)}
-                >
-                <Text style={styles.name}>{item.room_name ?? item.room_id}</Text>
+                onPress={() => handleOnPress(item)}
+              >
+                <Text style={styles.name}>
+                  {item.room_name ?? item.room_id}
+                </Text>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
-                  <Text style={styles.status}>{habbitsNum[index]} habits tracked</Text>
-                  <View style={{ width: wp(15) }} />
-                      <Text style={styles.status}>Streak: {index * 50} Days</Text>
+                <View style={[ui.rowCenter, ui.mt5px]}>
+                  <Text style={styles.status}>
+                    {habbitsNum[index]} habits tracked
+                  </Text>
+                  <View style={ui.wSpacer} />
+                  <Text style={styles.status}>Streak: {index * 50} Days</Text>
 
-                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                      <Text style={{ fontSize: wp(5), color: '#2D2D2D' }}>{'>'}</Text>
+                  <View style={ui.flexEnd}>
+                    <Text style={ui.chevron}>{'>'}</Text>
                   </View>
                 </View>
-                </TouchableOpacity> 
+              </TouchableOpacity>
             </View>
-        ))}
-         </ScrollView>
+          ))}
+        </ScrollView>
 
-
-            <PrimaryButton
-        title="Invite a Friend"
-        onPress={() => navigation.navigate('TeamUpFlow',{isSubscribed: subscribed , isAlreadyInRoom: alreadyInRoom})}
-        style={styles.floatingButton}
-      />
-        
-   
-
-    </View>
-  </SafeAreaView>
+        <PrimaryButton
+          title="Invite a Friend"
+          onPress={() =>
+            navigation.navigate('TeamUpFlow', {
+              isSubscribed: subscribed,
+              isAlreadyInRoom: alreadyInRoom,
+            })
+          }
+          style={styles.floatingButton}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
 export default HabitCircleScreen;
 
 const styles = StyleSheet.create({
-  container: { padding: 20, backgroundColor: '#FFFFFF', paddingTop: hp(7), flex: 1 },
+  container: {
+    padding: 20,
+    backgroundColor: '#FFFFFF',
+    paddingTop: hp(7),
+    flex: 1,
+  },
 
-  title: { 
-    fontSize:wp(12), 
-    fontWeight: 'bold', 
-    marginBottom: 10, 
+  title: {
+    fontSize: wp(12),
+    fontWeight: 'bold',
+    marginBottom: 10,
     marginTop: wp(10),
-    color:'#245C73',
+    color: '#245C73',
   },
   subTitle: {
     fontSize: wp(4),
     fontWeight: '400',
-    color:'#666666',
+    color: '#666666',
     marginBottom: 10,
   },
 
@@ -216,8 +248,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 12,
     borderRadius: 10,
-    marginTop:wp(5),
-   
+    marginTop: wp(5),
   },
 
   //Outer Friend Card,Containing friends list
@@ -227,48 +258,47 @@ const styles = StyleSheet.create({
     height: wp(30),
     alignSelf: 'center',
     marginBottom: 12,
-    marginTop:wp(6),
+    marginTop: wp(6),
     borderRadius: 10,
-    borderColor:'#2D2D2D',
-    borderWidth:wp(0.1),
+    borderColor: '#2D2D2D',
+    borderWidth: wp(0.1),
     padding: 16,
-      // Subtle Drop Shadow
-      shadowColor: '#00000040', // Transparent black
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 1, // since color already has alpha
-      shadowRadius: 6,
+    // Subtle Drop Shadow
+    shadowColor: '#00000040', // Transparent black
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 1, // since color already has alpha
+    shadowRadius: 6,
 
-      // Android-specific elevation (optional for consistent cross-platform shadow)
-      elevation: 4,
+    // Android-specific elevation (optional for consistent cross-platform shadow)
+    elevation: 4,
   },
-  name: { 
-    fontSize: wp(6), 
+  name: {
+    fontSize: wp(6),
     width: wp(30),
     fontWeight: '700',
     color: '#2D2D2D',
   },
-  status: { 
-    fontSize: wp(3.2), 
+  status: {
+    fontSize: wp(3.2),
     fontWeight: '500',
-    color: '#666666'
+    color: '#666666',
   },
   floatingButton: {
-  position: 'absolute',
-  bottom: hp(3),
-  right: wp(5),
-  width: wp(40),
-  height: wp(11),
-  borderRadius: wp(2),
-  elevation: 5, // shadow for Android
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.2,
-  shadowRadius: 4,
-},
-
+    position: 'absolute',
+    bottom: hp(3),
+    right: wp(5),
+    width: wp(40),
+    height: wp(11),
+    borderRadius: wp(2),
+    elevation: 5, // shadow for Android
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
 });
 
 //  src/screens/HabitRoomsScreen.tsx
@@ -303,7 +333,6 @@ const styles = StyleSheet.create({
 //   const token = useAuthStore.getState().token;
 //   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  
 //   // ✅ Check user id
 //   useEffect(() => {
 //     if (user?.id) {
@@ -319,7 +348,7 @@ const styles = StyleSheet.create({
 //         {
 //         headers: {
 //           Accept: "application/json",
-//           Authorization: `Bearer ${token}`, // Use the token from the auth store", 
+//           Authorization: `Bearer ${token}`, // Use the token from the auth store",
 //         }
 //       }
 //       );
@@ -344,13 +373,11 @@ const styles = StyleSheet.create({
 //   useEffect(() => {
 //     fetchRooms();
 //   }, []);
-  
- 
 
 //   const renderItem = ({ item }: { item: HabitRoom }) => (
 //     <TouchableOpacity style={styles.card}  onPress={() => navigation.navigate('FriendDetail', { room_id: item.room_id.toString() })}>
 //       <Text style={styles.roomText}>{item.room_name}</Text>
-     
+
 //       {/* If backend provides date, show it */}
 //       {/* <Text style={styles.dateText}>Joined: {new Date(item.created_at).toDateString()}</Text> */}
 //     </TouchableOpacity>

@@ -23,15 +23,11 @@
 //   };
 // };
 
-
-
 // const WeeklyTracker = ({ title, highlightedDates = [], onDayPress , habitCompletionMap,}: Props) => {
 //   const weekStart = dayjs().startOf('week'); // Sunday as start (use isoWeek for Monday)
 //   const weekDays = Array.from({ length: 7 }).map((_, i) =>
 //     weekStart.add(i + 1, 'day')
 //   );
-
-
 
 //   return (
 //     <View style={styles.wrapper}>
@@ -46,7 +42,6 @@
 // const hasHabits = completion && completion.total > 0;
 // const allCompleted = hasHabits && completion.completed === completion.total;
 // const partiallyCompleted = hasHabits && completion.completed > 0 && !allCompleted;
-
 
 //           return (
 //             <TouchableOpacity
@@ -170,8 +165,17 @@
 // });
 
 import React, { useRef, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import dayjs from 'dayjs';
 
 type Props = {
@@ -188,26 +192,33 @@ type Props = {
 
 const WeeklyTracker = ({
   title,
-  highlightedDates = [],
+  _highlightedDates = [],
   onDayPress,
   habitCompletionMap = {},
 }: Props) => {
   const scrollRef = useRef<ScrollView>(null);
-  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD")); // 👈 Track selected date
+  const [selectedDate, setSelectedDate] = useState(
+    dayjs().format('YYYY-MM-DD'),
+  ); // 👈 Track selected date
 
   const weekDays = Array.from({ length: 7 }).map((_, i) =>
-    dayjs().startOf('week').add(i + 1, 'day')
+    dayjs()
+      .startOf('week')
+      .add(i + 1, 'day'),
   );
 
-  const todayIndex = weekDays.findIndex((d) => dayjs().isSame(d, 'day'));
+  const todayIndex = weekDays.findIndex(d => dayjs().isSame(d, 'day'));
 
   useEffect(() => {
     setTimeout(() => {
       if (scrollRef.current && todayIndex >= 0) {
-        scrollRef.current.scrollTo({ x: todayIndex * (wp('12%') + wp('3%')), animated: true });
+        scrollRef.current.scrollTo({
+          x: todayIndex * (wp('12%') + wp('3%')),
+          animated: true,
+        });
       }
     }, 300);
-  }, []);
+  }, [todayIndex]);
 
   const scrollToIndex = (index: number) => {
     if (scrollRef.current) {
@@ -232,14 +243,17 @@ const WeeklyTracker = ({
           const isToday = dayjs().isSame(day, 'day');
           const isSelected = selectedDate === dateStr; // 👈 check if selected
           const progress = habitCompletionMap?.[dateStr];
-          const percentDone = progress && progress.total > 0 ? progress.completed / progress.total : 0;
+          const percentDone =
+            progress && progress.total > 0
+              ? progress.completed / progress.total
+              : 0;
 
           return (
             <TouchableOpacity
               key={index}
               onPress={() => {
                 setSelectedDate(dateStr); // 👈 set selected
-                onDayPress?.(dateStr);   // 👈 notify parent
+                onDayPress?.(dateStr); // 👈 notify parent
                 scrollToIndex(index);
               }}
             >
@@ -250,7 +264,12 @@ const WeeklyTracker = ({
                   isSelected && styles.selected, // 👈 apply selected style
                 ]}
               >
-                <View style={[styles.fillOverlay, { height: `${percentDone * 100}%` }]} />
+                <View
+                  style={[
+                    styles.fillOverlay,
+                    { height: `${percentDone * 100}%` },
+                  ]}
+                />
                 <Text style={styles.dateText}>{day.date()}</Text>
               </View>
             </TouchableOpacity>
@@ -280,7 +299,7 @@ const styles = StyleSheet.create({
     height: wp(33),
   },
   title: {
-     width: wp('100%'),
+    width: wp('100%'),
     fontSize: wp(4.2),
     fontWeight: '500',
     marginBottom: hp('2%'),

@@ -1,6 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { Text, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 type Props = {
   title: string;
@@ -11,7 +14,11 @@ type Props = {
 
 const InfoCard = ({ title, subtitle, onPress, style }: Props) => {
   return (
-    <TouchableOpacity style={[styles.card, style]} onPress={onPress} activeOpacity={onPress ? 0.7 : 1}>
+    <TouchableOpacity
+      style={[styles.card, style]}
+      onPress={onPress}
+      activeOpacity={onPress ? 0.7 : 1}
+    >
       <Text style={styles.title}>{title}</Text>
       {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
     </TouchableOpacity>
@@ -24,8 +31,8 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: wp('3%'),
-    width:wp(86),
-    alignSelf:'center',
+    width: wp(86),
+    alignSelf: 'center',
     padding: wp('4%'),
     marginVertical: hp('1%'),
     shadowColor: '#000',
@@ -33,15 +40,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-      marginHorizontal: wp('5%'), // add horizontal margin for spacing
-
+    marginHorizontal: wp('5%'), // add horizontal margin for spacing
   },
   title: {
     fontSize: wp('5.5%'),
     fontWeight: '700',
     color: '#2D2D2D',
-    marginRight:wp(15),
-    
+    marginRight: wp(15),
   },
   subtitle: {
     fontSize: wp('3.5%'),

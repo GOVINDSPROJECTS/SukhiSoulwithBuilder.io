@@ -133,10 +133,7 @@ const OtpVerificationScreen = () => {
         </AppText>
         {/* <AppText variant='h1'>Soul</AppText> */}
 
-        <AppText
-          variant="h2"
-          style={{ marginVertical: hp('4%'), marginBottom: hp('4%') }}
-        >
+        <AppText variant="h2" style={styles.verificationTitle}>
           Verification Code
         </AppText>
 
@@ -181,32 +178,20 @@ const OtpVerificationScreen = () => {
             )}
           />
 
-          {otpError ? (
-            <Text
-              style={{
-                color: 'red',
-                margin: hp('1%'),
-                marginLeft: wp('1%'),
-                textAlign: 'center',
-              }}
-            >
-              {otpError}
-            </Text>
-          ) : null}
+          {otpError ? <Text style={styles.otpError}>{otpError}</Text> : null}
 
           <PrimaryButton
             title={loading ? 'Loading...' : 'Sign Up'}
             onPress={handleVerify}
-            style={{
-              width: wp('30%'),
-              alignSelf: 'center',
-              marginTop: hp('1%'),
-            }}
+            style={styles.verifyButton}
           />
 
           <TouchableOpacity onPress={handleResendOtp} disabled={counter !== 0}>
             <Text
-              style={[styles.resendText, counter !== 0 && { color: '#ccc' }]}
+              style={[
+                styles.resendText,
+                counter !== 0 && styles.resendDisabled,
+              ]}
             >
               {counter > 0
                 ? `Resend OTP in 00:${counter < 10 ? '0' + counter : counter}`
@@ -306,4 +291,20 @@ const styles = StyleSheet.create({
     borderColor: colors.primary, // your app's primary color
     borderWidth: 2,
   },
+  verificationTitle: {
+    marginVertical: hp('4%'),
+    marginBottom: hp('4%'),
+  },
+  otpError: {
+    color: 'red',
+    margin: hp('1%'),
+    marginLeft: wp('1%'),
+    textAlign: 'center',
+  },
+  verifyButton: {
+    width: wp('30%'),
+    alignSelf: 'center',
+    marginTop: hp('1%'),
+  },
+  resendDisabled: { color: '#ccc' },
 });

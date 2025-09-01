@@ -116,14 +116,14 @@ const DayDetailScreen = () => {
   const updateHabitsForDate = (
     rawHabits: any[],
     progressReports: any[],
-    date: string,
+    targetDate: string,
   ) => {
-    console.log(`🔄 Updating habits for date: ${date}`);
+    console.log(`🔄 Updating habits for date: ${targetDate}`);
     const habitsForDate: Habit[] = rawHabits.map((habit: any) => {
       const report = progressReports.find(
         (r: any) =>
           r.habit_id.toString() === habit.id.toString() &&
-          r.tracked_date === date,
+          r.tracked_date === targetDate,
       );
       return {
         id: habit.id.toString(),
@@ -166,7 +166,7 @@ const DayDetailScreen = () => {
         habitMap[habit.id.toString()] = habit.title || habit.habit_name;
       });
 
-      const habits: string[] = rawHabits.map(
+      const habitTitles: string[] = rawHabits.map(
         (h: any) => h.title || h.habit_name,
       );
       const reports: Record<string, Record<string, number[]>> = {};
@@ -176,9 +176,9 @@ const DayDetailScreen = () => {
         const habitTitle = habitMap[habitId];
         if (!habitTitle) return;
 
-        const date = new Date(report.tracked_date);
-        const startOfWeek = new Date(date);
-        startOfWeek.setDate(date.getDate() - date.getDay());
+        const trackedDate = new Date(report.tracked_date);
+        const startOfWeek = new Date(trackedDate);
+        startOfWeek.setDate(trackedDate.getDate() - trackedDate.getDay());
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(startOfWeek.getDate() + 6);
 
@@ -193,13 +193,16 @@ const DayDetailScreen = () => {
         if (!reports[habitTitle][weekLabel])
           reports[habitTitle][weekLabel] = Array(7).fill(0);
 
-        const dayIndex = date.getDay();
+        const dayIndex = trackedDate.getDay();
         reports[habitTitle][weekLabel][dayIndex] =
           report.status === 'true' || report.status === true ? 1 : 0;
       });
 
-      console.log('✅ Final GrowthChartData:', { habits, reports });
-      setGrowthChartData({ habits, reports });
+      console.log('✅ Final GrowthChartData:', {
+        habits: habitTitles,
+        reports,
+      });
+      setGrowthChartData({ habits: habitTitles, reports });
     } catch (error) {
       console.error('❌ Error fetching habits graph:', error);
     }
@@ -382,14 +385,7 @@ const DayDetailScreen = () => {
   );
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#ffffff',
-        paddingHorizontal: 20,
-        paddingVertical: 40,
-      }}
-    >
+    <View style={styles.root}>
       <View style={styles.tabBar}>
         {TABS.map(tab => (
           <TouchableOpacity
@@ -426,6 +422,12 @@ const DayDetailScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 20,
+    paddingVertical: 40,
+  },
   scrollContainer: { paddingBottom: hp('5%'), paddingTop: hp('2%') },
   tabBar: {
     flexDirection: 'row',

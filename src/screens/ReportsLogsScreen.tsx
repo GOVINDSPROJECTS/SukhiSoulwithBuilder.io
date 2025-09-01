@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
-
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 const ReportsAndLogsScreen = () => {
   const navigation = useNavigation();
@@ -36,8 +37,8 @@ const ReportsAndLogsScreen = () => {
       <Text style={styles.title}>Reports and Logs</Text>
 
       {/* onPress={item.onPress} */}
-      {reportData.map((item, index) => (                              
-        <TouchableOpacity key={index} style={styles.card} >   
+      {reportData.map((item, index) => (
+        <TouchableOpacity key={index} style={styles.card}>
           <Text style={styles.cardTitle}>{item.title}</Text>
           <Text style={styles.cardSubtitle}>{item.subtitle}</Text>
         </TouchableOpacity>
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
     fontSize: wp(6),
     fontWeight: '700',
     marginBottom: hp(11),
-    marginTop:hp(2),
+    marginTop: hp(2),
     color: '#2D2D2D',
   },
   card: {
@@ -70,7 +71,6 @@ const styles = StyleSheet.create({
     marginBottom: hp(2),
     borderWidth: 0.4,
     borderColor: '#ddd',
-    
   },
   cardTitle: {
     fontSize: wp(4),
