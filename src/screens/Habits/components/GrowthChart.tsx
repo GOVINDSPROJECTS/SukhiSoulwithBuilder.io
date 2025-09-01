@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#1A1A1A',
   },
+  pickerWide: { width: 150 },
   chart: {
     borderRadius: 12,
     marginVertical: 12,
