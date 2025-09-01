@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions } from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import HabitsStack from './HabitsStack';
-import  Ionicons  from '@react-native-vector-icons/ionicons'; // or use react-native-vector-icons
-import ProfileStack from '../screens/Habits/AddHabitScreen';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import ProfileStack from '../screens/ProfileScreen';
 
 const SwipeTabs = () => {
   const layout = useWindowDimensions();
