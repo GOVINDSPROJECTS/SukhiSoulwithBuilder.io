@@ -2,8 +2,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 // src/screens/FriendDetailScreen.tsx
 
-import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import { View, Text,Image, TouchableOpacity, StyleSheet,FlatList, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -26,11 +26,6 @@ type HabitRoom = {
   create_user_id?: number;
 };
 
-type RoomMembers = {
-  id: number;
-  room_id: number;
-  user_id: number;
-};
 
 type FriendDetailRouteProp = RouteProp<RootStackParamList, 'FriendDetail'>;
 
@@ -42,7 +37,7 @@ const FriendDetailScreen = () => {
    const [showProgressModal, setShowProgressModal] = useState(false);
   const token = useAuthStore.getState().token;
   const [rooms, setRooms] = useState<HabitRoom[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [_loading, setLoading] = useState<boolean>(true);
   const [habits, setHabits] = useState<Habit[]>([]);
   const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
   const memberId = useAuthStore.getState().user?.id?.toString() || '';
