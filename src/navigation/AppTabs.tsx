@@ -11,7 +11,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createMaterialTopTabNavigator();
 
-function CustomTabBar({ state, descriptors, navigation }) {
+function CustomTabBar({ state, descriptors: _descriptors, navigation }) {
   return (
     <View style={styles.tabBarWrapper}>
       {state.routes.map((route, index) => {
