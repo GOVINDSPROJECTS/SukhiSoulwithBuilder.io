@@ -362,17 +362,7 @@ const GetEnterCodeScreen: React.FC = () => {
         visible={showGetCodeModal}
         onClose={() => setShowGetCodeModal(false)}
       >
-        <View
-          style={{
-            width: wp(13),
-            height: 5,
-            backgroundColor: '#171717',
-            marginTop: 2,
-            marginBottom: hp(2),
-            borderRadius:12,
-            alignSelf: 'center',
-          }}
-          />
+        <View style={ui.sheetHandle} />
         <View>
           <Text style={styles.heading}>Your Habit Circle</Text>
 
