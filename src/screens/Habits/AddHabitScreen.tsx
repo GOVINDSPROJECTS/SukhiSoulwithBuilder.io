@@ -10,7 +10,6 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { Picker } from "@react-native-picker/picker"; // npm install @react-native-picker/picker
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import TimePickerModal from '@/components/TimePickerModal';
 import CalendarPickerModal from '@/components/CalendarPickerModal';
