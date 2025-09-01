@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Modal, TouchableOpacity } from "react-native";
-import VersionCheck from "react-native-version-check";
+import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import VersionCheck from 'react-native-version-check';
 
 export default function UpdateChecker() {
   const [showUpdate, setShowUpdate] = useState(false);
-  const [storeUrl, setStoreUrl] = useState("");
+  const [storeUrl, setStoreUrl] = useState('');
 
   useEffect(() => {
     const checkVersion = async () => {
@@ -15,7 +16,7 @@ export default function UpdateChecker() {
           setShowUpdate(true);
         }
       } catch (error) {
-        console.log("Version check error:", error);
+        console.log('Version check error:', error);
       }
     };
     checkVersion();
@@ -30,30 +31,24 @@ export default function UpdateChecker() {
   return (
     <View>
       <Modal visible={showUpdate} transparent animationType="fade">
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.6)" }}>
-          <View style={{ backgroundColor: "#fff", padding: 20, borderRadius: 16, width: "80%", alignItems: "center" }}>
-            
-            <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 10 }}>
-              🚀 Update Available
-            </Text>
-            <Text style={{ fontSize: 14, color: "#555", textAlign: "center", marginBottom: 20 }}>
+        <View style={styles.overlay}>
+          <View style={styles.modal}>
+            <Text style={styles.title}>🚀 Update Available</Text>
+            <Text style={styles.desc}>
               Please update to the latest version for the best experience.
             </Text>
 
             {/* Buttons */}
-            <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
-              <TouchableOpacity
-                onPress={handleUpdate}
-                style={{ flex: 1, backgroundColor: "#4CAF50", padding: 12, borderRadius: 10, marginRight: 10 }}
-              >
-                <Text style={{ color: "white", textAlign: "center", fontWeight: "bold" }}>Update Now</Text>
+            <View style={styles.buttonsRow}>
+              <TouchableOpacity onPress={handleUpdate} style={styles.updateBtn}>
+                <Text style={styles.updateText}>Update Now</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 onPress={() => setShowUpdate(false)}
-                style={{ flex: 1, backgroundColor: "#ccc", padding: 12, borderRadius: 10 }}
+                style={styles.laterBtn}
               >
-                <Text style={{ color: "#333", textAlign: "center", fontWeight: "bold" }}>Later</Text>
+                <Text style={styles.laterText}>Later</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -62,3 +57,36 @@ export default function UpdateChecker() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.6)',
+  },
+  modal: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 16,
+    width: '80%',
+    alignItems: 'center',
+  },
+  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
+  desc: { fontSize: 14, color: '#555', textAlign: 'center', marginBottom: 20 },
+  buttonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  updateBtn: {
+    flex: 1,
+    backgroundColor: '#4CAF50',
+    padding: 12,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  laterBtn: { flex: 1, backgroundColor: '#ccc', padding: 12, borderRadius: 10 },
+  updateText: { color: 'white', textAlign: 'center', fontWeight: 'bold' },
+  laterText: { color: '#333', textAlign: 'center', fontWeight: 'bold' },
+});

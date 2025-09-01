@@ -1,5 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import CustomTextInput from '../../components/CustomTextInput';
 import PrimaryButton from '../../components/PrimaryButton';
 import DividerWithText from '../../components/DividerWithText';
@@ -7,23 +14,25 @@ import { AuthStackParamList, RootStackParamList } from 'src/types/navigation';
 import SocialLoginButton from '../../components/SocialLoginButton';
 import GradientWrapper from '../../components/GradientWrapper';
 import AppText from '../../components/AppText';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { handleGoogleSignin } from '../../auth/googleAuth';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { getOtp } from '../../auth/otpAuth';
 import GenderSelector from '../../components/GenderSelector';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import colors from '../../theme/colors';
 
-
-type AuthNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
+type AuthNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  'Signup'
+>;
 const SignupScreen = () => {
-
   const otpnavigation = useNavigation<AuthNavigationProp>();
 
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
@@ -37,7 +46,8 @@ const SignupScreen = () => {
     const newErrors: { [key: string]: string } = {};
 
     if (!name) newErrors.name = 'Name is required';
-    if (!email || !/\S+@\S+\.\S+/.test(email)) newErrors.email = 'Enter valid email';
+    if (!email || !/\S+@\S+\.\S+/.test(email))
+      newErrors.email = 'Enter valid email';
     if (!age || isNaN(Number(age))) newErrors.age = 'Enter valid age';
     if (!sex) newErrors.sex = 'Please select gender';
 
@@ -50,7 +60,6 @@ const SignupScreen = () => {
     // ✅ All fields valid
     getOtp(email, name, age, sex, otpnavigation);
   };
-
 
   // useEffect(() => {
   //   GoogleSignin.configure({
@@ -66,16 +75,26 @@ const SignupScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <GradientWrapper>
-        <ScrollView contentContainerStyle={styles.container} 
-         showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled">
-          <AppText variant='h1' style={styles.brand}>Sukhi{'\n'}Soul</AppText>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <AppText variant="h1" style={styles.brand}>
+            Sukhi{'\n'}Soul
+          </AppText>
           {/* <AppText variant='h1'>Soul</AppText> */}
 
           <AppText
-            variant='h2'
-            style={{ marginTop: hp('5%'), marginBottom: hp('2%'),color:"#2D2D2D" }}
-          >Create your account</AppText>
+            variant="h2"
+            style={{
+              marginTop: hp('5%'),
+              marginBottom: hp('2%'),
+              color: '#2D2D2D',
+            }}
+          >
+            Create your account
+          </AppText>
 
           {/* <CustomTextInput placeholder="Name" value={name} onChangeText={setName} type="text" />
         <CustomTextInput placeholder="Age" value={age} onChangeText={setAge} type="age"/> */}
@@ -86,9 +105,9 @@ const SignupScreen = () => {
           <CustomTextInput
             placeholder="Name"
             value={name}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setName(text);
-              if (errors.name) setErrors((prev) => ({ ...prev, name: '' }));
+              if (errors.name) setErrors(prev => ({ ...prev, name: '' }));
             }}
             type="text"
             error={errors.name}
@@ -97,9 +116,9 @@ const SignupScreen = () => {
           <CustomTextInput
             placeholder="Age"
             value={age}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setAge(text);
-              if (errors.age) setErrors((prev) => ({ ...prev, age: '' }));
+              if (errors.age) setErrors(prev => ({ ...prev, age: '' }));
             }}
             type="age"
             error={errors.age}
@@ -107,25 +126,28 @@ const SignupScreen = () => {
 
           <GenderSelector value={sex} onSelect={setSex} error={errors.sex} />
 
-
           <CustomTextInput
             placeholder="Email"
             value={email}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setEmail(text);
-              if (errors.email) setErrors((prev) => ({ ...prev, email: '' }));
+              if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
             }}
             type="email"
             error={errors.email}
           />
-
 
           <PrimaryButton
             title="Get OTP"
             onPress={handleSignupOtp}
             // onPress={()=> navigation.navigate('AuthStack', { screen: 'OtpVerification' })}
             // eslint-disable-next-line react-native/no-inline-styles
-            style={{ width: wp('30%'), alignSelf: 'center', marginVertical: hp('2%'), marginBottom: hp('3%') }}
+            style={{
+              width: wp('30%'),
+              alignSelf: 'center',
+              marginVertical: hp('2%'),
+              marginBottom: hp('3%'),
+            }}
           />
 
           <DividerWithText />
@@ -142,7 +164,8 @@ const SignupScreen = () => {
           </View>
 
           <Text style={styles.termsText}>
-            By signing up you agree to our <Text style={styles.link}>Terms</Text> and{' '}
+            By signing up you agree to our{' '}
+            <Text style={styles.link}>Terms</Text> and{' '}
             <Text style={styles.link}>Privacy Policy</Text>
           </Text>
         </ScrollView>
@@ -188,10 +211,9 @@ const styles = StyleSheet.create({
     marginTop: hp('0.5%'),
     marginBottom: hp('1.5%'),
   },
-    brand: {
+  brand: {
     // marginTop: hp('1%'),
     fontSize: wp('10%'),
-    color:colors.primary,
+    color: colors.primary,
   },
 });
-

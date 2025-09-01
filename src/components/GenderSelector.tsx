@@ -1,4 +1,3 @@
-
 // import React, { useState } from 'react';
 // import {
 //     View,
@@ -55,7 +54,7 @@
 // export default GenderSelector;
 
 import React, { useState } from 'react';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
 import {
   View,
@@ -63,7 +62,7 @@ import {
   TouchableOpacity,
   Modal,
   StyleSheet,
-  Pressable
+  Pressable,
 } from 'react-native';
 
 const GenderSelector = ({
@@ -79,15 +78,23 @@ const GenderSelector = ({
 
   return (
     <>
-      <TouchableOpacity onPress={() => setVisible(true)} style={styles.inputWrapper}>
-        <Text style={[styles.inputText, !value && { color: '#aaa' }]}>
-          {value ? value.charAt(0).toUpperCase() + value.slice(1) : 'Select Gender'}
+      <TouchableOpacity
+        onPress={() => setVisible(true)}
+        style={styles.inputWrapper}
+      >
+        <Text style={[styles.inputText, !value && styles.placeholderText]}>
+          {value
+            ? value.charAt(0).toUpperCase() + value.slice(1)
+            : 'Select Gender'}
         </Text>
       </TouchableOpacity>
       {error && <Text style={styles.errorText}>{error}</Text>}
 
       <Modal transparent visible={visible} animationType="fade">
-        <Pressable style={styles.modalBackdrop} onPress={() => setVisible(false)} />
+        <Pressable
+          style={styles.modalBackdrop}
+          onPress={() => setVisible(false)}
+        />
 
         <View style={styles.modalContent}>
           <TouchableOpacity
@@ -119,50 +126,50 @@ const GenderSelector = ({
 
 export default GenderSelector;
 
-
 const styles = StyleSheet.create({
-    inputWrapper: {
-        backgroundColor: '#fff',
-        padding: wp('3.5%'),
-  borderRadius: wp('2.5%'),
-        // marginBottom: 16,
-        justifyContent: 'center',
-    },
-    inputText: {
-        color: '#000',
-        fontSize: 16,
-    },
-    modalBackdrop: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-    },
-    modalContent: {
-        backgroundColor: '#fff',
-        padding: 10,
-        borderRadius: 10,
-        margin: 40,
-        marginTop: '80%',
-        marginLeft:'40%',
-        width: '40%',
-    },
-    option: {
-        paddingVertical: 5,
-    },
-    optionText: {
-        fontSize: wp('4.5%'),
-        color: '#000',
-        textAlign: 'center',
-    },
-    divider: {
-        height: 1,
-        backgroundColor: '#ccc',
-        marginVertical: 4,
-    },
-    errorText: {
-  color: 'red',
-  marginTop: 4,
-  marginLeft: 6,
-},
-
-
+  inputWrapper: {
+    backgroundColor: '#fff',
+    padding: wp('3.5%'),
+    borderRadius: wp('2.5%'),
+    // marginBottom: 16,
+    justifyContent: 'center',
+  },
+  inputText: {
+    color: '#000',
+    fontSize: 16,
+  },
+  placeholderText: {
+    color: '#aaa',
+  },
+  modalBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 10,
+    margin: 40,
+    marginTop: '80%',
+    marginLeft: '40%',
+    width: '40%',
+  },
+  option: {
+    paddingVertical: 5,
+  },
+  optionText: {
+    fontSize: wp('4.5%'),
+    color: '#000',
+    textAlign: 'center',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#ccc',
+    marginVertical: 4,
+  },
+  errorText: {
+    color: 'red',
+    marginTop: 4,
+    marginLeft: 6,
+  },
 });

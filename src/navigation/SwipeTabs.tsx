@@ -1,10 +1,16 @@
 // src/navigation/SwipeTabs.tsx
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  useWindowDimensions,
+} from 'react-native';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import HabitsStack from './HabitsStack';
-import  Ionicons  from '@react-native-vector-icons/ionicons'; // or use react-native-vector-icons
-import ProfileStack from '../screens/Habits/AddHabitScreen';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import ProfileStack from '../screens/ProfileScreen';
 
 const SwipeTabs = () => {
   const layout = useWindowDimensions();
@@ -30,12 +36,14 @@ const SwipeTabs = () => {
             style={styles.tabItem}
             onPress={() => setIndex(i)}
           >
-             <Ionicons
+            <Ionicons
               name={route.icon as any}
               size={22}
               color={isFocused ? '#104256' : '#aaa'}
             />
-            <Text style={[styles.label, isFocused && styles.labelFocused]}>{route.title}</Text>
+            <Text style={[styles.label, isFocused && styles.labelFocused]}>
+              {route.title}
+            </Text>
           </TouchableOpacity>
         );
       })}

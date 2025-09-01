@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   ScrollView,
   Text,
@@ -18,7 +18,7 @@ import HabitsList from '../Habits/components/HabitsList';
 import { Habit } from '@/types/habit';
 import api from '@/services/api';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import {  AppTabsParamList, RootStackParamList } from '@/types/navigation';
+import { AppTabsParamList, RootStackParamList } from '@/types/navigation';
 import ProgressInputModal from '../Habits/components/ProgressInputModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuthStore } from '@/store/authStore';
@@ -27,13 +27,9 @@ import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
-import UpdateChecker from '@/components/UpdateChecker';
-import Feedback from '@/components/Feedback';
-
-
 
 export default function HomeScreen() {
-  const user = useAuthStore((state) => state.user);
+  const user = useAuthStore(state => state.user);
   console.log(user?.display_photo);
   const [posts, setPosts] = useState<any[]>([]);
   const [habits, setHabits] = useState<Habit[]>([]);
@@ -49,18 +45,19 @@ export default function HomeScreen() {
   const sectionPositions = useRef<{ [key: string]: number }>({});
   const progressMapRef = useRef<Record<string, any>>({});
   const togglingHabits = useRef<Set<string>>(new Set());
-  const [loading, setLoading] = useState(false);
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-    const tabNavigation = useNavigation<BottomTabNavigationProp<AppTabsParamList>>();
+  const [_loading, setLoading] = useState(false);
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const tabNavigation =
+    useNavigation<BottomTabNavigationProp<AppTabsParamList>>();
 
   // ---------------- Fetch Posts ----------------
-useFocusEffect(
-  useCallback(() => {
-    fetchPosts();
-    fetchHabits();
-  }, [])
-);
-
+  useFocusEffect(
+    useCallback(() => {
+      fetchPosts();
+      fetchHabits();
+    }, []),
+  );
 
   const fetchPosts = async () => {
     try {
@@ -69,7 +66,10 @@ useFocusEffect(
       if (!token) return Alert.alert('Error', 'Token missing.');
 
       const res = await api.get('/posts', {
-        headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
       });
       console.log('Fetched posts:', res.data);
       if (res.data.message) {
@@ -93,20 +93,23 @@ useFocusEffect(
 
   // ---------------- Fetch Habits ----------------
   const fetchHabits = async () => {
-
-     const token = await AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem('token');
     if (!token) {
       Alert.alert('Token missing');
       return;
     }
     try {
       const [habitRes, progressRes] = await Promise.all([
-        api.get('/userhabits' ,{ headers: {
-        Authorization: `Bearer ${token}`,
-      }}),
-        api.get('/userhabitreports',{ headers: {
-        Authorization: `Bearer ${token}`,
-      }}),
+        api.get('/userhabits', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
+        api.get('/userhabitreports', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }),
       ]);
       const rawHabits = habitRes.data.habits;
       const progressReports = progressRes.data.habitreport || [];
@@ -114,13 +117,19 @@ useFocusEffect(
 
       progressReports.forEach((report: any) => {
         const habitId = report.habit_id.toString();
-        if (!latestProgressMap[habitId] || new Date(report.updated_at) > new Date(latestProgressMap[habitId].updated_at)) {
+        if (
+          !latestProgressMap[habitId] ||
+          new Date(report.updated_at) >
+            new Date(latestProgressMap[habitId].updated_at)
+        ) {
           latestProgressMap[habitId] = report;
         }
       });
 
       progressMapRef.current = latestProgressMap;
-      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+      const today = new Date().toLocaleDateString('en-CA', {
+        timeZone: 'Asia/Kolkata',
+      });
 
       const formattedHabits: Habit[] = rawHabits.map((habit: any) => {
         const habitId = habit.id.toString();
@@ -153,13 +162,18 @@ useFocusEffect(
     const token = await AsyncStorage.getItem('token');
     const isCurrentlyCompleted = habit.completed;
     const newStatus = !isCurrentlyCompleted;
-    const todayDate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    const todayDate = new Date().toLocaleDateString('en-CA', {
+      timeZone: 'Asia/Kolkata',
+    });
 
     try {
       // Check if already submitted
-      const alreadySubmittedRes = await api.get(`/habitalreadysubmitted/${habit.id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const alreadySubmittedRes = await api.get(
+        `/habitalreadysubmitted/${habit.id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       const alreadySubmitted = alreadySubmittedRes.data.already_submitted;
 
       if (alreadySubmitted && isCurrentlyCompleted) {
@@ -168,7 +182,9 @@ useFocusEffect(
           await api.delete(`/userhabitreports/${existingProgress.id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          setHabits(prev => prev.map(h => (h.id === id ? { ...h, completed: false } : h)));
+          setHabits(prev =>
+            prev.map(h => (h.id === id ? { ...h, completed: false } : h)),
+          );
         }
         togglingHabits.current.delete(id);
         return;
@@ -190,10 +206,15 @@ useFocusEffect(
       formData.append('description', '.');
 
       await api.post('/userhabitreports', formData, {
-        headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` },
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      setHabits(prev => prev.map(h => (h.id === id ? { ...h, completed: newStatus } : h)));
+      setHabits(prev =>
+        prev.map(h => (h.id === id ? { ...h, completed: newStatus } : h)),
+      );
     } catch (error) {
       console.error('Toggle Error:', error);
       Alert.alert('Error', 'Unable to update habit');
@@ -202,20 +223,47 @@ useFocusEffect(
     }
   };
   // ---------------- to edit or delete habit ----------------
-  const handleEditOrDelete =(id:string)=>{
-      navigation.navigate('EditOrDeleteHabit',{id})
-  }
+  const handleEditOrDelete = (id: string) => {
+    navigation.navigate('EditOrDeleteHabit', { id });
+  };
 
   // ---------------- Mood Slider ----------------
   const [sliderLeft, setSliderLeft] = useState(0);
-  const panResponder = useRef( PanResponder.create({ onStartShouldSetPanResponder: () => true, onPanResponderMove: (evt, gestureState) => { const x = gestureState.moveX - sliderLeft; let value = x / 270;  value = Math.max(0, Math.min(1, value)); setMoodValue(value);  }, onPanResponderRelease: (evt, gestureState) => { const x = gestureState.moveX - sliderLeft; let value = x / 270; value = Math.max(0, Math.min(1, value)); setMoodValue(value); (value);  handleMoodSubmit(value);}, }) ).current;
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (evt, gestureState) => {
+        const x = gestureState.moveX - sliderLeft;
+        let value = x / 270;
+        value = Math.max(0, Math.min(1, value));
+        setMoodValue(value);
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        const x = gestureState.moveX - sliderLeft;
+        let value = x / 270;
+        value = Math.max(0, Math.min(1, value));
+        setMoodValue(value);
+        value;
+        handleMoodSubmit(value);
+      },
+    }),
+  ).current;
 
   const handleMoodSubmit = async (value: number) => {
     try {
       const token = await AsyncStorage.getItem('token');
       if (!token) return;
       const moodInt = Math.round(value * 10);
-      const res = await api.post('/moods', { mood_value: moodInt }, { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' } });
+      const res = await api.post(
+        '/moods',
+        { mood_value: moodInt },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+          },
+        },
+      );
       if (res.data.success) Alert.alert('Mood Saved', res.data.message);
     } catch (err) {
       console.error('Error saving mood:', err);
@@ -223,118 +271,208 @@ useFocusEffect(
   };
 
   // ---------------- Scroll / Tabs ----------------
-  const handleLayout = (name: string, e: LayoutChangeEvent) => { sectionPositions.current[name] = e.nativeEvent.layout.y; };
+  const handleLayout = (name: string, e: LayoutChangeEvent) => {
+    sectionPositions.current[name] = e.nativeEvent.layout.y;
+  };
   const handleScroll = (event: any) => {
     const scrollY = event.nativeEvent.contentOffset.y + 100;
     const keys = Object.keys(sectionPositions.current);
     for (let i = keys.length - 1; i >= 0; i--) {
-      if (scrollY >= sectionPositions.current[keys[i]]) { setActiveTab(keys[i]); break; }
+      if (scrollY >= sectionPositions.current[keys[i]]) {
+        setActiveTab(keys[i]);
+        break;
+      }
     }
   };
 
   return (
-    
     <GradientWrapper>
       {/* <UpdateChecker/> */}
       {/* <Feedback/> */}
       {/* Tabs */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: wp(4) }}>
+      <View style={styles.tabsRow}>
         {['Mood', 'Habits', 'Activity', 'Educate'].map(tab => (
-          <TouchableOpacity key={tab} onPress={() => {
-            const y = sectionPositions.current[tab];
-            if (y !== undefined && scrollViewRef.current) scrollViewRef.current.scrollTo({ y, animated: true });
-            setActiveTab(tab);
-          }} style={{ paddingHorizontal: wp(3), paddingVertical: wp(1), borderRadius: wp(4), marginHorizontal: wp(1.2), backgroundColor: activeTab === tab ? '#245C73' : 'transparent' }}>
-            <Text style={{ color: activeTab === tab ? '#fff' : '#1B3C3E', fontSize: wp(3.5), fontWeight: '500' }}>{tab}</Text>
+          <TouchableOpacity
+            key={tab}
+            onPress={() => {
+              const y = sectionPositions.current[tab];
+              if (y !== undefined && scrollViewRef.current)
+                scrollViewRef.current.scrollTo({ y, animated: true });
+              setActiveTab(tab);
+            }}
+            style={[
+              styles.tabButton,
+              activeTab === tab && styles.tabButtonActive,
+            ]}
+          >
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === tab && styles.tabTextActive,
+              ]}
+            >
+              {tab}
+            </Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      <ScrollView ref={scrollViewRef} onScroll={handleScroll} scrollEventThrottle={16} style={styles.container} showsVerticalScrollIndicator={false} >
-<Notification/>
+      <ScrollView
+        ref={scrollViewRef}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+      >
+        <Notification />
         {/* Mood */}
-        <View ref={moodRef} onLayout={(e) => handleLayout('Mood', e)} style={[styles.section, { width: wp(53), height: wp(34) }]}>
-          <Text style={[styles.heading, { fontSize: wp(8.5) }]}>How are you{'\n'}feeling{'\n'}today?</Text>
+        <View
+          ref={moodRef}
+          onLayout={e => handleLayout('Mood', e)}
+          style={[styles.section, { width: wp(53), height: wp(34) }]}
+        >
+          <Text style={[styles.heading, { fontSize: wp(8.5) }]}>
+            How are you{'\n'}feeling{'\n'}today?
+          </Text>
         </View>
-
-        {/* Mood Slider Card */} 
-        <View style={[styles.moodCardSlider, { width: wp(89), height: wp(34), alignSelf: 'center' }]}>
-          <Text style={[styles.moodCardTitle, { fontSize: wp(5), fontWeight: '600', color: '#2d4c5a', marginBottom: wp(2.5) }]}>
-            Take a moment to check in
-          </Text> {/* Labels Row */} 
-          <View style={{ flexDirection: 'row', width: wp(68), alignSelf: 'center', justifyContent: 'space-between', marginBottom: wp(0) }}>
+        {/* Mood Slider Card */}
+        <View style={[styles.moodCardSlider, styles.moodCardSliderDims]}>
+          <Text style={styles.moodCardHeader}>Take a moment to check in</Text>{' '}
+          {/* Labels Row */}
+          <View style={styles.labelsRow}>
             <Text style={styles.sliderLabel}>Dukhi</Text>
             <Text style={styles.sliderLabel}>Sukhi</Text>
           </View>
-          <View style={[styles.sliderTrack, { backgroundColor: 'transparent', height: 32, width: wp(68), alignSelf: 'center', marginTop: 0 }]} onLayout={e => setSliderLeft(e.nativeEvent.layout.x)} >
-            <LinearGradient colors={['#4594A5', '#FCF7B4']} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={{ position: 'absolute', width: wp(68), height: wp(4), borderRadius: wp(2), left: wp(0), top: wp(2), }} />
-          <View style={[styles.sliderThumb, { left: moodValue * (270 - 28), top: wp(0.5) },]} {...panResponder.panHandlers} /> 
-          </View> 
-          <Text style={styles.sliderHint}>
-            Drag to reflect your mood.
-            </Text>
-        </View> {/* <MoodSliderCard /> */}
-
-
+          <View
+            style={[styles.sliderTrack, styles.sliderTrackDims]}
+            onLayout={e => setSliderLeft(e.nativeEvent.layout.x)}
+          >
+            <LinearGradient
+              colors={['#4594A5', '#FCF7B4']}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={styles.gradientBar}
+            />
+            <View
+              style={[
+                styles.sliderThumb,
+                { left: moodValue * (270 - 28), top: wp(0.5) },
+              ]}
+              {...panResponder.panHandlers}
+            />
+          </View>
+          <Text style={styles.sliderHint}>Drag to reflect your mood.</Text>
+        </View>{' '}
+        {/* <MoodSliderCard /> */}
         {/* Habits */}
-        <View ref={habitsRef} onLayout={(e) => handleLayout('Habits', e)} />
-
-        <HabitsList 
-        title="Today's Habits"  
-        habits={habits} 
-        onToggle={toggleHabitCompletion} 
-        toEditOrDelete={handleEditOrDelete}
-        onAllHabitPress={()=> tabNavigation.navigate('Habits')} 
-        maxItemsToShow={5} 
+        <View ref={habitsRef} onLayout={e => handleLayout('Habits', e)} />
+        <HabitsList
+          title="Today's Habits"
+          habits={habits}
+          onToggle={toggleHabitCompletion}
+          toEditOrDelete={handleEditOrDelete}
+          onAllHabitPress={() => tabNavigation.navigate('Habits')}
+          maxItemsToShow={5}
         />
-
         {/* Activities */}
-        <View ref={activityRef} onLayout={(e) => handleLayout('Activity', e)} style={[styles.card, { width: wp(89), alignSelf: 'center', padding: 0, height: wp(28), backgroundColor: '#fff' }]}>
-          <View style={{ padding: wp(4.5), flex: 1, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'flex-end' }}>
-            <Text style={[styles.cardTitle, { fontSize: wp(8), color: '#3D88A7' }]}>Connections</Text>
-            <TouchableOpacity style={[styles.allHabitsBtn]} onPress={()=>tabNavigation.navigate('InSync')}>
-              <Text style={[styles.allHabitsText, { color: '#666666' }]}>Explore Activities</Text>
-              <Icon name="chevron-right" size={18} color="#2D2D2D" style={{ marginTop: wp(1) }} />
+        <View
+          ref={activityRef}
+          onLayout={e => handleLayout('Activity', e)}
+          style={[styles.card, styles.activityCard]}
+        >
+          <View style={styles.activityInnerRow}>
+            <Text style={styles.activityTitle}>Connections</Text>
+            <TouchableOpacity
+              style={styles.allHabitsBtn}
+              onPress={() => tabNavigation.navigate('InSync')}
+            >
+              <Text style={styles.allHabitsText}>Explore Activities</Text>
+              <Icon
+                name="chevron-right"
+                size={18}
+                color="#2D2D2D"
+                style={styles.chevronIcon}
+              />
             </TouchableOpacity>
           </View>
         </View>
-
         {/* Discover / Posts */}
-        <View ref={educateRef} onLayout={(e) => handleLayout('Educate', e)} style={styles.section}>
+        <View
+          ref={educateRef}
+          onLayout={e => handleLayout('Educate', e)}
+          style={styles.section}
+        >
           <Text style={[styles.heading, { fontSize: wp(12) }]}>Discover</Text>
-          <Text style={{ fontSize: wp(4), color: '#000', marginBottom: wp(6) }}>Mindful Reads</Text>
+          <Text style={{ fontSize: wp(4), color: '#000', marginBottom: wp(6) }}>
+            Mindful Reads
+          </Text>
 
           {posts.map(item => (
             <View key={item.id} style={{ marginBottom: wp(8) }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: wp(2), marginLeft: wp(1) }}>
-                <View style={{ width: wp(4), height: wp(4), borderRadius: wp(2), backgroundColor: '#B6E388', marginRight: 6 }} />
-                <Text style={{ fontWeight: '600', color: '#222', fontSize: wp(3.2) }}>@sukhisoul</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: wp(2),
+                  marginLeft: wp(1),
+                }}
+              >
+                <View
+                  style={{
+                    width: wp(4),
+                    height: wp(4),
+                    borderRadius: wp(2),
+                    backgroundColor: '#B6E388',
+                    marginRight: 6,
+                  }}
+                />
+                <Text
+                  style={{
+                    fontWeight: '600',
+                    color: '#222',
+                    fontSize: wp(3.2),
+                  }}
+                >
+                  @sukhisoul
+                </Text>
               </View>
 
               {item.image ? (
                 <Image
-                  source={{ uri: `http://3.6.142.117/postimages/${item.image}` }}
+                  source={{
+                    uri: `http://3.6.142.117/postimages/${item.image}`,
+                  }}
                   style={styles.postImage}
                   resizeMode="cover"
                 />
-
               ) : (
                 <View style={styles.textPostCard}>
-                  <Text style={{ color: '#222', fontWeight: '600', fontSize: wp(4) }}>{item.caption}</Text>
+                  <Text
+                    style={{
+                      color: '#222',
+                      fontWeight: '600',
+                      fontSize: wp(4),
+                    }}
+                  >
+                    {item.caption}
+                  </Text>
                 </View>
               )}
 
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: wp(2.5), paddingHorizontal: wp(2.5) }}>
-                <Text style={{ color: '#252525', fontSize: wp(3), marginLeft: wp(4.5) }}>{item.caption}</Text>
-                <View style={{ flexDirection: 'row' }}>
-                  <TouchableOpacity style={{ marginRight: wp(4) }}><Icon name="heart" size={22} color="#222" /></TouchableOpacity>
-                  <TouchableOpacity style={{ marginRight: 16 }}><Icon name="bookmark" size={22} color="#222" /></TouchableOpacity>
+              <View style={styles.postFooterRow}>
+                <Text style={styles.postCaption}>{item.caption}</Text>
+                <View style={styles.postIconsRow}>
+                  <TouchableOpacity style={styles.iconRight}>
+                    <Icon name="heart" size={22} color="#222" />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.iconRightSm}>
+                    <Icon name="bookmark" size={22} color="#222" />
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
           ))}
         </View>
-
         {/* Progress Modal */}
         <ProgressInputModal
           visible={showProgressModal}
@@ -342,7 +480,13 @@ useFocusEffect(
           habit={selectedHabit}
           onSubmitSuccess={() => {
             if (!selectedHabit) return;
-            setHabits(prev => prev.map(h => (h.id === selectedHabit.id ? { ...h, completed: !h.completed } : h)));
+            setHabits(prev =>
+              prev.map(h =>
+                h.id === selectedHabit.id
+                  ? { ...h, completed: !h.completed }
+                  : h,
+              ),
+            );
             fetchHabits();
             setSelectedHabit(null);
           }}
@@ -355,17 +499,168 @@ useFocusEffect(
 const styles = StyleSheet.create({
   container: { padding: wp(4) },
   heading: { fontWeight: '600', marginBottom: wp(2.5), color: '#2D2D2D' },
-  moodCardSlider: { backgroundColor: '#FFFFFFCC', borderRadius: wp(6), padding: wp(4.5), marginBottom: wp(6), alignItems: 'center', shadowColor: '#b0c4d4', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 8, elevation: 2 },
-  moodCardTitle: { fontSize: wp(5), fontWeight: '600', color: '#2d4c5a', marginBottom: wp(2.5) },
-  sliderLabel: { fontSize: wp(3), color: '#2d4c5a', width: wp(12), textAlign: 'center', fontWeight: '500' },
-  sliderTrack: { flex: 1, height: wp(8), justifyContent: 'center', alignItems: 'center', marginHorizontal: 6, position: 'relative' },
-  sliderThumb: { position: 'absolute', width: wp(6), height: wp(6), borderRadius: wp(3.2), backgroundColor: '#DCEFf2', borderWidth: wp(0.5), borderColor: '#fff', top: -4, shadowColor: '#b0c4d4', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.12, shadowRadius: 4, elevation: 2 },
-  sliderHint: { fontSize: wp(2.5), color: '#245C73', marginTop: wp(2.5), textAlign: 'center' },
-  card: { backgroundColor: '#FFFFFF', borderRadius: wp(4.5), padding: wp(4.5), marginBottom: wp(5), shadowColor: '#245C73', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 8, elevation: 2, overflow: 'hidden' },
-  cardTitle: { fontSize: wp(8), fontWeight: '700', color: '#3D88A7', marginBottom: wp(4.5) },
-  allHabitsBtn: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-end', marginTop: wp(1.3) },
-  allHabitsText: { color: '#666666', fontWeight: '500', fontSize: wp(4), marginRight: 2, marginTop: 2 },
+  moodCardSlider: {
+    backgroundColor: '#FFFFFFCC',
+    borderRadius: wp(6),
+    padding: wp(4.5),
+    marginBottom: wp(6),
+    alignItems: 'center',
+    shadowColor: '#b0c4d4',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  moodCardTitle: {
+    fontSize: wp(5),
+    fontWeight: '600',
+    color: '#2d4c5a',
+    marginBottom: wp(2.5),
+  },
+  moodCardHeader: {
+    fontSize: wp(5),
+    fontWeight: '600',
+    color: '#2d4c5a',
+    marginBottom: wp(2.5),
+  },
+  tabsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: wp(4),
+  },
+  tabButton: {
+    paddingHorizontal: wp(3),
+    paddingVertical: wp(1),
+    borderRadius: wp(4),
+    marginHorizontal: wp(1.2),
+    backgroundColor: 'transparent',
+  },
+  tabButtonActive: { backgroundColor: '#245C73' },
+  tabText: { fontSize: wp(3.5), fontWeight: '500', color: '#1B3C3E' },
+  tabTextActive: { color: '#fff' },
+  moodCardSliderDims: { width: wp(89), height: wp(34), alignSelf: 'center' },
+  labelsRow: {
+    flexDirection: 'row',
+    width: wp(68),
+    alignSelf: 'center',
+    justifyContent: 'space-between',
+    marginBottom: wp(0),
+  },
+  sliderTrackDims: {
+    backgroundColor: 'transparent',
+    height: 32,
+    width: wp(68),
+    alignSelf: 'center',
+    marginTop: 0,
+  },
+  gradientBar: {
+    position: 'absolute',
+    width: wp(68),
+    height: wp(4),
+    borderRadius: wp(2),
+    left: wp(0),
+    top: wp(2),
+  },
+  activityCard: {
+    width: wp(89),
+    alignSelf: 'center',
+    padding: 0,
+    height: wp(28),
+    backgroundColor: '#fff',
+  },
+  activityInnerRow: {
+    padding: wp(4.5),
+    flex: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+  },
+  activityTitle: { fontSize: wp(8), color: '#3D88A7' },
+  chevronIcon: { marginTop: wp(1) },
+  postFooterRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: wp(2.5),
+    paddingHorizontal: wp(2.5),
+  },
+  postCaption: { color: '#252525', fontSize: wp(3), marginLeft: wp(4.5) },
+  postIconsRow: { flexDirection: 'row' },
+  iconRight: { marginRight: wp(4) },
+  iconRightSm: { marginRight: 16 },
+  sliderLabel: {
+    fontSize: wp(3),
+    color: '#2d4c5a',
+    width: wp(12),
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  sliderTrack: {
+    flex: 1,
+    height: wp(8),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 6,
+    position: 'relative',
+  },
+  sliderThumb: {
+    position: 'absolute',
+    width: wp(6),
+    height: wp(6),
+    borderRadius: wp(3.2),
+    backgroundColor: '#DCEFf2',
+    borderWidth: wp(0.5),
+    borderColor: '#fff',
+    top: -4,
+    shadowColor: '#b0c4d4',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  sliderHint: {
+    fontSize: wp(2.5),
+    color: '#245C73',
+    marginTop: wp(2.5),
+    textAlign: 'center',
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: wp(4.5),
+    padding: wp(4.5),
+    marginBottom: wp(5),
+    shadowColor: '#245C73',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 2,
+    overflow: 'hidden',
+  },
+  cardTitle: {
+    fontSize: wp(8),
+    fontWeight: '700',
+    color: '#3D88A7',
+    marginBottom: wp(4.5),
+  },
+  allHabitsBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    marginTop: wp(1.3),
+  },
+  allHabitsText: {
+    color: '#666666',
+    fontWeight: '500',
+    fontSize: wp(4),
+    marginRight: 2,
+    marginTop: 2,
+  },
   postImage: { width: wp(84), height: wp(110), borderRadius: wp(6) },
-  textPostCard: { borderRadius: wp(4.5), padding: wp(4.5), minHeight: wp(20), justifyContent: 'center' },
+  textPostCard: {
+    borderRadius: wp(4.5),
+    padding: wp(4.5),
+    minHeight: wp(20),
+    justifyContent: 'center',
+  },
   section: { marginBottom: wp(5) },
 });

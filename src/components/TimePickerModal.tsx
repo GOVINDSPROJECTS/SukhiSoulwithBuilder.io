@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Modal,
@@ -8,10 +9,15 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
 } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 const generateNumbers = (count: number, pad = true) => {
-  return Array.from({ length: count }, (_, i) => (pad && i < 10 ? `0${i}` : `${i}`));
+  return Array.from({ length: count }, (_, i) =>
+    pad && i < 10 ? `0${i}` : `${i}`,
+  );
 };
 
 const hours = generateNumbers(12, true); // 01 to 12
@@ -25,7 +31,12 @@ type Props = {
   initialTime?: string; // e.g. '02:30 PM'
 };
 
-const TimePickerModal = ({ visible, onClose, onTimeSelect, initialTime = '12:00 PM' }: Props) => {
+const TimePickerModal = ({
+  visible,
+  onClose,
+  onTimeSelect,
+  initialTime = '12:00 PM',
+}: Props) => {
   const [selectedHour, setSelectedHour] = useState('12');
   const [selectedMinute, setSelectedMinute] = useState('00');
   const [selectedMeridiem, setSelectedMeridiem] = useState('AM');
@@ -43,8 +54,8 @@ const TimePickerModal = ({ visible, onClose, onTimeSelect, initialTime = '12:00 
 
   const confirmTime = () => {
     const now = new Date();
-    const hourNum = parseInt(selectedHour);
-    const minuteNum = parseInt(selectedMinute);
+    const hourNum = parseInt(selectedHour, 10);
+    const minuteNum = parseInt(selectedMinute, 10);
     const isPM = selectedMeridiem === 'PM';
 
     const date = new Date(
@@ -52,7 +63,7 @@ const TimePickerModal = ({ visible, onClose, onTimeSelect, initialTime = '12:00 
       now.getMonth(),
       now.getDate(),
       isPM ? (hourNum % 12) + 12 : hourNum % 12,
-      minuteNum
+      minuteNum,
     );
 
     onTimeSelect(date);
@@ -64,7 +75,7 @@ const TimePickerModal = ({ visible, onClose, onTimeSelect, initialTime = '12:00 
       <View style={styles.overlay}>
         {/* Background Tap Area */}
         <TouchableWithoutFeedback onPress={onClose}>
-          <View style={{ flex: 1 }} />
+          <View style={styles.flexFill} />
         </TouchableWithoutFeedback>
 
         {/* Foreground Modal Content */}
@@ -75,10 +86,10 @@ const TimePickerModal = ({ visible, onClose, onTimeSelect, initialTime = '12:00 
               <ScrollView
                 key={idx}
                 style={styles.scrollColumn}
-                contentContainerStyle={{ alignItems: 'center' }}
+                contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
               >
-                {list.map((val) => (
+                {list.map(val => (
                   <TouchableOpacity
                     key={val}
                     style={styles.option}
@@ -143,6 +154,8 @@ const styles = StyleSheet.create({
     height: hp('20%'),
     width: wp('20%'),
   },
+  scrollContent: { alignItems: 'center' },
+  flexFill: { flex: 1 },
   option: {
     paddingVertical: hp('1%'),
   },

@@ -1,6 +1,12 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
-import OTPTextInput from 'react-native-otp-textinput';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import PrimaryButton from '../../components/PrimaryButton';
 import { getLoginOtp, verifyOtp } from '../../auth/otpAuth';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -10,20 +16,27 @@ import { RouteProp } from '@react-navigation/native';
 import { useAuthStore } from '../../store/authStore';
 import AppText from '../../components/AppText';
 import GradientWrapper from '../../components/GradientWrapper';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import colors from '@/theme/colors';
-import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
+import {
+  CodeField,
+  Cursor,
+  useBlurOnFulfill,
+  useClearByFocusCell,
+} from 'react-native-confirmation-code-field';
 
-
-
-
-type AuthNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
+type AuthNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  'Signup'
+>;
 
 const OtpVerificationScreen = () => {
-
   // const [otp, setOtp] = useState('');
   const [counter, setCounter] = useState(30);
-  const otpInput = useRef<OTPTextInput>(null);
+  // const otpInput = useRef<OTPTextInput>(null);
   const [otpError, setOtpError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -35,14 +48,14 @@ const OtpVerificationScreen = () => {
     setValue,
   });
 
-
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const otpnavigation = useNavigation<AuthNavigationProp>();
   const route = useRoute<RouteProp<AuthStackParamList, 'OtpVerification'>>();
 
   const { email, name, age, sex } = route.params;
-  const setToken = useAuthStore((state) => state.setToken);
-  const setUser = useAuthStore((state) => state.setUser);
+  const setToken = useAuthStore(state => state.setToken);
+  const setUser = useAuthStore(state => state.setUser);
 
   useEffect(() => {
     if (counter > 0) {
@@ -52,7 +65,7 @@ const OtpVerificationScreen = () => {
   }, [counter]);
 
   const handleVerify = async () => {
-    if (!value  || value .length !== 6) {
+    if (!value || value.length !== 6) {
       setOtpError('Please enter a valid 6-digit OTP');
       return;
     }
@@ -83,7 +96,7 @@ const OtpVerificationScreen = () => {
           device_token: undefined,
           profile_status: undefined,
           is_paid: undefined,
-          created_at: undefined
+          created_at: undefined,
         });
 
         navigation.reset({
@@ -91,15 +104,15 @@ const OtpVerificationScreen = () => {
           routes: [{ name: 'AppTabs' }],
         });
       } else {
-       
         setOtpError('OTP verification failed. Please try again.');
       }
     } catch (error: any) {
-  console.error('OTP verification failed:', error?.response || error?.message || error);
-  setOtpError('OTP verification failed. Please try again.');
-}
-
-    finally {
+      console.error(
+        'OTP verification failed:',
+        error?.response || error?.message || error,
+      );
+      setOtpError('OTP verification failed. Please try again.');
+    } finally {
       setLoading(false);
     }
   };
@@ -114,17 +127,23 @@ const OtpVerificationScreen = () => {
       style={styles.wrapper}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <GradientWrapper >
-        <AppText variant='h1' style={styles.brand}>Sukhi{'\n'}Soul</AppText>
+      <GradientWrapper>
+        <AppText variant="h1" style={styles.brand}>
+          Sukhi{'\n'}Soul
+        </AppText>
         {/* <AppText variant='h1'>Soul</AppText> */}
 
         <AppText
-          variant='h2'
+          variant="h2"
           style={{ marginVertical: hp('4%'), marginBottom: hp('4%') }}
-        >Verification Code</AppText>
+        >
+          Verification Code
+        </AppText>
 
         <View style={styles.card}>
-          <Text style={styles.subHeading}>We have sent the verification code to your email address.</Text>
+          <Text style={styles.subHeading}>
+            We have sent the verification code to your email address.
+          </Text>
 
           <View>
             <Text style={styles.changeEmail}>{email}</Text>
@@ -155,31 +174,45 @@ const OtpVerificationScreen = () => {
               <Text
                 key={index}
                 style={[styles.cell, isFocused && styles.focusCell]}
-                onLayout={getCellOnLayoutHandler(index)}>
+                onLayout={getCellOnLayoutHandler(index)}
+              >
                 {symbol || (isFocused ? <Cursor /> : null)}
               </Text>
             )}
           />
 
           {otpError ? (
-            <Text style={{ color: 'red', margin: hp('1%'), marginLeft: wp('1%'), textAlign: 'center', }}>
+            <Text
+              style={{
+                color: 'red',
+                margin: hp('1%'),
+                marginLeft: wp('1%'),
+                textAlign: 'center',
+              }}
+            >
               {otpError}
             </Text>
           ) : null}
 
           <PrimaryButton
-            title={loading ? "Loading..." : "Sign Up"}
+            title={loading ? 'Loading...' : 'Sign Up'}
             onPress={handleVerify}
-            style={{ width: wp('30%'), alignSelf: 'center', marginTop: hp('1%'), }}
-
+            style={{
+              width: wp('30%'),
+              alignSelf: 'center',
+              marginTop: hp('1%'),
+            }}
           />
 
           <TouchableOpacity onPress={handleResendOtp} disabled={counter !== 0}>
-            <Text style={[styles.resendText, counter !== 0 && { color: '#ccc' }]}>
-              {counter > 0 ? `Resend OTP in 00:${counter < 10 ? '0' + counter : counter}` : 'Resend OTP'}
+            <Text
+              style={[styles.resendText, counter !== 0 && { color: '#ccc' }]}
+            >
+              {counter > 0
+                ? `Resend OTP in 00:${counter < 10 ? '0' + counter : counter}`
+                : 'Resend OTP'}
             </Text>
           </TouchableOpacity>
-
         </View>
       </GradientWrapper>
     </KeyboardAvoidingView>
@@ -223,12 +256,10 @@ const styles = StyleSheet.create({
     fontSize: wp('3.5%'),
     marginBottom: hp('6%'),
     flexShrink: 1, // allow shrinking
-
   },
   otpContainer: {
     justifyContent: 'space-between',
     marginBottom: hp('2.5%'),
-
   },
   otpBox: {
     width: wp('11 %'),

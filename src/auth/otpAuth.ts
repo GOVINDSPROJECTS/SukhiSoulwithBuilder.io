@@ -1,6 +1,5 @@
 // src/services/otpAuth.ts
 
-import axios from 'axios';
 import { Alert } from 'react-native';
 import { AuthStackParamList } from '../types/navigation';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -11,13 +10,12 @@ import api from '@/services/api';
 
 type AuthNavigation = NativeStackNavigationProp<AuthStackParamList>;
 
-
 export const getOtp = async (
   email: string,
   name: string,
   age: string,
   sex: string,
-  navigation: AuthNavigation
+  navigation: AuthNavigation,
 ) => {
   if (!email) {
     Alert.alert('Required', 'Please enter your email.');
@@ -28,13 +26,9 @@ export const getOtp = async (
     const payload = new FormData();
     payload.append('email', email);
 
-    const response = await api.post(
-      '/auth/request-otp',
-      payload,
-      {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      }
-    );
+    const response = await api.post('/auth/request-otp', payload, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
 
     if (response?.data?.message?.includes('OTP sent')) {
       // ✅ Navigate to OTP Screen with required data
@@ -49,7 +43,10 @@ export const getOtp = async (
     }
   } catch (error: any) {
     console.error('GET OTP ERROR:', error);
-    Alert.alert('Error', error?.response?.data?.message || 'Failed to send OTP.');
+    Alert.alert(
+      'Error',
+      error?.response?.data?.message || 'Failed to send OTP.',
+    );
   }
 };
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -58,7 +55,7 @@ export const verifyOtp = async (
   value: string,
   name?: string,
   age?: string,
-  sex?: string
+  sex?: string,
 ) => {
   const formData = new FormData();
   formData.append('email', email);
@@ -68,25 +65,19 @@ export const verifyOtp = async (
   if (age) formData.append('age', age);
   if (sex) formData.append('sex', sex);
 
-  const response = await api.post(
-    '/auth/verify-otp',
-    formData,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        
-      },
-    }
-  );
-console.log('Verify OTP Response:', response.data);
+  const response = await api.post('/auth/verify-otp', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  console.log('Verify OTP Response:', response.data);
   return response.data;
 };
 //////////////////////////////////////////////////////////////////////////////////////////////
 export const getLoginOtp = async (
   email: string,
-  navigation: AuthNavigation
+  navigation: AuthNavigation,
 ) => {
-
   // const [loading, setLoading] = useState(false);
   if (!email) {
     Alert.alert('Required', 'Please enter your email.');
@@ -98,13 +89,9 @@ export const getLoginOtp = async (
     const payload = new FormData();
     payload.append('email', email);
 
-    const response = await api.post(
-      '/auth/request-otp',
-      payload,
-      {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      }
-    );
+    const response = await api.post('/auth/request-otp', payload, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
 
     if (response?.data?.message?.includes('OTP sent')) {
       // ✅ Navigate to OTP Screen with required data
@@ -119,7 +106,10 @@ export const getLoginOtp = async (
     }
   } catch (error: any) {
     console.error('GET OTP ERROR:', error);
-    Alert.alert('Error', error?.response?.data?.message || 'Failed to send OTP.');
+    Alert.alert(
+      'Error',
+      error?.response?.data?.message || 'Failed to send OTP.',
+    );
   } finally {
     // setLoading(false);
   }

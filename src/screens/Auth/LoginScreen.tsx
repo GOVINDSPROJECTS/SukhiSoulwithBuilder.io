@@ -14,8 +14,6 @@
 // import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 // import colors from '@/theme/colors';
 
-
-
 // type AuthNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
 
 // const LoginScreen = () => {
@@ -25,7 +23,6 @@
 //   const [modalVisible, setModalVisible] = useState(false);
 //   const slideAnim = useState(new Animated.Value(300))[0]; // Starts below screen
 //   const [email, setEmail] = useState('');
-
 
 //   const openModal = () => {
 //     setModalVisible(true);
@@ -187,7 +184,7 @@
 //     fontWeight:500,
 //     padding:wp(5),
 //     // marginBottom: hp('2%'),
-//     marginTop:hp('2%'), 
+//     marginTop:hp('2%'),
 //   },
 //   input: {
 //     backgroundColor: '#222',
@@ -199,8 +196,8 @@
 //     // iOS shadow
 //     shadowColor: '#000',
 //     shadowOffset: { width: 0, height: 5 },
-//     shadowOpacity: 0.3,      
-//     shadowRadius: 4,         
+//     shadowOpacity: 0.3,
+//     shadowRadius: 4,
 
 //     // Android shadow
 //     elevation: 10,
@@ -239,11 +236,8 @@
 // },
 // });
 
-
-
-
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import IconButton from '../../components/IconButton';
 import { handleGoogleSignin } from '../../auth/googleAuth';
 import { useNavigation } from '@react-navigation/native';
@@ -254,30 +248,38 @@ import PrimaryButton from '../../components/PrimaryButton';
 import GradientWrapper from '../../components/GradientWrapper';
 import AppText from '../../components/AppText';
 import CustomTextInput from '../../components/CustomTextInput';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import colors from '@/theme/colors';
 import Modal from 'react-native-modal'; // ✅ react-native-modal
 import UpdateChecker from '@/components/UpdateChecker';
 
-type AuthNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
+type AuthNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  'Signup'
+>;
 
 const LoginScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const otpnavigation = useNavigation<AuthNavigationProp>();
   const [modalVisible, setModalVisible] = useState(false);
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-
 
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
   return (
     <GradientWrapper>
-      <UpdateChecker/>
+      <UpdateChecker />
       <View style={styles.container}>
         <View style={styles.card}>
-          <AppText variant='h1' style={styles.brand}>Sukhi{'\n'}Soul</AppText>
+          <AppText variant="h1" style={styles.brand}>
+            Sukhi{'\n'}Soul
+          </AppText>
           <View style={styles.buttonview}>
             <IconButton
               style={styles.iconButton}
@@ -304,7 +306,7 @@ const LoginScreen = () => {
         animationIn="slideInUp"
         animationOut="slideOutDown"
         backdropTransitionOutTiming={0}
-        style={{ margin: 0, justifyContent: 'flex-end' }} // <-- Full width, no side margins
+        style={styles.modalRoot}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalHandle} />
@@ -314,12 +316,12 @@ const LoginScreen = () => {
             placeholder="Mail"
             value={email}
             onChangeText={setEmail}
-            style={{ borderWidth: 2, borderColor: '#808080', margin: '4%' }}
+            style={styles.emailInput}
             type="email"
           />
 
           <PrimaryButton
-            title={loading ? "Loading..." : "Get OTP"}
+            title={loading ? 'Loading...' : 'Get OTP'}
             disabled={loading}
             onPress={async () => {
               setLoading(true);
@@ -330,9 +332,8 @@ const LoginScreen = () => {
                 setLoading(false);
               }
             }}
-            style={{ width: '30%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
+            style={styles.otpButton}
           />
-            
         </View>
       </Modal>
     </GradientWrapper>
@@ -345,7 +346,7 @@ const styles = StyleSheet.create({
   container: {
     height: hp('85%'),
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   card: {
     backgroundColor: '#fff',
@@ -409,7 +410,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: wp('4%'),
     marginBottom: hp('2%'),
-
   },
   button: {
     backgroundColor: '#fff',
@@ -436,11 +436,20 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   modalHandle: {
-    width: wp('15%'),        // ~60px on most devices
-    height: hp('0.6%'),      // ~5px
+    width: wp('15%'), // ~60px on most devices
+    height: hp('0.6%'), // ~5px
     borderRadius: wp('5%'),
     backgroundColor: '#666666',
     alignSelf: 'center',
     marginBottom: hp('2%'),
+  },
+  modalRoot: { margin: 0, justifyContent: 'flex-end' },
+  emailInput: { borderWidth: 2, borderColor: '#808080', margin: '4%' },
+  otpButton: {
+    width: '30%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

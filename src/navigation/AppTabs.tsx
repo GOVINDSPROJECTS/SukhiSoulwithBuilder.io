@@ -11,7 +11,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createMaterialTopTabNavigator();
 
-function CustomTabBar({ state, descriptors, navigation }) {
+function CustomTabBar({ state, descriptors: _descriptors, navigation }) {
   return (
     <View style={styles.tabBarWrapper}>
       {state.routes.map((route, index) => {
@@ -26,16 +26,40 @@ function CustomTabBar({ state, descriptors, navigation }) {
         let icon;
         switch (route.name) {
           case 'Home':
-            icon = <Ionicons name="home-outline" size={30} color={isFocused ? '#1e1e1e' : 'rgba(255,255,255,0.6)'} />;
+            icon = (
+              <Ionicons
+                name="home-outline"
+                size={30}
+                color={isFocused ? '#1e1e1e' : 'rgba(255,255,255,0.6)'}
+              />
+            );
             break;
           case 'Habits':
-            icon = <Ionicons name="bicycle-outline" size={30} color={isFocused ? '#1e1e1e' : 'rgba(255,255,255,0.6)'} />;
+            icon = (
+              <Ionicons
+                name="bicycle-outline"
+                size={30}
+                color={isFocused ? '#1e1e1e' : 'rgba(255,255,255,0.6)'}
+              />
+            );
             break;
           case 'InSync':
-            icon = <Entypo name="link" size={30} color={isFocused ? '#1e1e1e' : 'rgba(255,255,255,0.6)'} />;
+            icon = (
+              <Entypo
+                name="link"
+                size={30}
+                color={isFocused ? '#1e1e1e' : 'rgba(255,255,255,0.6)'}
+              />
+            );
             break;
           case 'Profile':
-            icon = <Ionicons name="person-outline" size={30} color={isFocused ? '#1e1e1e' : 'rgba(255,255,255,0.6)'} />;
+            icon = (
+              <Ionicons
+                name="person-outline"
+                size={30}
+                color={isFocused ? '#1e1e1e' : 'rgba(255,255,255,0.6)'}
+              />
+            );
             break;
           default:
             icon = null;
@@ -62,7 +86,7 @@ export default function AppTabs() {
       initialRouteName="Home"
       swipeEnabled={true}
       tabBarPosition="bottom"
-      tabBar={props => <CustomTabBar {...props} />}
+      tabBar={CustomTabBar}
       screenOptions={{ headerShown: false }}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
@@ -88,7 +112,8 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 100,
     overflow: 'hidden',
-    backgroundColor: Platform.OS === 'android' ? 'rgba(52, 133, 167, 0.4)' : 'transparent',
+    backgroundColor:
+      Platform.OS === 'android' ? 'rgba(52, 133, 167, 0.4)' : 'transparent',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.1,
@@ -100,8 +125,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
 });
- 
-
 
 // import React, { useState } from 'react';
 // import {
@@ -177,7 +200,6 @@ const styles = StyleSheet.create({
 //                 setIndex(i);
 //               }
 //             }}
-
 
 //           >
 //             {route.iconType === 'image' && (
