@@ -128,7 +128,7 @@ const DayDetailScreen = () => {
 
   useEffect(() => {
     fetchHabits();
-  }, []);
+  }, [fetchHabits]);
 
   // ✅ Fetch habits graph for GrowthChart
   const fetchHabitsGraph = async () => {
@@ -197,8 +197,8 @@ const DayDetailScreen = () => {
   useFocusEffect(
     useCallback(() => {
        fetchHabitsGraph();
-    hasSubscription();
-    }, [])
+       hasSubscription();
+    }, [fetchHabitsGraph, hasSubscription])
   );
 
   // ✅ Handle Date Press
