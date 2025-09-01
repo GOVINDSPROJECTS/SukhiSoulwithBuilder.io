@@ -13,6 +13,18 @@ import api from '@/services/api';
 import { useAuthStore } from '@/store/authStore';
 import AppText from '@/components/AppText';
 
+const ui = StyleSheet.create({
+  safeRoot: { flex: 1, backgroundColor: '#FFFFFF' },
+  flex1: { flex: 1 },
+  scrollContent: { paddingBottom: hp(10) },
+  subTitleWide: { width: wp(74) },
+  rowCenter: { flexDirection: 'row', alignItems: 'center' },
+  mt5px: { marginTop: 5 },
+  wSpacer: { width: wp(15) },
+  flexEnd: { flex: 1, alignItems: 'flex-end' },
+  chevron: { fontSize: wp(5), color: '#2D2D2D' },
+});
+
 // const friends = ['Dumb D. Madhura', 'Portega D. Piyush', 'Mugdha Mehindarkar'];
 const habbitsNum = [1,0,3];
 const memberId = useAuthStore.getState().user?.id?.toString() || '';
@@ -141,14 +153,14 @@ useEffect(() => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={ui.safeRoot}>
+    <View style={ui.flex1}>
 
     <ScrollView style={styles.container}
-     contentContainerStyle={{ paddingBottom: hp(10) }}> 
+     contentContainerStyle={ui.scrollContent}> 
         
         <AppText variant='h1'>Habit Circle</AppText>
-        <Text style={[styles.subTitle,{width:wp(74)}]}>Check in, track habits together, and keep
+        <Text style={[styles.subTitle, ui.subTitleWide]}>Check in, track habits together, and keep
             each other going</Text>
 
         
@@ -162,13 +174,13 @@ useEffect(() => {
                 >
                 <Text style={styles.name}>{item.room_name ?? item.room_id}</Text>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
+                <View style={[ui.rowCenter, ui.mt5px]}>
                   <Text style={styles.status}>{habbitsNum[index]} habits tracked</Text>
-                  <View style={{ width: wp(15) }} />
+                  <View style={ui.wSpacer} />
                       <Text style={styles.status}>Streak: {index * 50} Days</Text>
 
-                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                      <Text style={{ fontSize: wp(5), color: '#2D2D2D' }}>{'>'}</Text>
+                  <View style={ui.flexEnd}>
+                      <Text style={ui.chevron}>{'>'}</Text>
                   </View>
                 </View>
                 </TouchableOpacity> 
