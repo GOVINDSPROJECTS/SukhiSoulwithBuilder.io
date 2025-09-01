@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   ScrollView,
   Text,
@@ -27,8 +27,6 @@ import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
-import UpdateChecker from '@/components/UpdateChecker';
-import Feedback from '@/components/Feedback';
 
 
 
