@@ -79,7 +79,7 @@ const GenderSelector = ({
   return (
     <>
       <TouchableOpacity onPress={() => setVisible(true)} style={styles.inputWrapper}>
-        <Text style={[styles.inputText, !value && { color: '#aaa' }]}>
+        <Text style={[styles.inputText, !value && styles.placeholderText]}>
           {value ? value.charAt(0).toUpperCase() + value.slice(1) : 'Select Gender'}
         </Text>
       </TouchableOpacity>
@@ -130,6 +130,9 @@ const styles = StyleSheet.create({
     inputText: {
         color: '#000',
         fontSize: 16,
+    },
+    placeholderText: {
+        color: '#aaa',
     },
     modalBackdrop: {
         ...StyleSheet.absoluteFillObject,
