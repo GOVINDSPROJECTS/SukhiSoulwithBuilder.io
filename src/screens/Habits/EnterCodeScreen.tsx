@@ -11,14 +11,6 @@ const EnterCodeScreen = () => {
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const handleJoin = () => {
-    if (code.trim().length === 0) {
-      Alert.alert("Error", "Please enter a valid code.");
-      return;
-    }
-    // Navigate to HabitCircleScreen with code
-    // navigation.navigate("HabitCircleScreen", { joinedCode: code });
-  };
 
   return (
     <View style={styles.container}>
