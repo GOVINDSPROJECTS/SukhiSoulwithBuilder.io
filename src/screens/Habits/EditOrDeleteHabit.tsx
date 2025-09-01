@@ -1,7 +1,13 @@
 // src/screens/Habits/EditHabitScreen.tsx
 import React, { useEffect, useState } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, ScrollView, Alert, Switch,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  Switch,
   StyleSheet,
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -15,14 +21,19 @@ import CustomOptionPickerModal from '@/components/CustomOptionPickerModal';
 import PrimaryButton from '@/components/PrimaryButton';
 import { useAuthStore } from '@/store/authStore';
 import SubscriptionPaymentModal from '../../components/SubscriptionPaymentModal';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import { HabitsStackParamList } from '@/navigation/HabitsStack';
 import { AppTabsParamList } from '@/types/navigation';
 
 const EditOrDeleteHabit = () => {
-  const { params } = useRoute<RouteProp<HabitsStackParamList, 'EditOrDelete'>>();
-  const navigation = useNavigation<NativeStackNavigationProp<AppTabsParamList>>();
-  const user = useAuthStore((state) => state.user);
+  const { params } =
+    useRoute<RouteProp<HabitsStackParamList, 'EditOrDelete'>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<AppTabsParamList>>();
+  const user = useAuthStore(state => state.user);
   const { id } = params;
 
   const [habit_name, sethabit_name] = useState('');
@@ -37,8 +48,10 @@ const EditOrDeleteHabit = () => {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [showhabit_categoryPicker, setShowhabit_categoryPicker] = useState(false);
-  const [showhabit_frequencyPicker, setShowhabit_frequencyPicker] = useState(false);
+  const [showhabit_categoryPicker, setShowhabit_categoryPicker] =
+    useState(false);
+  const [showhabit_frequencyPicker, setShowhabit_frequencyPicker] =
+    useState(false);
   const [showDurationPicker, setShowDurationPicker] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [showReminderPicker, setShowReminderPicker] = useState(false);
@@ -73,7 +86,11 @@ const EditOrDeleteHabit = () => {
         setDuration(data.duration || '');
         sethabit_progress_status(data.habit_progress_status === 'true');
         setReminders(
-          data.reminders ? JSON.parse(data.reminders).map((t: string) => new Date(`1970-01-01T${t}`)) : []
+          data.reminders
+            ? JSON.parse(data.reminders).map(
+                (t: string) => new Date(`1970-01-01T${t}`),
+              )
+            : [],
         );
       } catch (err) {
         console.error(err);
@@ -96,13 +113,25 @@ const EditOrDeleteHabit = () => {
       const formData = new FormData();
       formData.append('habit_name', habit_name);
       formData.append('habit_description', habit_description);
-      formData.append('habit_time', habit_time ? habit_time.toTimeString().slice(0, 5) : '');
-      formData.append('habit_startdate', habit_startdate.toISOString().split('T')[0]);
+      formData.append(
+        'habit_time',
+        habit_time ? habit_time.toTimeString().slice(0, 5) : '',
+      );
+      formData.append(
+        'habit_startdate',
+        habit_startdate.toISOString().split('T')[0],
+      );
       formData.append('habit_category', habit_category);
       formData.append('habit_frequency', habit_frequency);
       formData.append('duration', duration);
-      formData.append('habit_progress_status', habit_progress_status ? 'true' : 'false');
-      formData.append('reminders', JSON.stringify(reminders.map(r => r.toTimeString().slice(0, 5))));
+      formData.append(
+        'habit_progress_status',
+        habit_progress_status ? 'true' : 'false',
+      );
+      formData.append(
+        'reminders',
+        JSON.stringify(reminders.map(r => r.toTimeString().slice(0, 5))),
+      );
       formData.append('habit_status', 'inactive');
 
       await api.post(`/userhabits/${id}?_method=PUT`, formData, {
@@ -115,7 +144,6 @@ const EditOrDeleteHabit = () => {
 
       Alert.alert('Success', 'Habit updated!');
       navigation.navigate('Habits');
-
     } catch (err) {
       console.error('Update failed', err);
       Alert.alert('Error', 'Could not update habit');
@@ -123,10 +151,7 @@ const EditOrDeleteHabit = () => {
   };
 
   const handleDelete = async () => {
-  Alert.alert(
-    'Delete Habit',
-    'Are you sure you want to delete this habit?',
-    [
+    Alert.alert('Delete Habit', 'Are you sure you want to delete this habit?', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete',
@@ -150,26 +175,27 @@ const EditOrDeleteHabit = () => {
             // Navigate back or to home and refresh
             navigation.navigate('Habits');
             // Or: navigation.goBack();
-
           } catch (error) {
             console.error('Failed to delete habit:', error);
             Alert.alert('Error', 'Failed to delete habit. Please try again.');
           }
         },
       },
-    ]
-  );
-};
+    ]);
+  };
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.imagePlaceholder} />
       <Text style={styles.label}>{habit_name}</Text>
 
       <TouchableOpacity onPress={handleDelete}>
         <Text>Delete</Text>
       </TouchableOpacity>
-                  
+
       <TextInput
         placeholder="Name"
         style={[styles.input, { width: wp(80), height: wp(12) }]}
@@ -193,18 +219,40 @@ const EditOrDeleteHabit = () => {
       {/* Time Picker */}
       <TouchableOpacity
         onPress={() => setShowTimePicker(true)}
-        style={[styles.input, { width: wp(80), height: wp(13), flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: hp(1) }]}
+        style={[
+          styles.input,
+          {
+            width: wp(80),
+            height: wp(13),
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginTop: hp(1),
+          },
+        ]}
       >
         <Text style={{ color: '#888888', fontSize: wp(3.5) }}>Time</Text>
-        <View style={{ backgroundColor: '#DCEEF2', borderRadius: 6, width: wp(20), height: wp(5.5), alignItems: "center" }}>
-          <Text style={{ color: '#104256', fontWeight: '600', fontSize: wp(4) }}>
-            {habit_time ? habit_time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-- : -- AM'}
+        <View
+          style={{
+            backgroundColor: '#DCEEF2',
+            borderRadius: 6,
+            width: wp(20),
+            height: wp(5.5),
+            alignItems: 'center',
+          }}
+        >
+          <Text
+            style={{ color: '#104256', fontWeight: '600', fontSize: wp(4) }}
+          >
+            {habit_time
+              ? habit_time.toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
+              : '-- : -- AM'}
           </Text>
         </View>
       </TouchableOpacity>
-
-
-
 
       {/* Expand Advanced Edits */}
       <TouchableOpacity onPress={() => setShowAdvanced(!showAdvanced)}>
@@ -213,14 +261,14 @@ const EditOrDeleteHabit = () => {
         </Text>
       </TouchableOpacity>
 
-
-
-
-      {showAdvanced && (
-        user?.is_paid ? (
+      {showAdvanced &&
+        (user?.is_paid ? (
           <View style={styles.advancedBox}>
             {/* Category */}
-            <TouchableOpacity onPress={() => setShowhabit_categoryPicker(true)} style={styles.advRow}>
+            <TouchableOpacity
+              onPress={() => setShowhabit_categoryPicker(true)}
+              style={styles.advRow}
+            >
               <Text style={styles.advLabel}>Category</Text>
               <View style={styles.advValueRow}>
                 <Text style={styles.advValue}>{habit_category || 'None'}</Text>
@@ -232,10 +280,19 @@ const EditOrDeleteHabit = () => {
             <View style={styles.advDivider} />
 
             {/* Start Date */}
-            <TouchableOpacity onPress={() => setShowCalendar(true)} style={styles.advRow}>
+            <TouchableOpacity
+              onPress={() => setShowCalendar(true)}
+              style={styles.advRow}
+            >
               <Text style={styles.advLabel}>Start date</Text>
               <View style={styles.advValueRow}>
-                <Text style={styles.advValue}>{habit_startdate.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}</Text>
+                <Text style={styles.advValue}>
+                  {habit_startdate.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
+                </Text>
                 <Text style={styles.advArrow}>▼</Text>
               </View>
             </TouchableOpacity>
@@ -244,10 +301,15 @@ const EditOrDeleteHabit = () => {
             <View style={styles.advDivider} />
 
             {/* Frequency */}
-            <TouchableOpacity onPress={() => setShowhabit_frequencyPicker(true)} style={styles.advRow}>
+            <TouchableOpacity
+              onPress={() => setShowhabit_frequencyPicker(true)}
+              style={styles.advRow}
+            >
               <Text style={styles.advLabel}>Frequency</Text>
               <View style={styles.advValueRow}>
-                <Text style={styles.advValue}>{habit_frequency || 'Daily'}</Text>
+                <Text style={styles.advValue}>
+                  {habit_frequency || 'Daily'}
+                </Text>
                 <Text style={styles.advArrow}>▼</Text>
               </View>
             </TouchableOpacity>
@@ -256,7 +318,10 @@ const EditOrDeleteHabit = () => {
             <View style={styles.advDivider} />
 
             {/* Duration */}
-            <TouchableOpacity onPress={() => setShowDurationPicker(true)} style={styles.advRow}>
+            <TouchableOpacity
+              onPress={() => setShowDurationPicker(true)}
+              style={styles.advRow}
+            >
               <Text style={styles.advLabel}>Duration</Text>
               <View style={styles.advValueRow}>
                 <Text style={styles.advValue}>{duration || '30 Days'}</Text>
@@ -270,14 +335,20 @@ const EditOrDeleteHabit = () => {
             {/* Write Progress */}
             <View style={[styles.advRow, { justifyContent: 'space-between' }]}>
               <Text style={styles.advLabel}>Write about progress.</Text>
-              <Switch value={habit_progress_status} onValueChange={sethabit_progress_status} />
+              <Switch
+                value={habit_progress_status}
+                onValueChange={sethabit_progress_status}
+              />
             </View>
 
             {/* Divider */}
             <View style={styles.advDivider} />
 
             {/* Reminders Collapsible */}
-            <TouchableOpacity style={styles.advRow} onPress={() => setShowReminderPicker(true)}>
+            <TouchableOpacity
+              style={styles.advRow}
+              onPress={() => setShowReminderPicker(true)}
+            >
               <Text style={styles.advLabel}>Reminders</Text>
               <Text style={styles.advArrow}>▼</Text>
             </TouchableOpacity>
@@ -285,29 +356,45 @@ const EditOrDeleteHabit = () => {
             {/* Reminders List  reminderList*/}
             <View style={[styles.reminderListBox]}>
               {/* <ScrollView style={{ maxHeight: 100 }} nestedScrollEnabled={true}> */}
-              {reminders.length > 0 && reminders.map((r, i) => (
-                <View key={i} style={styles.reminderPill}>
-                  <Text style={styles.reminderPillText}> {r.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-                  <Text style={styles.reminderPillFreq}>Everyday</Text>
-                </View>
-              ))}
+              {reminders.length > 0 &&
+                reminders.map((r, i) => (
+                  <View key={i} style={styles.reminderPill}>
+                    <Text style={styles.reminderPillText}>
+                      {' '}
+                      {r.toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </Text>
+                    <Text style={styles.reminderPillFreq}>Everyday</Text>
+                  </View>
+                ))}
               {/* </ScrollView> */}
-              <TouchableOpacity style={styles.reminderPillAdd} onPress={() => setShowReminderPicker(true)}>
+              <TouchableOpacity
+                style={styles.reminderPillAdd}
+                onPress={() => setShowReminderPicker(true)}
+              >
                 <Text style={styles.reminderPillAddText}>+ Add reminder</Text>
               </TouchableOpacity>
             </View>
-          </View>) :
+          </View>
+        ) : (
           //Add Payment Modal Here
-          <SubscriptionPaymentModal/>
-      )}
-      
+          <SubscriptionPaymentModal />
+        ))}
+
       {/* Create Habit Button */}
       <PrimaryButton
         title="Edit Habit"
         onPress={handleUpdateHabit}
-        style={{ width: wp(40), height: wp(11), alignSelf: "center", marginBottom: hp(22), marginTop: wp(8) }}
+        style={{
+          width: wp(40),
+          height: wp(11),
+          alignSelf: 'center',
+          marginBottom: hp(22),
+          marginTop: wp(8),
+        }}
       />
-
 
       {/* Modals */}
       <TimePickerModal
@@ -328,21 +415,27 @@ const EditOrDeleteHabit = () => {
         // title="Choose Category"
         options={['Health', 'Work', 'Study', 'Personal']}
         onClose={() => setShowhabit_categoryPicker(false)}
-        onSelect={sethabit_category} selected={''} />
+        onSelect={sethabit_category}
+        selected={''}
+      />
 
       <CustomOptionPickerModal
         visible={showhabit_frequencyPicker}
         // title="Frequency"
         options={['Daily', 'Weekly', 'Monthly']}
         onClose={() => setShowhabit_frequencyPicker(false)}
-        onSelect={sethabit_frequency} selected={''} />
+        onSelect={sethabit_frequency}
+        selected={''}
+      />
 
       <CustomOptionPickerModal
         visible={showDurationPicker}
         // title="Duration"
         options={['7 Days', '14 Days', '30 Days', '60 Days']}
         onClose={() => setShowDurationPicker(false)}
-        onSelect={setDuration} selected={''} />
+        onSelect={setDuration}
+        selected={''}
+      />
 
       <TimePickerModal
         visible={showReminderPicker}
@@ -356,16 +449,15 @@ const EditOrDeleteHabit = () => {
 export default EditOrDeleteHabit;
 
 const styles = StyleSheet.create({
- container: {
+  container: {
     padding: wp('4%'),
     backgroundColor: '#ffffff',
-    alignItems: "center",
-
+    alignItems: 'center',
   },
   imagePlaceholder: {
     width: wp(24),
     height: wp(24),
-    backgroundColor: '#ffffff',  // white background for the image placeholder
+    backgroundColor: '#ffffff', // white background for the image placeholder
     borderRadius: 12,
     alignSelf: 'flex-start',
     marginBottom: hp('2%'),
@@ -383,7 +475,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: wp(9),
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
     fontWeight: 'bold',
     textAlign: 'left',
     color: '#104256',
@@ -407,7 +499,6 @@ const styles = StyleSheet.create({
     // Elevation for Android
     elevation: 4,
   },
-
 
   //Why this habit?
   textAreaWrapper: {
@@ -441,7 +532,6 @@ const styles = StyleSheet.create({
     fontSize: wp(4),
   },
 
-
   //Expand Advanced Edits
   advancedToggle: {
     color: '#666666',
@@ -450,7 +540,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   advancedBox: {
-    alignSelf: "center",
+    alignSelf: 'center',
     backgroundColor: '#fff',
     padding: wp('5%'),
     borderRadius: 12,
@@ -477,23 +567,20 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: hp('1%'),
     marginTop: hp('1%'),
-
   },
   reminderTime: {
     marginBottom: hp('0.5%'),
-
   },
 
   createBtn: {
     alignItems: 'center',
-    alignSelf: "center",
-    marginTop: hp('2%'),    
+    alignSelf: 'center',
+    marginTop: hp('2%'),
     paddingVertical: hp('1.5%'),
     borderRadius: 10,
     width: wp(40),
     height: wp(11),
     backgroundColor: '#104256',
-
   },
   createBtnText: {
     color: '#fff',
@@ -530,7 +617,6 @@ const styles = StyleSheet.create({
   },
   reminderListBox: {
     marginTop: hp('1%'),
-
   },
   reminderPill: {
     flexDirection: 'row',
@@ -550,7 +636,6 @@ const styles = StyleSheet.create({
     height: wp(5),
     color: '#2D2D2D',
     backgroundColor: '#FFFFFF',
-
   },
   reminderPillFreq: {
     fontSize: wp(3),

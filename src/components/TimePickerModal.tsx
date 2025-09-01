@@ -9,10 +9,15 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
 } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 const generateNumbers = (count: number, pad = true) => {
-  return Array.from({ length: count }, (_, i) => (pad && i < 10 ? `0${i}` : `${i}`));
+  return Array.from({ length: count }, (_, i) =>
+    pad && i < 10 ? `0${i}` : `${i}`,
+  );
 };
 
 const hours = generateNumbers(12, true); // 01 to 12
@@ -26,7 +31,12 @@ type Props = {
   initialTime?: string; // e.g. '02:30 PM'
 };
 
-const TimePickerModal = ({ visible, onClose, onTimeSelect, initialTime = '12:00 PM' }: Props) => {
+const TimePickerModal = ({
+  visible,
+  onClose,
+  onTimeSelect,
+  initialTime = '12:00 PM',
+}: Props) => {
   const [selectedHour, setSelectedHour] = useState('12');
   const [selectedMinute, setSelectedMinute] = useState('00');
   const [selectedMeridiem, setSelectedMeridiem] = useState('AM');
@@ -53,7 +63,7 @@ const TimePickerModal = ({ visible, onClose, onTimeSelect, initialTime = '12:00 
       now.getMonth(),
       now.getDate(),
       isPM ? (hourNum % 12) + 12 : hourNum % 12,
-      minuteNum
+      minuteNum,
     );
 
     onTimeSelect(date);
@@ -79,7 +89,7 @@ const TimePickerModal = ({ visible, onClose, onTimeSelect, initialTime = '12:00 
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
               >
-                {list.map((val) => (
+                {list.map(val => (
                   <TouchableOpacity
                     key={val}
                     style={styles.option}

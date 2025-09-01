@@ -4,11 +4,14 @@ import LinearGradient from 'react-native-linear-gradient';
 import colors from '../theme/colors';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
-
-const WelcomeScreenGradientWrapper = ({ children }: { children: React.ReactNode }) => {
+const WelcomeScreenGradientWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   return (
     <LinearGradient
-      colors={[ colors.gradientMiddle , colors.gradientStart]}
+      colors={[colors.gradientMiddle, colors.gradientStart]}
       style={styles.container}
     >
       {children}
@@ -23,7 +26,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 35,
     justifyContent: 'center',
-    paddingTop:wp("5%"),
+    paddingTop: wp('5%'),
   },
 });
 

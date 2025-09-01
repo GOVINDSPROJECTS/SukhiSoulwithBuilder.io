@@ -9,19 +9,20 @@ import { loadUserPrefs } from './src/store/userPrefsStore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const App = () => {
-  const restoreSession = useAuthStore((state) => state.restoreSession);
+  const restoreSession = useAuthStore(state => state.restoreSession);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  GoogleSignin.configure({
-    webClientId: '618676745098-tupjtgn3d7lg07t1flkfnd9fpoh176lp.apps.googleusercontent.com',
-    offlineAccess: true,
-    scopes: ['openid', 'email', 'profile'],
-  });
-}, []);
+    GoogleSignin.configure({
+      webClientId:
+        '618676745098-tupjtgn3d7lg07t1flkfnd9fpoh176lp.apps.googleusercontent.com',
+      offlineAccess: true,
+      scopes: ['openid', 'email', 'profile'],
+    });
+  }, []);
 
   useEffect(() => {
-      loadUserPrefs(); // 👈 load flag on app start
+    loadUserPrefs(); // 👈 load flag on app start
 
     const init = async () => {
       await restoreSession();
@@ -39,9 +40,9 @@ const App = () => {
   }
   return (
     <>
-    <NavigationContainer>
-      <RootNavigator />
-      <Toast />
+      <NavigationContainer>
+        <RootNavigator />
+        <Toast />
       </NavigationContainer>
     </>
   );

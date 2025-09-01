@@ -1,5 +1,12 @@
 import React from 'react';
-import { Text, TouchableOpacity, Image, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import {
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 
 type Props = {
   icon: any;
@@ -10,7 +17,11 @@ type Props = {
 
 const IconButton = ({ icon, label, onPress, style }: Props) => {
   return (
-    <TouchableOpacity style={[styles.button, style]} onPress={onPress} activeOpacity={0.8}>
+    <TouchableOpacity
+      style={[styles.button, style]}
+      onPress={onPress}
+      activeOpacity={0.8}
+    >
       <Image source={icon} style={styles.icon} />
       <Text style={styles.label}>{label}</Text>
     </TouchableOpacity>
@@ -28,8 +39,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 10,
     marginVertical: 8,
-    borderWidth:2,
-    borderColor:'#9999',
+    borderWidth: 2,
+    borderColor: '#9999',
   },
   icon: {
     width: 22,
@@ -40,6 +51,6 @@ const styles = StyleSheet.create({
   label: {
     color: '#000',
     fontSize: 16,
-    fontWeight: '600',    
+    fontWeight: '600',
   },
 });

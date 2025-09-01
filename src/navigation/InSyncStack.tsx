@@ -30,10 +30,10 @@ export default function InSyncStack() {
 
   return (
     <Stack.Navigator
-  screenOptions={{ headerShown: false }}
-  initialRouteName={introShown ? 'InSyncHome' : 'InSyncIntro'}
->
-              <Stack.Screen name="InSyncIntro" component={InSyncIntroScreen} />
+      screenOptions={{ headerShown: false }}
+      initialRouteName={introShown ? 'InSyncHome' : 'InSyncIntro'}
+    >
+      <Stack.Screen name="InSyncIntro" component={InSyncIntroScreen} />
 
       {/* Uncomment below when ready */}
       {/* <Stack.Screen name="InSyncInvite" component={InSyncInviteScreen} /> */}
