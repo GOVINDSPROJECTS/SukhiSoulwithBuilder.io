@@ -437,7 +437,7 @@ const getmembers = async () => {
                       <Feather name="bell" color="#000" size={24} />
                   </View>
            </TouchableOpacity>
-          <TouchableOpacity style={[styles.motivationCard, { flexDirection: 'row', alignItems: 'center', marginTop: wp(5) }] } onPress={handleCheerFriend} >
+          <TouchableOpacity style={[styles.motivationCard, styles.rowCenter, styles.mt5] } onPress={handleCheerFriend} >
                 <View>
                     <Text style={styles.text18}>Cheer your Friend</Text>
                     <Text style={styles.subText}>You’ve got this, let’s complete the challenge</Text>
