@@ -17,7 +17,7 @@ import { useAuthStore } from '@/store/authStore';
 import SubscriptionPaymentModal from '../../components/SubscriptionPaymentModal';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { HabitsStackParamList } from '@/navigation/HabitsStack';
-import { AppTabsParamList, RootStackParamList } from '@/types/navigation';
+import { AppTabsParamList } from '@/types/navigation';
 
 const EditOrDeleteHabit = () => {
   const { params } = useRoute<RouteProp<HabitsStackParamList, 'EditOrDelete'>>();
@@ -574,4 +574,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
