@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image,
   Switch,
   ScrollView,
   Alert,
