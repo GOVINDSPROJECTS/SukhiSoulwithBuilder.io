@@ -57,8 +57,8 @@ const getWeekRanges = () => {
 
 // ✅ helper: find closest week key from reports that overlaps selectedWeek
 const findMatchingWeek = (availableWeeks: string[], selectedWeek: string) => {
-  const [selStart, selEnd] = selectedWeek.split(' - ');
-  const selStartNum = parseInt(selStart.split(' ')[0]);
+  const [selStart] = selectedWeek.split(' - ');
+  const selStartNum = parseInt(selStart.split(' ')[0], 10);
 
   // crude match: pick the first available week where start/end is within 1–2 days diff
   return (
