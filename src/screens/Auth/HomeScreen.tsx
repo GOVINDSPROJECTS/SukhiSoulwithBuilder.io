@@ -47,7 +47,7 @@ export default function HomeScreen() {
   const sectionPositions = useRef<{ [key: string]: number }>({});
   const progressMapRef = useRef<Record<string, any>>({});
   const togglingHabits = useRef<Set<string>>(new Set());
-  const [loading, setLoading] = useState(false);
+  const [_loading, setLoading] = useState(false);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const tabNavigation = useNavigation<BottomTabNavigationProp<AppTabsParamList>>();
 
