@@ -51,7 +51,7 @@ const DayDetailScreen = () => {
   const progressMapRef = useRef<Record<string, any>>({});
 
   // ✅ Fetch habits & reports
-  const fetchHabits = async () => {
+  const fetchHabits = useCallback(async () => {
     try {
       console.log("📡 Fetching habits + progress reports...");
       const [habitRes, progressRes] = await Promise.all([
@@ -105,7 +105,7 @@ const DayDetailScreen = () => {
     } catch (error) {
       console.error('❌ Error fetching habits or progress reports:', error);
     }
-  };
+  }, [selectedDate]);
 
   // ✅ Update habits list for selectedDate
   const updateHabitsForDate = (rawHabits: any[], progressReports: any[], date: string) => {
@@ -131,7 +131,7 @@ const DayDetailScreen = () => {
   }, [fetchHabits]);
 
   // ✅ Fetch habits graph for GrowthChart
-  const fetchHabitsGraph = async () => {
+  const fetchHabitsGraph = useCallback(async () => {
     try {
       console.log("📡 Fetching habits graph data...");
       const [habitRes, progressRes] = await Promise.all([
@@ -187,7 +187,7 @@ const DayDetailScreen = () => {
     } catch (error) {
       console.error('❌ Error fetching habits graph:', error);
     }
-  };
+  }, []);
 
   // useEffect(() => {
   //   fetchHabitsGraph();
@@ -237,7 +237,7 @@ const DayDetailScreen = () => {
     }
   };
 
-  const hasSubscription = async () => {
+  const hasSubscription = useCallback(async () => {
       try {
         const res = await api.get('/activesubscriptions',
           {
@@ -253,7 +253,7 @@ const DayDetailScreen = () => {
       } catch (error) {
         console.error('Error fetching active subscriptions:', error);
       }
-  } 
+  }, [token]);
 
 
   // ✅ Tab Views
