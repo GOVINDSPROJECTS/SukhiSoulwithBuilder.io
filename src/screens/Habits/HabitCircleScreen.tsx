@@ -16,7 +16,6 @@ import AppText from '@/components/AppText';
 // const friends = ['Dumb D. Madhura', 'Portega D. Piyush', 'Mugdha Mehindarkar'];
 const habbitsNum = [1,0,3];
 const memberId = useAuthStore.getState().user?.id?.toString() || '';
-// eslint-disable-next-line react-hooks/rules-of-hooks
 
 
 type HabitRoom = {
@@ -32,7 +31,7 @@ const HabitCircleScreen = () => {
 
     const token = useAuthStore.getState().token;
       const [rooms, setRooms] = useState<HabitRoom[]>([]);
-        const [loading, setLoading] = useState<boolean>(true);
+        const [_loading, setLoading] = useState<boolean>(true);
   const [alreadyInRoom, setAlreadyInRoom] = useState<number>(0);
     const [subscribed, isSubscribed] = useState(false);
   
