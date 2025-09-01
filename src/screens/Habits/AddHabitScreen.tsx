@@ -242,7 +242,7 @@ const AddHabitScreen = () => {
             <View style={styles.advDivider} />
 
             {/* Write Progress */}
-            <View style={[styles.advRow, { justifyContent: 'space-between' }]}>
+            <View style={styles.advRow}>
               <Text style={styles.advLabel}>Write about progress.</Text>
               <Switch
                 value={habit_progress_status}
