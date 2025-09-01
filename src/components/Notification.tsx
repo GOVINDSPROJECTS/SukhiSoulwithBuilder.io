@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { useEffect } from "react";
 import { PermissionsAndroid, Platform, Alert } from "react-native";
 import { OneSignal } from "react-native-onesignal";
