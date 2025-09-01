@@ -161,6 +161,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999999',
   },
+  alignEnd: { alignItems: 'flex-end' },
   reflectionsTitle: {
     fontSize: 20,
     fontWeight: '600',
