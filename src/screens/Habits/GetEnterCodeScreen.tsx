@@ -385,7 +385,7 @@ const GetEnterCodeScreen: React.FC = () => {
                 resizeMode="cover"
             />
           </View>
-          <Text style={[styles.desc, { marginVertical: wp(10) }]}>
+          <Text style={[styles.desc, ui.descMargin]}>
             Stick to habits 95% better—together
           </Text>
 
