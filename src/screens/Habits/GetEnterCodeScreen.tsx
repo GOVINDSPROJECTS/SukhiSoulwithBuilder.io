@@ -263,8 +263,8 @@ import { RootStackParamList } from '../../types/navigation';
 
 const GetEnterCodeScreen: React.FC = () => {
   const [showGetCodeModal, setShowGetCodeModal] = useState(false);
-  const [habitCode, setHabitCode] = useState<string>('123456');
-  const [loading, setLoading] = useState(false);
+  const [habitCode, _setHabitCode] = useState<string>('123456');
+  const [_loading, _setLoading] = useState(false);
 
 
 
