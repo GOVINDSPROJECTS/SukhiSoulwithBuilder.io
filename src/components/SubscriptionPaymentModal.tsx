@@ -225,4 +225,5 @@ const styles = StyleSheet.create({
   ctaButton: { width: wp(50), height: wp(11), alignSelf: 'center', marginBottom: hp(5) },
   centerSelf: { alignSelf: 'center' },
   thankyouButton: { width: wp(35), height: wp(11), alignSelf: 'center', marginBottom: hp(5) },
+  w40: { width: wp(40) },
 });
