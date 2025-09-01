@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import CustomTextInput from '../../components/CustomTextInput';
 import PrimaryButton from '../../components/PrimaryButton';
