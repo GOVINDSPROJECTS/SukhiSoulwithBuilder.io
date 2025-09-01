@@ -69,8 +69,8 @@ export type InSyncStackParamList = {
 const Stack = createNativeStackNavigator<InSyncStackParamList>();
 
 export default function InSyncStack() {
-  const [loading, setLoading] = useState(false);
-  const [introShown, setIntroShown] = useState(false);
+  const [loading] = useState(false);
+  const [introShown] = useState(false);
 
   // useEffect(() => {
   //   const loadIntroStatus = async () => {
