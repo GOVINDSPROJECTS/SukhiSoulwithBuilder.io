@@ -44,8 +44,8 @@ const TimePickerModal = ({ visible, onClose, onTimeSelect, initialTime = '12:00 
 
   const confirmTime = () => {
     const now = new Date();
-    const hourNum = parseInt(selectedHour);
-    const minuteNum = parseInt(selectedMinute);
+    const hourNum = parseInt(selectedHour, 10);
+    const minuteNum = parseInt(selectedMinute, 10);
     const isPM = selectedMeridiem === 'PM';
 
     const date = new Date(
