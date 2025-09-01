@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   TouchableOpacity,
   Alert
 } from 'react-native';
@@ -11,20 +10,12 @@ import {
 import GradientWrapper from '../../components/GradientWrapper';
 import PrimaryButton from '../../components/PrimaryButton';
 import BottomSheetModal from '../../components/BottomSheetModal';
-import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types/navigation';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import AppText from '@/components/AppText';
 import colors from '@/theme/colors';
 
 
-type Props = {
-  refreshKey?: number;
-};
-const InSyncIntroScreen = ({refreshKey}:Props) => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+const InSyncIntroScreen = () => {
   const [showModal, setShowModal] = useState(false);
 
   const handleGetGoing = async () => {
@@ -67,13 +58,7 @@ const InSyncIntroScreen = ({refreshKey}:Props) => {
  
  <View style={styles.modalHandle} />
         <Text style={styles.modalTitle}>How can I do that?</Text>
-        <View
-  style={{
-    borderBottomColor: 'black',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    marginVertical:wp(5)
-  }}
-/>
+        <View style={styles.separator} />
         <View style={styles.tipGroup}>
           {[
             ['Create tasks together', 'Plan small, meaningful actions as a team which will build trust, routine, and shared joy.'],
@@ -92,7 +77,7 @@ const InSyncIntroScreen = ({refreshKey}:Props) => {
         <PrimaryButton
           title="Let's get going"
           onPress={handleGetGoing}
-          style={{ marginTop: hp(2) }}
+          style={styles.ctaButton}
         />
       </BottomSheetModal>
     </GradientWrapper>
@@ -169,6 +154,12 @@ const styles = StyleSheet.create({
     fontSize: wp(3.6),
     color: '#444',
   },
+  separator: {
+    borderBottomColor: 'black',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    marginVertical: wp(5),
+  },
+  ctaButton: { marginTop: hp(2) },
   modalHandle: {
   width: wp('15%'),        // ~60px on most devices
   height: hp('0.6%'),      // ~5px
