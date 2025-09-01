@@ -314,7 +314,7 @@ const LoginScreen = () => {
             placeholder="Mail"
             value={email}
             onChangeText={setEmail}
-            style={{ borderWidth: 2, borderColor: '#808080', margin: '4%' }}
+            style={styles.emailInput}
             type="email"
           />
 
