@@ -330,7 +330,7 @@ const LoginScreen = () => {
                 setLoading(false);
               }
             }}
-            style={{ width: '30%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
+            style={styles.otpButton}
           />
             
         </View>
