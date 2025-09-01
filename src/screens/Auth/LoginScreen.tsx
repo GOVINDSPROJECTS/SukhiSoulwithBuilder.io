@@ -443,4 +443,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: hp('2%'),
   },
+  modalRoot: { margin: 0, justifyContent: 'flex-end' },
+  emailInput: { borderWidth: 2, borderColor: '#808080', margin: '4%' },
+  otpButton: { width: '30%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
 });
