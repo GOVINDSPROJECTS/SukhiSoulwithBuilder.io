@@ -47,12 +47,11 @@ const HabitsList = ({
   maxItemsToShow,
   loading = false,
 
-  isCompleted,
+  _isCompleted,
 }: Props) => {
   const displayedHabits = maxItemsToShow ? habits.slice(0, maxItemsToShow) : habits;
 
 const [showConfetti, setShowConfetti] = useState(false);
-const confettiRef = useRef<any>(null);
 
 const handleToggleHabit = (id: string) => {
   onToggle?.(id);
@@ -61,7 +60,7 @@ const handleToggleHabit = (id: string) => {
 
 if (loading) {
   return (
-    <View style={[styles.wrapper, { justifyContent: 'center', alignItems: 'center', height: hp('20%') }]}>
+    <View style={[styles.wrapper, styles.loadingWrap]}>
       <ActivityIndicator size="large" color={colors.primary} />
     </View>
   );
@@ -71,7 +70,7 @@ if (loading) {
   {title && (
     <AppText
       variant="h1"
-      style={{ color: colors.primary, marginBottom: hp('2.5%') }}
+      style={styles.titleText}
     >
       {title}
     </AppText>
@@ -103,7 +102,7 @@ if (loading) {
           </TouchableOpacity>
         </View>
       )}
-      ItemSeparatorComponent={() => <View style={styles.separator} />}
+      ItemSeparatorComponent={Separator}
     />
   )}
 
@@ -113,9 +112,9 @@ if (loading) {
     </TouchableOpacity>
   ):
   <TouchableOpacity>
-    <View style={[styles.emptyStateText,{flexDirection:"row",alignSelf:"flex-end"}]}>
-        <Text style={[styles.allHabitsText,{color:"#666666",fontSize:wp(4)}]} onPress={onAllHabitPress}>All habits</Text>
-        <AntDesign name="right" color="#2D2D2D" size={14} style={{marginTop:hp(0.4)}}/>
+    <View style={styles.rowEnd}>
+        <Text style={styles.allHabitsText} onPress={onAllHabitPress}>All habits</Text>
+        <AntDesign name="right" color="#2D2D2D" size={14} style={styles.chevronIcon}/>
     </View>
 
   </TouchableOpacity>
@@ -138,6 +137,8 @@ if (loading) {
 };
 
 export default HabitsList;
+const Separator = () => <View style={styles.separator} />;
+
 const styles = StyleSheet.create({
   wrapper: {
     marginVertical: hp('2%'),
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
   separator: {
     height: 1,
     marginVertical: hp('0.3%'),
-    marginLeft: wp('11%'), // align with text
+    marginLeft: wp('11%'),
   },
   addButton: {
     alignSelf: 'flex-end',
@@ -222,6 +223,10 @@ emptyStateText: {
   textAlign: 'right',
   marginTop: hp('2%'),
 },
+rowEnd: { flexDirection: 'row', alignSelf: 'flex-end' },
+chevronIcon: { marginTop: hp(0.4) },
+loadingWrap: { justifyContent: 'center', alignItems: 'center', height: hp('20%') },
+titleText: { color: colors.primary, marginBottom: hp('2.5%') },
 allHabitsText: {
     color: '#666666',
     fontWeight: '500',
