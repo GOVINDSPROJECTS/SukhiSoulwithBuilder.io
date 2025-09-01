@@ -409,10 +409,10 @@ const getmembers = async () => {
  
 
   return (
-    <ScrollView style={{backgroundColor: '#FFFFFF'}}>
+    <ScrollView style={styles.scroll}>
         <View style={styles.container}>
           <Text style={styles.title}>{rooms[0]?.room_name}</Text>
-          <Text style={[styles.subText,{marginTop: wp(3)}]}>Habit Partner since 5th July, 2025</Text>
+          <Text style={[styles.subText, styles.mt3]}>Habit Partner since 5th July, 2025</Text>
           <Text style={styles.subText}>Habit Streak of 5 Days</Text>
           <Text style={styles.subheading}>Shared Habits</Text>
 
@@ -426,14 +426,14 @@ const getmembers = async () => {
           />
 
           <Text style={styles.subheading}>Keep each other going</Text>
-          <Text style={[styles.subText,{width:wp(40)}]}>A little motivation goes a long way</Text>
+          <Text style={[styles.subText, styles.subTextNarrow]}>A little motivation goes a long way</Text>
 
-          <TouchableOpacity style={[styles.motivationCard, { flexDirection: 'row', alignItems: 'center', marginTop: wp(5) }]} onPress={handleNudgeReminder} >
+          <TouchableOpacity style={[styles.motivationCard, styles.rowCenter, styles.mt5]} onPress={handleNudgeReminder} >
                 <View >
                     <Text style={styles.text18}>Nudge to Remind</Text>
                     <Text style={styles.subText}>Remind Mugdha to track today</Text>
                 </View>
-                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                  <View style={styles.flexEnd}>
                       <Feather name="bell" color="#000" size={24} />
                   </View>
            </TouchableOpacity>
@@ -442,7 +442,7 @@ const getmembers = async () => {
                     <Text style={styles.text18}>Cheer your Friend</Text>
                     <Text style={styles.subText}>You’ve got this, let’s complete the challenge</Text>
                 </View>
-                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                  <View style={styles.flexEnd}>
                       <Feather name="star" color="#000" size={24} />
                   </View>
            </TouchableOpacity>
@@ -458,16 +458,16 @@ const getmembers = async () => {
             }}
           />
 
-          <View style={{ marginTop: wp(0.1) }}>
+          <View style={styles.mtTiny}>
             {habits.map((habit) => (
-              <View key={habit.id} style={[styles.activiyWrapper,{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}]}>
+              <View key={habit.id} style={[styles.activiyWrapper, styles.rowBetween]}>
 
                 <View>
-                  <Text style={[styles.text18, { fontWeight: 'bold' }]}>{habit.title}</Text>
+                  <Text style={[styles.text18, styles.bold]}>{habit.title}</Text>
                   <Text style={styles.subText}>{habit.habit_frequency}</Text>
                 </View>
 
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                <View style={styles.rowBetween}>
                     <Text style={[styles.subText,{marginTop: hp(2.6)}]}>{score}</Text>
                     <Image
                         source={require('../../assets/icons/streak.png')}
@@ -484,17 +484,7 @@ const getmembers = async () => {
             visible={showModal}
             onClose={() => setShowModal(false)}
           >
-            <View
-              style={{
-                width: wp(13),
-                height: 5,
-                backgroundColor: '#000000',
-                marginTop: 2,
-                marginBottom: hp(10),
-                borderRadius:12,
-                alignSelf: 'center',
-              }}
-            />
+            <View style={styles.sheetHandle} />
             <View style={styles.card}>
               <View style={styles.headerRow}>
                 <Text style={styles.headerText}>Existing Habits</Text>
@@ -522,7 +512,7 @@ const getmembers = async () => {
               />
 
             </View>
-              <TouchableOpacity onPress={() => navigation.navigate('AddHabitScreen' as any)} style={{ alignSelf: 'flex-end', marginRight: wp(4), marginTop: wp(2) }}>
+              <TouchableOpacity onPress={() => navigation.navigate('AddHabitScreen' as any)} style={styles.addNewLinkContainer}>
                 <Text style={styles.addNew}>+Add New Habit</Text>
               </TouchableOpacity>
 
@@ -530,7 +520,7 @@ const getmembers = async () => {
             <PrimaryButton
                 title="Done"
                 onPress={() => console.log('Done')}
-                style={{ width:wp(40),height:wp(11),alignSelf:"center",marginBottom: hp(5),marginTop:wp(8) }}
+                style={styles.doneButton}
             />
 
           </BottomSheetModal>
@@ -678,6 +668,26 @@ const styles = StyleSheet.create({
     marginBottom: wp(8),
     marginRight: wp(4),
   },
+  scroll: { backgroundColor: '#FFFFFF' },
+  rowCenter: { flexDirection: 'row', alignItems: 'center' },
+  rowBetween: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  mt5: { marginTop: wp(5) },
+  mt3: { marginTop: wp(3) },
+  subTextNarrow: { width: wp(40) },
+  flexEnd: { flex: 1, alignItems: 'flex-end' },
+  mtTiny: { marginTop: wp(0.1) },
+  bold: { fontWeight: 'bold' },
+  sheetHandle: {
+    width: wp(13),
+    height: 5,
+    backgroundColor: '#000000',
+    marginTop: 2,
+    marginBottom: hp(10),
+    borderRadius: 12,
+    alignSelf: 'center',
+  },
+  addNewLinkContainer: { alignSelf: 'flex-end', marginRight: wp(4), marginTop: wp(2) },
+  doneButton: { width: wp(40), height: wp(11), alignSelf: 'center', marginBottom: hp(5), marginTop: wp(8) },
 });
 
 
