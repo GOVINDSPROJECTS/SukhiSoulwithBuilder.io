@@ -87,11 +87,7 @@ const SignupScreen = () => {
 
           <AppText
             variant="h2"
-            style={{
-              marginTop: hp('5%'),
-              marginBottom: hp('2%'),
-              color: '#2D2D2D',
-            }}
+            style={styles.createAccountTitle}
           >
             Create your account
           </AppText>
@@ -140,14 +136,7 @@ const SignupScreen = () => {
           <PrimaryButton
             title="Get OTP"
             onPress={handleSignupOtp}
-            // onPress={()=> navigation.navigate('AuthStack', { screen: 'OtpVerification' })}
-            // eslint-disable-next-line react-native/no-inline-styles
-            style={{
-              width: wp('30%'),
-              alignSelf: 'center',
-              marginVertical: hp('2%'),
-              marginBottom: hp('3%'),
-            }}
+            style={styles.getOtpButton}
           />
 
           <DividerWithText />
@@ -215,5 +204,16 @@ const styles = StyleSheet.create({
     // marginTop: hp('1%'),
     fontSize: wp('10%'),
     color: colors.primary,
+  },
+  createAccountTitle: {
+    marginTop: hp('5%'),
+    marginBottom: hp('2%'),
+    color: '#2D2D2D',
+  },
+  getOtpButton: {
+    width: wp('30%'),
+    alignSelf: 'center',
+    marginVertical: hp('2%'),
+    marginBottom: hp('3%'),
   },
 });
