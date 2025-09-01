@@ -1,5 +1,4 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import axios from 'axios';
 import { Alert } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types/navigation';
