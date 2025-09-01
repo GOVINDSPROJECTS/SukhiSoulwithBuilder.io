@@ -120,17 +120,7 @@ const SubscriptionPaymentModal = () => {
         visible={showPaymentModal}
         onClose={() => setShowPaymentModal(false)}
     >
-        <View
-            style={{
-                width: wp(13),
-                height: 5,
-                backgroundColor: "#000000",
-                marginTop: 2,
-                marginBottom: hp(2),
-                borderRadius: 12,
-                alignSelf: "center",
-            }}
-        />
+        <View style={styles.dragHandle} />
         <Text style={[styles.coachModalTitle, { width: wp(70) }]}>
             Go Premium, Grow Faster
         </Text>
@@ -143,35 +133,14 @@ const SubscriptionPaymentModal = () => {
         </Text>
 
         {/* Plans Section */}
-        <View
-            style={{
-                marginLeft: wp(6),
-                marginRight: wp(6),
-                width: wp(82),
-                height: wp(62),
-                backgroundColor: "#f2f2f2",
-                marginBottom: wp(10),
-                alignSelf: "center",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: wp(2.5),
-                marginTop: hp(2),
-                padding: 10,
-            }}
-        >
+        <View style={styles.planBox}>
             {loading ? (
                 <ActivityIndicator size="large" color="#000" />
             ) : (
                 <>
                     {plans.length > 0 ? (
                         <>
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    fontWeight: "600",
-                                    marginBottom: 10,
-                                }}
-                            >
+                            <Text style={styles.planTitle}>
                                 Select Plan Duration
                             </Text>
                             <Picker
@@ -190,7 +159,7 @@ const SubscriptionPaymentModal = () => {
                                         setSelectedPlanAmount(selected.price);
                                     }
                                 }}
-                                style={{ width: "100%" }}
+                                style={styles.pickerFullWidth}
                             >
                                 <Picker.Item label="Choose a plan" value={null} />
                                 {plans[0].durations.map((duration) => (
@@ -218,18 +187,13 @@ const SubscriptionPaymentModal = () => {
                 }
                 startPayment(selectedPlanAmount, selectedPlanId, selectedPlanDurationId);
             }}
-            style={{
-                width: wp(50),
-                height: wp(11),
-                alignSelf: "center",
-                marginBottom: hp(5),
-            }}
+            style={styles.ctaButton}
         />
     </BottomSheetModal>
     <BottomSheetModal visible={showPaymentConfirmModal} onClose={() => setShowPaymentConfirmModal(false)}>
-        <View style={{ width: wp(13), height: 5, backgroundColor: '#000000', marginTop: 2, marginBottom: hp(2), borderRadius: 12, alignSelf: 'center' }} />
+        <View style={styles.dragHandle} />
         <Image source={require('../assets/icons/correct.png')} style={styles.image} />
-        <View style={{ alignSelf: 'center' }}>
+        <View style={styles.centerSelf}>
           <Text style={[styles.coachModalTitle, { alignSelf: 'center', width: wp(40) }]}>Payment Received</Text>
           <Text style={[styles.text18, { marginTop: hp(5) }]}>Thank you for upgrading to Premium! </Text>
           <Text style={[styles.text18, { width: wp(75), marginTop: hp(10) }]}>We’ve received your payment, and now you can use all the premium features.</Text>
@@ -240,7 +204,7 @@ const SubscriptionPaymentModal = () => {
             ...user,
             is_paid: 1,   // update only this
           }); setShowPaymentConfirmModal(false);
-        }} style={{ width: wp(35), height: wp(11), alignSelf: 'center', marginBottom: hp(5) }} />
+        }} style={styles.thankyouButton} />
       </BottomSheetModal>
       </>
       );
@@ -252,8 +216,13 @@ const styles = StyleSheet.create({
   text18: { fontSize: wp(4.5), color: '#2D2D2D', marginBottom: hp(1), fontWeight: '500' },
   grayBox: { marginLeft: wp(6), marginRight: wp(6), width: wp(82), height: wp(62), backgroundColor: '#686868', marginBottom: wp(10), alignSelf: 'center', justifyContent: 'center', alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, borderRadius: wp(2.5), marginTop: hp(2), elevation: 5 },
   image: {
-    width: wp(13), height: wp(13), marginTop: hp(5), alignSelf
-      : 'center',
-    resizeMode: 'contain',
+    width: wp(13), height: wp(13), marginTop: hp(5), alignSelf: 'center', resizeMode: 'contain',
   },
+  dragHandle: { width: wp(13), height: 5, backgroundColor: '#000000', marginTop: 2, marginBottom: hp(2), borderRadius: 12, alignSelf: 'center' },
+  planBox: { marginLeft: wp(6), marginRight: wp(6), width: wp(82), height: wp(62), backgroundColor: '#f2f2f2', marginBottom: wp(10), alignSelf: 'center', justifyContent: 'center', alignItems: 'center', borderRadius: wp(2.5), marginTop: hp(2), padding: 10 },
+  planTitle: { fontSize: 16, fontWeight: '600', marginBottom: 10 },
+  pickerFullWidth: { width: '100%' },
+  ctaButton: { width: wp(50), height: wp(11), alignSelf: 'center', marginBottom: hp(5) },
+  centerSelf: { alignSelf: 'center' },
+  thankyouButton: { width: wp(35), height: wp(11), alignSelf: 'center', marginBottom: hp(5) },
 });
