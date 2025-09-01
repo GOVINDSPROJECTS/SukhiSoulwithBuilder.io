@@ -392,12 +392,7 @@ const GetEnterCodeScreen: React.FC = () => {
           <PrimaryButton
             title="Share this ID"
             onPress={handleShareCode}
-            style={{
-                width: wp(40),
-                height: wp(11),
-                alignSelf: 'center',
-                marginBottom: hp(6),
-            }}
+            style={ui.shareIdButton}
           />
         </View>
       </BottomSheetModal>
