@@ -62,7 +62,7 @@ export default function AppTabs() {
       initialRouteName="Home"
       swipeEnabled={true}
       tabBarPosition="bottom"
-      tabBar={props => <CustomTabBar {...props} />}
+      tabBar={CustomTabBar}
       screenOptions={{ headerShown: false }}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
