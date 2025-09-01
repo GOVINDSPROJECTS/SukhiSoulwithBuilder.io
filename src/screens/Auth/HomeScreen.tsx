@@ -403,38 +403,15 @@ export default function HomeScreen() {
           style={styles.section}
         >
           <Text style={[styles.heading, { fontSize: wp(12) }]}>Discover</Text>
-          <Text style={{ fontSize: wp(4), color: '#000', marginBottom: wp(6) }}>
+          <Text style={styles.discoverSubtitle}>
             Mindful Reads
           </Text>
 
           {posts.map(item => (
-            <View key={item.id} style={{ marginBottom: wp(8) }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginBottom: wp(2),
-                  marginLeft: wp(1),
-                }}
-              >
-                <View
-                  style={{
-                    width: wp(4),
-                    height: wp(4),
-                    borderRadius: wp(2),
-                    backgroundColor: '#B6E388',
-                    marginRight: 6,
-                  }}
-                />
-                <Text
-                  style={{
-                    fontWeight: '600',
-                    color: '#222',
-                    fontSize: wp(3.2),
-                  }}
-                >
-                  @sukhisoul
-                </Text>
+            <View key={item.id} style={styles.postCardWrap}>
+              <View style={styles.postHeaderRow}>
+                <View style={styles.avatarDot} />
+                <Text style={styles.username}>@sukhisoul</Text>
               </View>
 
               {item.image ? (
@@ -447,13 +424,7 @@ export default function HomeScreen() {
                 />
               ) : (
                 <View style={styles.textPostCard}>
-                  <Text
-                    style={{
-                      color: '#222',
-                      fontWeight: '600',
-                      fontSize: wp(4),
-                    }}
-                  >
+                  <Text style={styles.textPostTitle}>
                     {item.caption}
                   </Text>
                 </View>
@@ -663,4 +634,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   section: { marginBottom: wp(5) },
+  discoverSubtitle: { fontSize: wp(4), color: '#000', marginBottom: wp(6) },
+  postCardWrap: { marginBottom: wp(8) },
+  postHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: wp(2),
+    marginLeft: wp(1),
+  },
+  avatarDot: {
+    width: wp(4),
+    height: wp(4),
+    borderRadius: wp(2),
+    backgroundColor: '#B6E388',
+    marginRight: 6,
+  },
+  username: { fontWeight: '600', color: '#222', fontSize: wp(3.2) },
+  textPostTitle: { color: '#222', fontWeight: '600', fontSize: wp(4) },
 });
