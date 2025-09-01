@@ -1,6 +1,5 @@
 // src/services/otpAuth.ts
 
-import axios from 'axios';
 import { Alert } from 'react-native';
 import { AuthStackParamList } from '../types/navigation';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
