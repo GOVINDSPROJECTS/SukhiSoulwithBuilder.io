@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import { Text, TouchableOpacity, Image, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 
 type Props = {
   icon: any;
