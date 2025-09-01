@@ -198,7 +198,7 @@ const EditOrDeleteHabit = () => {
 
       <TextInput
         placeholder="Name"
-        style={[styles.input, { width: wp(80), height: wp(12) }]}
+        style={[styles.input, styles.inputSized]}
         value={habit_name}
         onChangeText={sethabit_name}
       />
@@ -219,31 +219,11 @@ const EditOrDeleteHabit = () => {
       {/* Time Picker */}
       <TouchableOpacity
         onPress={() => setShowTimePicker(true)}
-        style={[
-          styles.input,
-          {
-            width: wp(80),
-            height: wp(13),
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginTop: hp(1),
-          },
-        ]}
+        style={[styles.input, styles.timeInput]}
       >
-        <Text style={{ color: '#888888', fontSize: wp(3.5) }}>Time</Text>
-        <View
-          style={{
-            backgroundColor: '#DCEEF2',
-            borderRadius: 6,
-            width: wp(20),
-            height: wp(5.5),
-            alignItems: 'center',
-          }}
-        >
-          <Text
-            style={{ color: '#104256', fontWeight: '600', fontSize: wp(4) }}
-          >
+        <Text style={styles.timeLabel}>Time</Text>
+        <View style={styles.timeValueBox}>
+          <Text style={styles.timeValueText}>
             {habit_time
               ? habit_time.toLocaleTimeString([], {
                   hour: '2-digit',
@@ -387,13 +367,7 @@ const EditOrDeleteHabit = () => {
       <PrimaryButton
         title="Edit Habit"
         onPress={handleUpdateHabit}
-        style={{
-          width: wp(40),
-          height: wp(11),
-          alignSelf: 'center',
-          marginBottom: hp(22),
-          marginTop: wp(8),
-        }}
+        style={styles.editHabitBtn}
       />
 
       {/* Modals */}
@@ -657,5 +631,31 @@ const styles = StyleSheet.create({
     fontSize: wp(4),
     color: '#2D2D2D',
     fontWeight: '600',
+  },
+  inputSized: { width: wp(80), height: wp(12) },
+  timeInput: {
+    width: wp(80),
+    height: wp(13),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: hp(1),
+  },
+  timeLabel: { color: '#888888', fontSize: wp(3.5) },
+  timeValueBox: {
+    backgroundColor: '#DCEEF2',
+    borderRadius: 6,
+    width: wp(20),
+    height: wp(5.5),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  timeValueText: { color: '#104256', fontWeight: '600', fontSize: wp(4) },
+  editHabitBtn: {
+    width: wp(40),
+    height: wp(11),
+    alignSelf: 'center',
+    marginBottom: hp(22),
+    marginTop: wp(8),
   },
 });
