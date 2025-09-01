@@ -5,7 +5,7 @@ import {
     ActivityIndicator,
     StyleSheet,
     Image,
-    
+    Alert,
 } from 'react-native';
 import { Picker } from "@react-native-picker/picker"; // npm install @react-native-picker/picker
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -57,7 +57,7 @@ const SubscriptionPaymentModal = () => {
     };
     const startPayment = async (amount: number, plan_id: number, plan_duration_id: number) => {
         const token = useAuthStore.getState().token;
-        const user = useAuthStore.getState().user;
+        const currentUser = useAuthStore.getState().user;
 
         try {
             const orderData = await createOrder(amount);
@@ -70,7 +70,7 @@ const SubscriptionPaymentModal = () => {
                 amount: orderData.amount,
                 order_id: orderData.order_id,
                 name: 'Sukhisoul Wellness Hub',
-                prefill: { email: user?.email, name: user?.name },
+                prefill: { email: currentUser?.email, name: currentUser?.name },
                 theme: { color: colors.primary },
             };
 
@@ -107,7 +107,7 @@ const SubscriptionPaymentModal = () => {
                 })
                 .catch((error) => {
                     console.log('Payment Failed:', error);
-                    alert(`Error: ${error.description}`);
+                    Alert.alert('Payment Error', String(error?.description || 'Unknown error'));
                 });
         } catch (err) {
             console.error(err);
@@ -213,7 +213,7 @@ const SubscriptionPaymentModal = () => {
             title="Get Premium Now"
             onPress={() => {
                 if (!selectedPlanAmount || !selectedPlanId || !selectedPlanDurationId) {
-                    alert("Please select a plan first");
+                    Alert.alert('Select Plan', 'Please select a plan first');
                     return;
                 }
                 startPayment(selectedPlanAmount, selectedPlanId, selectedPlanDurationId);
@@ -257,4 +257,3 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 });
-
