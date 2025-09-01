@@ -64,7 +64,7 @@ const findMatchingWeek = (availableWeeks: string[], selectedWeek: string) => {
   return (
     availableWeeks.find((w) => {
       const [repStart] = w.split(' - ');
-      const repStartNum = parseInt(repStart.split(' ')[0]);
+      const repStartNum = parseInt(repStart.split(' ')[0], 10);
       return Math.abs(repStartNum - selStartNum) <= 1; // ✅ tolerant match
     }) || selectedWeek
   );
