@@ -31,7 +31,7 @@ const InSyncHomeScreen = () => {
           <Text style={styles.journalTitle}>Our Journal</Text>
           <Text style={styles.journalDate}>06 Nov 2025</Text>
         </View>
-        <View style={{alignItems: 'flex-end'}}>
+        <View style={styles.alignEnd}>
           <Text style={styles.journalMetric}>60</Text>
           <Text style={styles.journalMetricUnit}>mins</Text>
         </View>
