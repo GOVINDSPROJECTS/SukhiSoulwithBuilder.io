@@ -188,7 +188,7 @@ type Props = {
 
 const WeeklyTracker = ({
   title,
-  highlightedDates = [],
+  _highlightedDates = [],
   onDayPress,
   habitCompletionMap = {},
 }: Props) => {
@@ -207,7 +207,7 @@ const WeeklyTracker = ({
         scrollRef.current.scrollTo({ x: todayIndex * (wp('12%') + wp('3%')), animated: true });
       }
     }, 300);
-  }, []);
+  }, [todayIndex]);
 
   const scrollToIndex = (index: number) => {
     if (scrollRef.current) {
