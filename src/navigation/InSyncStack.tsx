@@ -89,7 +89,7 @@ export default function InSyncStack() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={styles.centered}>
         <ActivityIndicator size="large" color="#104256" />
       </View>
     );
