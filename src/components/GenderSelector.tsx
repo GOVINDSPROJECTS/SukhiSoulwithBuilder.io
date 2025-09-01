@@ -1,4 +1,3 @@
-
 // import React, { useState } from 'react';
 // import {
 //     View,
@@ -55,7 +54,7 @@
 // export default GenderSelector;
 
 import React, { useState } from 'react';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 
 import {
   View,
