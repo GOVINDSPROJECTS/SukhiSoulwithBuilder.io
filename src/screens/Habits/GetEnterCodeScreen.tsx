@@ -260,6 +260,20 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 
+const ui = StyleSheet.create({
+  sheetHandle: {
+    width: wp(13),
+    height: 5,
+    backgroundColor: '#171717',
+    marginTop: 2,
+    marginBottom: hp(2),
+    borderRadius: 12,
+    alignSelf: 'center',
+  },
+  flex1: { flex: 1 },
+  descMargin: { marginVertical: wp(10) },
+  shareIdButton: { width: wp(40), height: wp(11), alignSelf: 'center', marginBottom: hp(6) },
+});
 
 const GetEnterCodeScreen: React.FC = () => {
   const [showGetCodeModal, setShowGetCodeModal] = useState(false);
