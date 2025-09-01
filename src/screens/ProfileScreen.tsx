@@ -212,7 +212,7 @@ useFocusEffect(
           </View>
 
           {/* Email - disabled */}
-          <View style={styles.cardDisabled}>
+          <View style={[styles.Card, styles.cardDisabled]}>
             <Text style={styles.lightTxt}>Email Address</Text>
             <Text style={styles.name}>{user?.email}</Text>
           </View>
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
   modalContentTop: { marginTop: hp(3) },
   accountTitle: { fontSize: wp(6), fontWeight: '700', marginBottom: hp(3), textAlign: 'center' },
   rowBetweenMT05: { flexDirection: 'row', justifyContent: 'space-between', marginTop: wp(0.5) },
-  cardDisabled: { ...StyleSheet.flatten([ ({} as any) ]), ...({} as any) },
+  cardDisabled: { opacity: 0.5 },
   fieldLabelSpacing: { marginLeft: wp(3), marginTop: hp(3) },
   modalPrimaryButton: { width: wp(40), height: wp(11), alignSelf: 'center', marginTop: hp(20) },
   inputStyle: {
