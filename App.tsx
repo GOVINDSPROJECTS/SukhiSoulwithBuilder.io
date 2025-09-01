@@ -32,7 +32,7 @@ const App = () => {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={styles.loaderCenter}>
         <ActivityIndicator size="large" color="#007AFF" />
       </View>
     );
@@ -48,3 +48,8 @@ const App = () => {
 };
 
 export default App;
+
+import { StyleSheet } from 'react-native';
+const styles = StyleSheet.create({
+  loaderCenter: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+});
